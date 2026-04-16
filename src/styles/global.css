@@ -80,16 +80,18 @@ body {
     radial-gradient(ellipse 60% 40% at 100% 100%, rgba(61, 107, 92, 0.05), transparent 70%);
 }
 
-/* Film grain — the texture that makes it feel printed, not rendered */
+/* Film grain — the texture that makes it feel printed, not rendered.
+   NO mix-blend-mode: that forces a full-viewport blend on every paint
+   and tanks scroll perf site-wide. Plain low-opacity overlay looks
+   nearly identical and costs 10× less to paint. */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.95 0 0 0 0 0.85 0 0 0 0 0.65 0 0 0 0.9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  opacity: 0.07;
+  opacity: 0.035;
   pointer-events: none;
   z-index: 1;
-  mix-blend-mode: overlay;
 }
 
 /* Faint editorial grid overlay */
@@ -402,9 +404,13 @@ a:hover {
 }
 
 #site-nav.scrolled {
-  background: rgba(11, 9, 7, 0.85);
-  backdrop-filter: blur(20px) saturate(1.1);
-  -webkit-backdrop-filter: blur(20px) saturate(1.1);
+  background: rgba(11, 9, 7, 0.92);
+  /* blur reduced from 20px to 8px + saturate dropped — backdrop-filter
+     is re-computed on every scroll frame because the content under it
+     changes. Smaller blur radius = exponentially cheaper. Background
+     alpha raised (0.85→0.92) so the bar still looks solid. */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border-bottom-color: var(--border);
 }
 
@@ -446,8 +452,11 @@ a:hover {
 }
 
 .nav-cta {
-  padding: 0.55rem 1.1rem !important;
-  font-size: 0.85rem !important;
+  padding: 0.6rem 1.25rem !important;
+  font-size: 0.9rem !important;
+  font-weight: 600 !important;
+  color: #0a0705 !important;  /* deeper black for stronger contrast on amber */
+  letter-spacing: 0.01em !important;
 }
 
 .nav-toggle {
