@@ -1,0 +1,48 @@
+---
+import { site } from '../data/site';
+import { buildTitle, localBusinessSchema, websiteSchema } from '../utils/seo';
+import type { SEOProps } from '../utils/seo';
+
+interface Props extends SEOProps {
+  jsonLd?: object[];
+}
+
+const {
+  title,
+  description = site.description,
+  image = '/og-image.png',
+  canonical,
+  type = 'website',
+  jsonLd = [],
+} = Astro.props;
+
+const full_title = buildTitle(title);
+const canonical_url = canonical || new URL(Astro.url.pathname, site.url).toString();
+const og_image = new URL(image, site.url).toString();
+
+// Always include business + website schemas, plus any page-specific schemas
+const all_schemas = [localBusinessSchema(), websiteSchema(), ...jsonLd];
+---
+
+<title>{full_title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical_url} />
+
+<!-- Open Graph -->
+<meta property="og:type" content={type} />
+<meta property="og:url" content={canonical_url} />
+<meta property="og:title" content={full_title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={og_image} />
+<meta property="og:site_name" content={site.name} />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={full_title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={og_image} />
+
+<!-- Structured data -->
+{all_schemas.map((schema) => (
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+))}

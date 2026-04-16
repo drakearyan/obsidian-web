@@ -1,0 +1,42 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import Hero from '../components/Hero.astro';
+import StatsBar from '../components/StatsBar.astro';
+import ServicesAccordion from '../components/ServicesAccordion.astro';
+import PortfolioPreview from '../components/PortfolioPreview.astro';
+import Testimonials from '../components/Testimonials.astro';
+import ProcessSteps from '../components/ProcessSteps.astro';
+import FAQ from '../components/FAQ.astro';
+import CTASection from '../components/CTASection.astro';
+import { site } from '../data/site';
+import { faqs } from '../data/faq';
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.question,
+    acceptedAnswer: { '@type': 'Answer', text: f.answer },
+  })),
+};
+---
+
+<PageLayout
+  title={`${site.tagline}`}
+  description={site.description}
+  jsonLd={[faqSchema]}
+>
+  <Hero
+    title="Websites built"
+    titleAccent="to outwork you."
+    subtitle="A boutique web design studio for small businesses in Lynchburg and beyond. Custom designed. Fast to ship. Built to convert. Owned by you."
+  />
+  <StatsBar />
+  <ServicesAccordion />
+  <PortfolioPreview />
+  <Testimonials />
+  <ProcessSteps />
+  <FAQ />
+  <CTASection />
+</PageLayout>

@@ -1,0 +1,337 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import CTASection from '../components/CTASection.astro';
+import { case_studies, industries } from '../data/portfolio';
+
+// Solid editorial tints (no gradients) — keyed off ember/flame/jade palette
+const thumb_map: Record<string, { bg: string; fg: string }> = {
+  restaurant:  { bg: '#C97A1C', fg: '#F5ECD9' }, // ember-deep
+  legal:       { bg: '#3D6B5C', fg: '#F5ECD9' }, // jade
+  fitness:     { bg: '#DB3A34', fg: '#F5ECD9' }, // flame
+  healthcare:  { bg: '#1e1a14', fg: '#E9A246' }, // surface + ember
+  trades:      { bg: '#E9A246', fg: '#15100a' }, // ember
+  ecommerce:   { bg: '#B8D8D0', fg: '#15100a' }, // ice
+};
+---
+
+<PageLayout
+  title="Portfolio"
+  description="Real websites built for real Lynchburg businesses. Restaurants, legal, healthcare, fitness, trades, and e-commerce."
+>
+  <section class="portfolio-hero">
+    <div class="container">
+      <div class="portfolio-hero-inner">
+        <span class="section-label">[ i ] / selected work</span>
+        <h1 class="portfolio-hero-title">Sites that actually <em class="serif-accent">get results.</em></h1>
+        <p class="portfolio-hero-intro">
+          Every project below is built custom, tested on real users, and measured by what matters: leads, bookings, and revenue.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="filter-bar" role="tablist" aria-label="Filter portfolio by industry">
+        {industries.map((ind) => (
+          <button
+            class={`filter-btn ${ind.slug === 'all' ? 'is-active' : ''}`}
+            data-filter={ind.slug}
+            role="tab"
+            aria-selected={ind.slug === 'all' ? 'true' : 'false'}
+          >
+            {ind.label}
+          </button>
+        ))}
+      </div>
+
+      <div class="portfolio-grid" id="portfolio-grid">
+        {case_studies.map((cs, idx) => {
+          const t = thumb_map[cs.industrySlug] || { bg: '#1e1a14', fg: '#E9A246' };
+          return (
+            <article class="case-card" data-industry={cs.industrySlug}>
+              <div class="case-thumb" style={`background: ${t.bg}; color: ${t.fg};`}>
+                <span class="industry-tag">{cs.industry}</span>
+                <span class="case-index">№ {String(idx + 1).padStart(2, '0')}</span>
+                <div class="case-initials">{cs.client.split(' ').slice(0, 2).map((w) => w[0]).join('')}</div>
+              </div>
+              <div class="case-body">
+                <h2 class="case-title">{cs.client}</h2>
+                <p class="case-summary">{cs.summary}</p>
+
+                <div class="case-section">
+                  <h3>Challenge</h3>
+                  <p>{cs.challenge}</p>
+                </div>
+
+                <div class="case-section">
+                  <h3>Solution</h3>
+                  <p>{cs.solution}</p>
+                </div>
+
+                <div class="case-results">
+                  {cs.results.map((r) => (
+                    <div class="result">
+                      <div class="result-val">{r.value}</div>
+                      <div class="result-label">{r.metric}</div>
+                    </div>
+                  ))}
+                </div>
+
+                <div class="case-tech">
+                  {cs.tech.map((tp) => <span class="tech-pill">{tp}</span>)}
+                </div>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+
+      <div class="no-results" hidden>
+        <p style="text-align: center; color: var(--muted); padding: 4rem 0;">No projects in this category yet — more work coming soon!</p>
+      </div>
+    </div>
+  </section>
+
+  <CTASection
+    heading="Want results like these for your business?"
+    subheading="Every site above started with a single discovery call. Book yours free."
+  />
+</PageLayout>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+  const cards = document.querySelectorAll<HTMLElement>('.case-card');
+  const noResults = document.querySelector<HTMLElement>('.no-results');
+
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const filter = btn.dataset.filter;
+      buttons.forEach((b) => {
+        b.classList.toggle('is-active', b === btn);
+        b.setAttribute('aria-selected', b === btn ? 'true' : 'false');
+      });
+
+      let visible = 0;
+      cards.forEach((card) => {
+        const show = filter === 'all' || card.dataset.industry === filter;
+        card.hidden = !show;
+        if (show) visible++;
+      });
+
+      if (noResults) noResults.hidden = visible > 0;
+    });
+  });
+</script>
+
+<style>
+  .portfolio-hero { padding: 8rem 0 3rem; }
+  .portfolio-hero-inner { max-width: 900px; }
+  .portfolio-hero-title {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    margin: 0.75rem 0 1.5rem;
+  }
+  .portfolio-hero-intro {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--muted);
+    max-width: 640px;
+  }
+
+  .filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: flex-start;
+    margin-bottom: 3rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .filter-btn {
+    padding: 0.5rem 1rem;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .filter-btn:hover {
+    border-color: var(--ember);
+    color: var(--text);
+  }
+
+  .filter-btn.is-active {
+    background: var(--ember);
+    color: #15100a;
+    border-color: var(--ember);
+    font-weight: 500;
+  }
+
+  .portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+
+  @media (max-width: 900px) { .portfolio-grid { grid-template-columns: 1fr; } }
+
+  .case-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color 0.3s ease, transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .case-card:hover {
+    border-color: var(--ember);
+    transform: translateY(-2px);
+  }
+
+  .case-thumb {
+    height: 220px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .industry-tag {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: rgba(11, 9, 7, 0.7);
+    backdrop-filter: blur(6px);
+    color: var(--text);
+    padding: 0.35rem 0.75rem;
+    border: 1px solid rgba(245, 236, 217, 0.14);
+    border-radius: var(--radius-pill);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .case-index {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: currentColor;
+    opacity: 0.65;
+  }
+
+  .case-initials {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 5.5rem;
+    font-weight: 400;
+    color: currentColor;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  .case-body {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .case-title {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    line-height: 1.05;
+    margin-bottom: 0.75rem;
+  }
+
+  .case-summary {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.55;
+  }
+
+  .case-section {
+    margin-bottom: 1.25rem;
+  }
+
+  .case-section h3 {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--ember);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+
+  .case-section p {
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--muted);
+  }
+
+  .case-results {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    margin: 1rem 0 1.5rem;
+    padding: 1.25rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  .result-val {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.55rem;
+    font-weight: 400;
+    color: var(--ember);
+    line-height: 1;
+    margin-bottom: 0.25rem;
+  }
+
+  .result-label {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .case-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: auto;
+  }
+
+  .tech-pill {
+    padding: 0.25rem 0.625rem;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+</style>

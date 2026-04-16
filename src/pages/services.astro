@@ -1,0 +1,533 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import CTASection from '../components/CTASection.astro';
+import ProcessSteps from '../components/ProcessSteps.astro';
+import { service_tiers, addons } from '../data/services';
+
+const roman = ['I', 'II', 'III'];
+
+const comparison_features = [
+  { label: 'Pages', values: ['1–3', '5–8', 'Unlimited'] },
+  { label: 'Mobile responsive', values: [true, true, true] },
+  { label: 'SEO setup', values: ['Basic', 'Advanced', 'Advanced + Local'] },
+  { label: 'Contact form', values: [true, true, true] },
+  { label: 'Blog / portfolio', values: [false, true, true] },
+  { label: 'Google Analytics', values: [true, true, true] },
+  { label: 'Speed optimization (90+)', values: [false, true, true] },
+  { label: 'Custom design', values: ['Template', 'Custom', 'Full + Figma'] },
+  { label: 'E-commerce', values: [false, false, true] },
+  { label: 'Email marketing', values: [false, false, true] },
+  { label: 'Revision rounds', values: ['1', '2', '3'] },
+  { label: 'Launch support', values: ['30 days', '60 days', '90 days'] },
+];
+
+const render_cell = (v: string | boolean) => {
+  if (v === true) return '✓';
+  if (v === false) return '—';
+  return v;
+};
+
+const tier_accents = ['var(--ember)', 'var(--flame)', 'var(--jade)'];
+---
+
+<PageLayout
+  title="Services & Pricing"
+  description="Three tiers of custom websites for small businesses. Transparent pricing from $500 to $6,000+. See what's included."
+>
+  <!-- Hero -->
+  <section class="svc-hero">
+    <div class="container">
+      <div class="svc-hero-grid">
+        <div>
+          <span class="section-label">[ i ] / services & pricing</span>
+          <h1 class="svc-hero-title">Clear scope. <em class="serif-accent">Clear price.</em></h1>
+        </div>
+        <p class="svc-hero-intro">
+          No hidden fees. No "actually that costs extra" moments. Pick the tier that fits your business, and know exactly what you're getting before you sign a contract.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Specimen list -->
+  <section class="svc-list">
+    <div class="container">
+      {service_tiers.map((tier, i) => (
+        <article class="svc-item" id={tier.id} style={`--svc-accent: ${tier_accents[i]};`}>
+          <div class="svc-num">{roman[i]}</div>
+
+          <div class="svc-body">
+            <header class="svc-head">
+              <div class="svc-head-left">
+                <div class="svc-kicker">{tier.popular ? 'Most Popular' : i === 0 ? 'Entry' : 'Premier'}</div>
+                <h2 class="svc-name">{tier.name}</h2>
+                <p class="svc-tag">{tier.tagline}</p>
+              </div>
+              <div class="svc-price-wrap">
+                <div class="svc-price">{tier.priceDisplay}</div>
+                <div class="svc-timeline">{tier.timeline}</div>
+              </div>
+            </header>
+
+            <div class="svc-content">
+              <div>
+                <div class="svc-sub-label">Included</div>
+                <ul class="svc-features">
+                  {tier.features.map((f) => (
+                    <li><span class="feat-dash">—</span><span>{f}</span></li>
+                  ))}
+                </ul>
+              </div>
+
+              <div>
+                <div class="svc-sub-label">How it ships</div>
+                <div class="svc-stages">
+                  {tier.deliverables.map((d, j) => (
+                    <div class="svc-stage">
+                      <div class="stage-num">{String(j + 1).padStart(2, '0')}</div>
+                      <div>
+                        <h3 class="stage-heading">{d.heading}</h3>
+                        <p class="stage-body">{d.body}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <a href="/contact" class="btn-primary svc-cta">
+                  Start a {tier.name.split(' ')[0]} Project
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- Comparison matrix -->
+  <section class="svc-matrix">
+    <div class="container">
+      <div class="matrix-head">
+        <span class="section-label">[ ii ] / side by side</span>
+        <h2 class="matrix-title">The <em class="serif-accent">short version.</em></h2>
+      </div>
+
+      <div class="matrix-wrap">
+        <table class="matrix-table">
+          <thead>
+            <tr>
+              <th></th>
+              {service_tiers.map((t, i) => (
+                <th class={t.popular ? 'col-popular' : ''}>
+                  <div class="col-kicker" style={`color: ${tier_accents[i]};`}>{roman[i]}</div>
+                  <div class="col-name">{t.name}</div>
+                  <div class="col-price">{t.priceDisplay}</div>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {comparison_features.map((row) => (
+              <tr>
+                <td class="row-label">{row.label}</td>
+                {row.values.map((v, i) => (
+                  <td class={`val ${v === true ? 'val-yes' : v === false ? 'val-no' : ''} ${i === 1 ? 'col-popular' : ''}`}>
+                    {render_cell(v)}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Addons -->
+  <section class="svc-addons">
+    <div class="container">
+      <div class="addons-head">
+        <span class="section-label">[ iii ] / ongoing</span>
+        <h2 class="addons-title">Keep it <em class="serif-accent">running.</em></h2>
+        <p class="addons-sub">
+          Optional monthly plans for after launch. Pick what fits — cancel anytime, no lock-in.
+        </p>
+      </div>
+      <div class="addons-list">
+        {addons.map((a, i) => (
+          <div class="addon-row">
+            <div class="addon-num">{String(i + 1).padStart(2, '0')}</div>
+            <div class="addon-name-col">
+              <h3 class="addon-name">{a.name}</h3>
+              <p class="addon-desc">{a.description}</p>
+            </div>
+            <div class="addon-price">{a.price}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <ProcessSteps />
+  <CTASection
+    heading="Still not sure which tier?"
+    subheading="Book a free 15-minute call. We'll figure out the right fit together — no commitment, no sales pitch, no pressure."
+    ctaText="Book a Free Call"
+  />
+</PageLayout>
+
+<style>
+  /* Hero */
+  .svc-hero { padding: 8rem 0 4rem; }
+
+  .svc-hero-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 4rem;
+    align-items: end;
+  }
+
+  @media (max-width: 900px) {
+    .svc-hero-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+  }
+
+  .svc-hero-title {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    margin-top: 0.75rem;
+  }
+
+  .svc-hero-intro {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: var(--muted);
+    padding-bottom: 1rem;
+  }
+
+  /* Specimen list */
+  .svc-list {
+    padding: 4rem 0 8rem;
+  }
+
+  .svc-item {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 2rem;
+    padding: 4rem 0;
+    border-top: 1px solid var(--border);
+    transition: padding 0.3s ease;
+  }
+
+  .svc-item:last-child {
+    border-bottom: 1px solid var(--border);
+  }
+
+  @media (max-width: 700px) {
+    .svc-item {
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+      padding: 2.5rem 0;
+    }
+  }
+
+  .svc-num {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 3.5rem;
+    color: var(--svc-accent);
+    line-height: 1;
+  }
+
+  .svc-body {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  .svc-head {
+    display: grid;
+    grid-template-columns: 1.4fr auto;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  @media (max-width: 700px) {
+    .svc-head { grid-template-columns: 1fr; }
+  }
+
+  .svc-kicker {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--svc-accent);
+    margin-bottom: 1rem;
+  }
+
+  .svc-name {
+    font-size: clamp(2rem, 4vw, 3.25rem);
+    line-height: 1;
+    margin-bottom: 0.75rem;
+  }
+
+  .svc-tag {
+    font-size: 1.05rem;
+    line-height: 1.55;
+    max-width: 500px;
+  }
+
+  .svc-price-wrap { text-align: right; }
+
+  @media (max-width: 700px) { .svc-price-wrap { text-align: left; } }
+
+  .svc-price {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    color: var(--svc-accent);
+    line-height: 1;
+    margin-bottom: 0.25rem;
+  }
+
+  .svc-timeline {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+  }
+
+  .svc-content {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 3rem;
+  }
+
+  @media (max-width: 900px) {
+    .svc-content { grid-template-columns: 1fr; gap: 2.5rem; }
+  }
+
+  .svc-sub-label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--muted-2);
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .svc-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .svc-features li {
+    display: flex;
+    gap: 0.75rem;
+    font-size: 0.95rem;
+    color: var(--text);
+  }
+
+  .feat-dash {
+    color: var(--svc-accent);
+    font-family: var(--font-display);
+    flex-shrink: 0;
+  }
+
+  .svc-stages {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .svc-stage {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1.5rem;
+  }
+
+  .stage-num {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--svc-accent);
+    letter-spacing: 0.08em;
+    padding-top: 3px;
+  }
+
+  .stage-heading {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    line-height: 1.1;
+    margin-bottom: 0.35rem;
+  }
+
+  .stage-body {
+    font-size: 0.9rem;
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .svc-cta {
+    background: var(--svc-accent);
+    border-color: var(--svc-accent);
+  }
+
+  /* Matrix */
+  .svc-matrix { padding: 6rem 0; border-top: 1px solid var(--border); }
+
+  .matrix-head { margin-bottom: 3rem; }
+
+  .matrix-title {
+    font-size: clamp(2rem, 4.5vw, 3.5rem);
+    line-height: 1;
+    margin-top: 0.5rem;
+  }
+
+  .matrix-wrap {
+    border: 1px solid var(--border);
+    overflow-x: auto;
+  }
+
+  .matrix-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+  }
+
+  .matrix-table th,
+  .matrix-table td {
+    padding: 1rem 1.5rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--font-body);
+  }
+
+  .matrix-table thead th {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+    vertical-align: top;
+  }
+
+  .col-kicker {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .col-name {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 0.25rem;
+  }
+
+  .col-price {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  .col-popular {
+    background: rgba(219, 58, 52, 0.04);
+  }
+
+  .row-label {
+    font-weight: 500;
+    color: var(--text);
+    width: 30%;
+    font-size: 0.95rem;
+  }
+
+  .val {
+    text-align: center !important;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  .val-yes { color: var(--ember); font-size: 1.1rem; font-weight: 400; }
+  .val-no { color: var(--muted-2); opacity: 0.5; }
+
+  /* Addons */
+  .svc-addons { padding: 8rem 0; border-top: 1px solid var(--border); }
+
+  .addons-head {
+    max-width: 700px;
+    margin-bottom: 4rem;
+  }
+
+  .addons-title {
+    font-size: clamp(2rem, 4.5vw, 3.5rem);
+    line-height: 1;
+    margin: 0.5rem 0 1rem;
+  }
+
+  .addons-sub {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+
+  .addons-list {
+    border-top: 1px solid var(--border);
+  }
+
+  .addon-row {
+    display: grid;
+    grid-template-columns: 60px 1fr auto;
+    gap: 2rem;
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--border);
+    align-items: baseline;
+  }
+
+  @media (max-width: 700px) {
+    .addon-row {
+      grid-template-columns: auto 1fr;
+      gap: 1rem;
+      padding: 1.5rem 0;
+    }
+    .addon-price { grid-column: 1 / -1; }
+  }
+
+  .addon-num {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--ember);
+    letter-spacing: 0.1em;
+  }
+
+  .addon-name {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+  }
+
+  .addon-desc {
+    font-size: 0.92rem;
+    line-height: 1.55;
+    color: var(--muted);
+    margin: 0;
+    max-width: 600px;
+  }
+
+  .addon-price {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.25rem;
+    color: var(--ember);
+  }
+</style>

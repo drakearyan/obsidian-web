@@ -1,0 +1,112 @@
+---
+import { process_steps } from '../data/process';
+---
+
+<section class="process">
+  <div class="container">
+    <div class="process-head">
+      <span class="section-label">[05] / how it works</span>
+      <h2 class="process-title">From call <em class="serif-accent">to live site,</em> in four moves.</h2>
+      <p class="process-intro">
+        No account managers, no endless meetings. A clear path from "we should do this" to "we just did it."
+      </p>
+    </div>
+
+    <ol class="process-list">
+      {process_steps.map((step, i) => (
+        <li class="process-step">
+          <div class="step-head">
+            <span class="step-num">{String(step.num).padStart(2, '0')}</span>
+            <span class="step-line"></span>
+            {i === process_steps.length - 1 && <span class="step-end">END</span>}
+          </div>
+          <h3 class="step-title">{step.title}</h3>
+          <p class="step-desc">{step.description}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .process { padding: 8rem 0; border-top: 1px solid var(--border); }
+
+  .process-head {
+    max-width: 700px;
+    margin-bottom: 5rem;
+  }
+
+  .process-title {
+    font-size: clamp(2.25rem, 5vw, 4rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin: 0.5rem 0 1rem;
+  }
+
+  .process-intro {
+    font-size: 1.05rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .process-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+  }
+
+  @media (max-width: 900px) {
+    .process-list { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 500px) {
+    .process-list { grid-template-columns: 1fr; }
+  }
+
+  .process-step {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .step-head {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .step-num {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--ember);
+    letter-spacing: 0.08em;
+  }
+
+  .step-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .step-end {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--flame);
+    letter-spacing: 0.2em;
+  }
+
+  .step-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
+    line-height: 1;
+    color: var(--text);
+    margin-top: 0.5rem;
+  }
+
+  .step-desc {
+    font-size: 0.95rem;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+</style>

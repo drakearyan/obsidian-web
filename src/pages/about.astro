@@ -1,0 +1,290 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import ProcessSteps from '../components/ProcessSteps.astro';
+import CTASection from '../components/CTASection.astro';
+import { site } from '../data/site';
+
+const values = [
+  {
+    icon: '◆',
+    title: 'Built custom, not from templates',
+    description: 'Every site is hand-coded or built on a purpose-fit CMS. No page builders, no bloat, no drag-and-drop sludge that breaks in six months.',
+  },
+  {
+    icon: '◈',
+    title: 'Performance is a feature',
+    description: 'Slow sites cost you money. We target 95+ Lighthouse scores on every project — not as a bonus, but as the baseline.',
+  },
+  {
+    icon: '◉',
+    title: 'You own everything',
+    description: 'On final payment, you get the full code, design files, and content. No subscription lock-in. Take it anywhere you want.',
+  },
+  {
+    icon: '✦',
+    title: 'Transparent from day one',
+    description: 'Fixed scope. Fixed price. Fixed timeline. No surprise invoices, no scope creep, no "actually that costs extra" moments.',
+  },
+];
+---
+
+<PageLayout
+  title="About"
+  description="Obsidian Web Co. is a solo web design studio in Lynchburg, VA. Built by Drake Ryan for small businesses that want a site that actually works."
+>
+  <section class="about-hero-sec">
+    <div class="container">
+      <div class="about-hero">
+        <div>
+          <span class="section-label">[ i ] / about obsidian</span>
+          <h1 class="about-title">A boutique studio <em class="serif-accent">obsessed with craft.</em></h1>
+          <p class="about-lead">
+            Obsidian Web Co. is built on a simple premise: small businesses in Lynchburg deserve websites that look sharp, load fast, and actually bring in customers — without the agency-sized price tag or the template-farm generic feeling.
+          </p>
+          <p class="about-lead about-lead--secondary">
+            That's why we build every site from scratch, treat every project like it's ours, and measure success by what matters: leads, bookings, and revenue.
+          </p>
+        </div>
+        <aside class="founder-card corner-marked">
+          <span class="founder-kicker">Founder</span>
+          <div class="founder-avatar">DR</div>
+          <h3 class="founder-name">Drake Ryan</h3>
+          <div class="founder-role">Founder & Developer</div>
+          <p class="founder-bio">
+            Liberty University student building Obsidian Web Co. alongside my studies. I started this because I watched too many small businesses get sold expensive, slow, templated websites they couldn't update or control.
+          </p>
+          <p class="founder-bio">
+            Based in Lynchburg. Available by phone, email, and Zoom.
+          </p>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">[ ii ] / what we stand for</span>
+        <h2 class="section-title">Four principles. <em class="serif-accent">Zero exceptions.</em></h2>
+      </div>
+
+      <div class="values-grid">
+        {values.map((v, i) => (
+          <div class="value-card">
+            <div class="value-num">{String(i + 1).padStart(2, '0')}</div>
+            <div class="value-icon">{v.icon}</div>
+            <h3>{v.title}</h3>
+            <p>{v.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <ProcessSteps />
+
+  <section class="why-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">[ iii ] / why work with us</span>
+        <h2 class="section-title">Solo. <em class="serif-accent">Not stretched thin.</em></h2>
+        <p class="section-sub">When you hire Obsidian, you get Drake — not a junior designer, not a project manager, not an account executive. Every email, call, and line of code comes from one person who cares.</p>
+      </div>
+
+      <div class="why-grid">
+        <div class="why-card">
+          <div class="why-num">I</div>
+          <h3>Direct access</h3>
+          <p>No agencies, no middlemen. You talk to the person building your site.</p>
+        </div>
+        <div class="why-card">
+          <div class="why-num">II</div>
+          <h3>Faster decisions</h3>
+          <p>One developer means no internal meetings, no hand-offs, no lost context.</p>
+        </div>
+        <div class="why-card">
+          <div class="why-num">III</div>
+          <h3>Fairer pricing</h3>
+          <p>No office rent, no layers of management. The savings go straight to your budget.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CTASection
+    heading="Sound like a fit?"
+    subheading="Let's hop on a 15-minute call. No commitment, no pressure — just a clear answer on whether we're right for your project."
+  />
+</PageLayout>
+
+<style>
+  .about-hero-sec { padding: 8rem 0 4rem; }
+
+  .about-hero {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  @media (max-width: 900px) {
+    .about-hero { grid-template-columns: 1fr; gap: 2.5rem; }
+  }
+
+  .about-title {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    margin: 0.75rem 0 1.75rem;
+  }
+
+  .about-lead {
+    font-size: 1.1rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .about-lead--secondary {
+    font-size: 1rem;
+    margin-top: 1rem;
+  }
+
+  .founder-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2.5rem 2rem;
+  }
+
+  .founder-kicker {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ember);
+    display: block;
+    margin-bottom: 1.5rem;
+  }
+
+  .founder-avatar {
+    width: 72px;
+    height: 72px;
+    background: var(--ember);
+    color: #15100a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 2rem;
+    font-weight: 400;
+    margin-bottom: 1.25rem;
+    border-radius: var(--radius);
+  }
+
+  .founder-name {
+    font-family: var(--font-display);
+    font-size: 1.65rem;
+    line-height: 1.1;
+    margin-bottom: 0.25rem;
+  }
+
+  .founder-role {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin-bottom: 1.25rem;
+  }
+
+  .founder-bio {
+    font-size: 0.95rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+  }
+
+  .values-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--border);
+    border-left: 1px solid var(--border);
+  }
+
+  @media (max-width: 768px) { .values-grid { grid-template-columns: 1fr; } }
+
+  .value-card {
+    background: transparent;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 2.5rem 2rem;
+    position: relative;
+    transition: background 0.2s ease;
+  }
+
+  .value-card:hover {
+    background: var(--surface);
+  }
+
+  .value-num {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--ember);
+    letter-spacing: 0.15em;
+    margin-bottom: 0.5rem;
+  }
+
+  .value-icon {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    color: var(--ember);
+    margin-bottom: 1rem;
+    line-height: 1;
+  }
+
+  .value-card h3 {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    line-height: 1.2;
+    margin-bottom: 0.5rem;
+  }
+  .value-card p { color: var(--muted); font-size: 0.95rem; line-height: 1.6; margin: 0; }
+
+  .why-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 768px) { .why-grid { grid-template-columns: 1fr; } }
+
+  .why-card {
+    padding: 2.5rem 2rem;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .why-card:last-child { border-right: none; }
+
+  @media (max-width: 768px) { .why-card { border-right: none; } }
+
+  .why-num {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 3rem;
+    font-weight: 400;
+    color: var(--ember);
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+
+  .why-card h3 {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+  .why-card p { color: var(--muted); font-size: 0.95rem; line-height: 1.55; margin: 0; }
+</style>

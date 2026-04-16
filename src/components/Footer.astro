@@ -1,0 +1,134 @@
+---
+import { site } from '../data/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <svg width="36" height="36" viewBox="0 0 80 80" fill="none" aria-hidden="true">
+          <polygon points="40,4 62,24 52,76 28,76 18,24" fill="var(--ember)" opacity="0.9"/>
+          <polygon points="40,4 62,24 40,32 18,24" fill="var(--text)" opacity="0.3"/>
+        </svg>
+        <div class="footer-wordmark">
+          <div class="footer-name">Obsidian</div>
+          <div class="footer-sub">Web Co. · est. {site.founded}</div>
+        </div>
+      </div>
+
+      <p class="footer-desc">
+        A boutique web design studio based in {site.location.city}, {site.location.state}. Built by <em class="serif-accent">one developer obsessed with craft.</em>
+      </p>
+    </div>
+
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="/services">Starter Site</a></li>
+          <li><a href="/services">Professional Site</a></li>
+          <li><a href="/services">Premium / E-Commerce</a></li>
+          <li><a href="/calculator">Pricing Calculator</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Studio</h4>
+        <ul>
+          <li><a href="/about">About</a></li>
+          <li><a href="/portfolio">Portfolio</a></li>
+          <li><a href="/blog">Journal</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+          {site.phone && <li><a href={`tel:${site.phone}`}>{site.phone}</a></li>}
+          <li>{site.location.city}, {site.location.state}</li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="/privacy">Privacy</a></li>
+          <li><a href="/terms">Terms</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© {year} Obsidian Web Co. All rights reserved.</span>
+      <span>— Forged in Lynchburg, VA —</span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer-top {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    padding-bottom: 4rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 3rem;
+  }
+
+  @media (max-width: 768px) {
+    .footer-top { grid-template-columns: 1fr; gap: 2rem; padding-bottom: 2.5rem; }
+  }
+
+  .footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .footer-wordmark {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+  }
+
+  .footer-name {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+
+  .footer-sub {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  .footer-desc {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    line-height: 1.35;
+    color: var(--text);
+    letter-spacing: -0.01em;
+    max-width: 500px;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2.5rem;
+    margin-bottom: 3rem;
+  }
+
+  @media (max-width: 700px) {
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+  }
+</style>

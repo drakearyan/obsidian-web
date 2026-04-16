@@ -1,0 +1,113 @@
+---
+import { testimonials } from '../data/testimonials';
+---
+
+<section class="voices">
+  <div class="container">
+    <div class="voices-head">
+      <span class="section-label">[04] / on the record</span>
+      <h2 class="voices-title">What clients <em class="serif-accent">actually say.</em></h2>
+    </div>
+
+    <div class="voices-grid">
+      {testimonials.map((t, i) => (
+        <figure class="voice">
+          <div class="voice-num">{String(i + 1).padStart(2, '0')}</div>
+          <div class="voice-quote-mark" aria-hidden="true">“</div>
+          <blockquote class="voice-quote">{t.quote}</blockquote>
+          <figcaption class="voice-cite">
+            <div class="cite-role">{t.role}</div>
+            <div class="cite-industry">{t.industry}</div>
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .voices { padding: 8rem 0; }
+
+  .voices-head { margin-bottom: 4rem; }
+
+  .voices-title {
+    font-size: clamp(2.25rem, 5vw, 4rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-top: 0.5rem;
+  }
+
+  .voices-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+
+  @media (max-width: 900px) { .voices-grid { grid-template-columns: 1fr; gap: 1.5rem; } }
+
+  .voice {
+    position: relative;
+    padding: 3rem 2rem 2rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    transition: border-color 0.3s ease, background 0.3s ease;
+  }
+
+  .voice:hover {
+    border-color: var(--ember);
+    background: var(--surface2);
+  }
+
+  .voice-num {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--muted-2);
+    letter-spacing: 0.1em;
+  }
+
+  .voice-quote-mark {
+    font-family: var(--font-display);
+    font-size: 5rem;
+    color: var(--ember);
+    line-height: 0.5;
+    height: 2rem;
+    opacity: 0.7;
+  }
+
+  .voice-quote {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    line-height: 1.4;
+    color: var(--text);
+    flex: 1;
+    letter-spacing: -0.01em;
+  }
+
+  .voice-cite {
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    margin-top: auto;
+  }
+
+  .cite-role {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--text);
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+  }
+
+  .cite-industry {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ember);
+  }
+</style>

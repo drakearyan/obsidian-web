@@ -1,0 +1,185 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+---
+
+<PageLayout
+  title="Privacy Policy"
+  description="How Obsidian Web Co. collects, uses, and protects your information."
+>
+  <article class="legal">
+    <header class="legal-header">
+      <div class="container container--narrow">
+        <span class="section-label">[ legal ] / privacy</span>
+        <h1 class="legal-title">Privacy <em class="serif-accent">Policy.</em></h1>
+        <p class="legal-updated">Last updated: April 16, 2026</p>
+      </div>
+    </header>
+
+    <div class="legal-body">
+      <div class="container container--narrow">
+        <div class="prose">
+          <p>
+            Obsidian Web Co. ("we", "us", "our") respects your privacy. This policy explains what information we collect when you visit <a href="/">obsidianwebco.com</a> or contact us, how we use it, and your rights.
+          </p>
+
+          <p>We collect as little data as possible. We do not sell your information, ever.</p>
+
+          <h2>1. Information We Collect</h2>
+
+          <h3>Information you give us</h3>
+          <p>When you fill out a contact form or email us directly, you may provide:</p>
+          <ul>
+            <li>Name</li>
+            <li>Email address</li>
+            <li>Phone number (optional)</li>
+            <li>Business name (optional)</li>
+            <li>Project details, budget range, and any message content you send</li>
+          </ul>
+
+          <h3>Information collected automatically</h3>
+          <p>When you visit the Site, we or our analytics providers may collect:</p>
+          <ul>
+            <li>Your IP address (anonymized for analytics)</li>
+            <li>Browser type and version</li>
+            <li>Operating system</li>
+            <li>Pages visited, time on page, referring URL</li>
+            <li>Anonymized session recordings (via Microsoft Clarity) — mouse movement, clicks, scrolls; <strong>no keystrokes are recorded</strong></li>
+          </ul>
+
+          <h3>Cookies</h3>
+          <p>The Site uses strictly necessary cookies for basic function, plus Google Analytics 4 and Microsoft Clarity (both with IP anonymization enabled). You can disable cookies via your browser; the Site will still function.</p>
+
+          <h2>2. How We Use Your Information</h2>
+          <p>We use the information we collect to:</p>
+          <ul>
+            <li>Respond to your inquiry, quote, or contact form</li>
+            <li>Send you a proposal or follow-up related to a project you've asked about</li>
+            <li>Improve the design, performance, and content of the Site</li>
+            <li>Fulfill any paid engagement you enter into with us</li>
+            <li>Comply with applicable law</li>
+          </ul>
+
+          <p>We do <strong>not</strong> send marketing emails unless you opt in, and we never share, rent, or sell your information to third parties.</p>
+
+          <h2>3. How We Share Your Information</h2>
+          <p>
+            Contact-form submissions are processed by <strong>Formspree</strong>. Analytics data is processed by <strong>Google Analytics 4</strong> and <strong>Microsoft Clarity</strong>. The Site is hosted by <strong>Vercel</strong>. We share information only as necessary for these providers to perform their services.
+          </p>
+
+          <p>We will disclose information if required by court order, subpoena, or other lawful legal process.</p>
+
+          <h2>4. How Long We Keep Your Information</h2>
+          <ul>
+            <li><strong>Contact form submissions:</strong> up to 24 months, then deleted unless you become a paying client.</li>
+            <li><strong>Client project files:</strong> duration of the engagement plus 7 years for tax and legal compliance.</li>
+            <li><strong>Analytics data:</strong> Google Analytics 14 months; Microsoft Clarity 12 months.</li>
+          </ul>
+
+          <h2>5. Your Rights</h2>
+          <p>Depending on your jurisdiction, you may have the right to:</p>
+          <ul>
+            <li><strong>Access</strong> the personal information we hold</li>
+            <li><strong>Correct</strong> any inaccuracies</li>
+            <li><strong>Delete</strong> your information (subject to retention requirements above)</li>
+            <li><strong>Object</strong> to certain processing activities</li>
+            <li><strong>Port</strong> your data to another provider</li>
+          </ul>
+
+          <p>To exercise any of these rights, email <a href="mailto:drake@obsidianwebco.com">drake@obsidianwebco.com</a>. We respond within 30 days.</p>
+
+          <h3>California residents (CCPA/CPRA)</h3>
+          <p>You have the right to know what categories of personal information we collect and to request deletion. We do not "sell" personal information as defined by CCPA.</p>
+
+          <h3>EEA/UK residents (GDPR)</h3>
+          <p>The legal bases for our processing are (a) your consent (for optional analytics), (b) contract performance (for client work), and (c) our legitimate interests in running and improving the Site.</p>
+
+          <h2>6. Security</h2>
+          <p>
+            We follow industry-standard practices: HTTPS/TLS encryption in transit, restricted access to form submissions (only Drake Ryan), and no storage of sensitive payment or identity data on the Site. No internet transmission is 100% secure, but we take your data seriously.
+          </p>
+
+          <h2>7. Children</h2>
+          <p>The Site is not directed at children under 13, and we do not knowingly collect information from children. If you believe a child has submitted information, contact us and we will delete it.</p>
+
+          <h2>8. International Users</h2>
+          <p>The Site is hosted in the United States. By using it, you consent to the transfer of your information to, and processing in, the U.S.</p>
+
+          <h2>9. Changes to This Policy</h2>
+          <p>We may revise this policy at any time. Any changes take effect when posted here. Material changes will be flagged at the top of this page for at least 30 days.</p>
+
+          <h2>10. Contact</h2>
+          <p>Privacy questions, data requests, or complaints? Email <a href="mailto:drake@obsidianwebco.com">drake@obsidianwebco.com</a> with the subject "Privacy Request."</p>
+
+          <p style="margin-top: 2.5rem; color: var(--muted-2); font-size: 0.9rem;">
+            <strong>Obsidian Web Co.</strong><br>
+            Drake Ryan, Sole Proprietor<br>
+            Lynchburg, Virginia
+          </p>
+        </div>
+      </div>
+    </div>
+  </article>
+</PageLayout>
+
+<style>
+  .container--narrow { max-width: 760px; }
+
+  .legal-header {
+    padding: 7rem 0 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .legal-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    line-height: 1;
+    letter-spacing: -0.035em;
+    margin: 0.75rem 0 1rem;
+  }
+
+  .legal-updated {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+  }
+
+  .legal-body { padding: 4rem 0 6rem; }
+
+  .prose { font-size: 1rem; line-height: 1.75; color: var(--text); }
+
+  .prose p { color: var(--text); margin-bottom: 1.25rem; }
+
+  .prose h2 {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    margin: 2.75rem 0 1rem;
+    line-height: 1.15;
+  }
+
+  .prose h3 {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    margin: 2rem 0 0.75rem;
+    line-height: 1.2;
+  }
+
+  .prose ul, .prose ol {
+    padding-left: 1.5rem;
+    margin-bottom: 1.25rem;
+    color: var(--text);
+  }
+
+  .prose li { margin-bottom: 0.5rem; }
+  .prose li::marker { color: var(--ember); }
+
+  .prose a {
+    color: var(--ember);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .prose a:hover { color: var(--text); }
+  .prose strong { color: var(--text); font-weight: 500; }
+</style>

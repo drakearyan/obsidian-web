@@ -1,0 +1,16 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "obsidian-web",
+      "runtimeExecutable": "/Users/drakeryan/.local/share/fnm/node-versions/v22.22.2/installation/bin/node",
+      "runtimeArgs": [
+        "/Users/drakeryan/Downloads/claude/agency/website/node_modules/astro/bin/astro.mjs",
+        "dev",
+        "--port", "4321",
+        "--root", "/Users/drakeryan/Downloads/claude/agency/website"
+      ],
+      "port": 4321
+    }
+  ]
+}

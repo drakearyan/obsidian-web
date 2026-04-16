@@ -1,0 +1,239 @@
+---
+import { service_tiers } from '../data/services';
+
+const roman = ['I', 'II', 'III'];
+---
+
+<section class="services-specimen">
+  <div class="container">
+    <div class="spec-header">
+      <div>
+        <span class="section-label">[02] / what we build</span>
+        <h2 class="spec-title">Three tiers. <em class="serif-accent">One obsession.</em></h2>
+      </div>
+      <p class="spec-intro">
+        Pick the one that fits where your business is today. Scale up when you're ready. No surprises, no "actually that costs extra" moments — the quote you get is the price you pay.
+      </p>
+    </div>
+
+    <div class="spec-list">
+      {service_tiers.map((tier, i) => (
+        <article class="spec-card" style={`--spec-accent: ${i === 0 ? 'var(--ember)' : i === 1 ? 'var(--flame)' : 'var(--jade)'}`}>
+          <div class="spec-num">{roman[i]}</div>
+          <div class="spec-body">
+            <header class="spec-body-head">
+              <div>
+                <div class="spec-kicker">{tier.popular ? 'Most Popular' : i === 0 ? 'Entry' : 'Premier'}</div>
+                <h3 class="spec-name">{tier.name}</h3>
+                <p class="spec-tagline">{tier.tagline}</p>
+              </div>
+              <div class="spec-price-block">
+                <div class="spec-price">{tier.priceDisplay}</div>
+                <div class="spec-timeline">{tier.timeline}</div>
+              </div>
+            </header>
+
+            <ul class="spec-features">
+              {tier.features.slice(0, 6).map((f) => (
+                <li>
+                  <span class="feat-dash">—</span>
+                  <span>{f}</span>
+                </li>
+              ))}
+            </ul>
+
+            <footer class="spec-footer">
+              <a href={`/services#${tier.id}`} class="arrow-link">
+                Full specification
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                </svg>
+              </a>
+              <a href="/contact" class="spec-cta">Start {tier.name.split(' ')[0]} →</a>
+            </footer>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .services-specimen {
+    padding: 8rem 0;
+  }
+
+  .spec-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    margin-bottom: 5rem;
+    align-items: end;
+  }
+
+  @media (max-width: 900px) {
+    .spec-header { grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 3rem; }
+  }
+
+  .spec-title {
+    font-size: clamp(2.25rem, 5vw, 4rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-top: 0.5rem;
+  }
+
+  .spec-intro {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: var(--muted);
+    padding-bottom: 0.5rem;
+  }
+
+  /* The specimen list — like a type foundry menu */
+  .spec-list {
+    border-top: 1px solid var(--border);
+  }
+
+  .spec-card {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 3rem;
+    padding: 3rem 0;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    transition: background 0.3s ease;
+  }
+
+  .spec-card:hover {
+    background: linear-gradient(90deg, transparent 0%, rgba(233, 162, 70, 0.03) 50%, transparent 100%);
+  }
+
+  @media (max-width: 700px) {
+    .spec-card { grid-template-columns: 1fr; gap: 1rem; padding: 2.5rem 0; }
+  }
+
+  .spec-num {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 3rem;
+    color: var(--spec-accent);
+    line-height: 1;
+    padding-top: 0.5rem;
+  }
+
+  @media (max-width: 700px) {
+    .spec-num { font-size: 2rem; }
+  }
+
+  .spec-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .spec-body-head {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  @media (max-width: 640px) {
+    .spec-body-head { grid-template-columns: 1fr; }
+  }
+
+  .spec-kicker {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--spec-accent);
+    margin-bottom: 0.75rem;
+  }
+
+  .spec-name {
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+    line-height: 1;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+  }
+
+  .spec-tagline {
+    font-size: 1rem;
+    color: var(--muted);
+    line-height: 1.55;
+    max-width: 500px;
+  }
+
+  .spec-price-block {
+    text-align: right;
+  }
+
+  @media (max-width: 640px) {
+    .spec-price-block { text-align: left; }
+  }
+
+  .spec-price {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    color: var(--spec-accent);
+    line-height: 1;
+    margin-bottom: 0.25rem;
+  }
+
+  .spec-timeline {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+
+  .spec-features {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem 2.5rem;
+  }
+
+  @media (max-width: 700px) {
+    .spec-features { grid-template-columns: 1fr; }
+  }
+
+  .spec-features li {
+    display: flex;
+    gap: 0.75rem;
+    font-size: 0.95rem;
+    color: var(--text);
+  }
+
+  .feat-dash {
+    color: var(--spec-accent);
+    font-family: var(--font-display);
+  }
+
+  .spec-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .spec-cta {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--spec-accent);
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  .spec-cta:hover {
+    color: var(--text);
+    text-decoration: none;
+  }
+</style>

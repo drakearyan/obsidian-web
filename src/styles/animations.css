@@ -1,0 +1,138 @@
+/* ═══════════════════════════════════════════════════════════════
+   ANIMATION SYSTEM — body-class gated (port of StreamTech v8.2)
+   Remove a body class to instantly disable that animation.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Keyframes */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 4px 20px rgba(34, 211, 238, 0.25); }
+  50% { box-shadow: 0 8px 40px rgba(34, 211, 238, 0.55), 0 0 60px rgba(167, 139, 250, 0.35); }
+}
+
+@keyframes diamond-pulse {
+  0%, 100% { transform: rotate(45deg) scale(1); filter: drop-shadow(0 0 0 transparent); }
+  50% { transform: rotate(45deg) scale(1.3); filter: drop-shadow(0 0 12px rgba(34, 211, 238, 0.8)); }
+}
+
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes ripple {
+  to { transform: scale(4); opacity: 0; }
+}
+
+@property --border-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes border-rotate {
+  to { --border-angle: 360deg; }
+}
+
+/* ─── 1. STAGGER ENTRANCE (anim-stagger) ─────────────────────── */
+body.anim-stagger .reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+body.anim-stagger .reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+body.anim-stagger .reveal.delay-1 { transition-delay: 0.08s; }
+body.anim-stagger .reveal.delay-2 { transition-delay: 0.16s; }
+body.anim-stagger .reveal.delay-3 { transition-delay: 0.24s; }
+body.anim-stagger .reveal.delay-4 { transition-delay: 0.32s; }
+body.anim-stagger .reveal.delay-5 { transition-delay: 0.4s; }
+body.anim-stagger .reveal.delay-6 { transition-delay: 0.48s; }
+
+/* ─── 2. SCROLL PROGRESS BAR (anim-progress) ─────────────────── */
+body.anim-progress .scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  z-index: 200;
+  transition: width 0.1s linear;
+}
+
+/* ─── 3. BUTTON RIPPLE (anim-ripple) ─────────────────────────── */
+body.anim-ripple .btn-primary {
+  position: relative;
+  overflow: hidden;
+}
+
+body.anim-ripple .ripple-effect {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  transform: scale(0);
+  animation: ripple 0.6s ease-out;
+  pointer-events: none;
+}
+
+/* ─── 4. CTA GLOW PULSE (anim-glow) ──────────────────────────── */
+body.anim-glow .btn-primary.btn-glow {
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+
+/* ─── 5. DIAMOND DIVIDER PULSE (anim-diamond-pulse) ──────────── */
+body.anim-diamond-pulse .diamond-divider span {
+  animation: diamond-pulse 3s ease-in-out infinite;
+}
+
+/* ─── 6. BORDER ROTATE (anim-border-rotate) ──────────────────── */
+body.anim-border-rotate .feature-card {
+  background:
+    linear-gradient(var(--surface), var(--surface)) padding-box,
+    conic-gradient(from var(--border-angle), var(--accent), var(--accent2), var(--accent3), var(--accent)) border-box;
+  border: 2px solid transparent;
+  animation: border-rotate 8s linear infinite;
+}
+
+/* ─── 7. SCROLL GRADIENT (scroll-fx) ─────────────────────────── */
+body.scroll-fx .orb {
+  filter: blur(100px) hue-rotate(var(--scroll-hue));
+}
+
+body.scroll-fx .orb-1 {
+  transform: translate3d(calc(var(--scroll-prog) * -50px), calc(var(--scroll-prog) * 40px), 0);
+}
+
+body.scroll-fx .orb-2 {
+  transform: translate3d(calc(var(--scroll-prog) * 60px), calc(var(--scroll-prog) * -30px), 0);
+}
+
+body.scroll-fx .gradient-text,
+body.scroll-fx .section-label {
+  filter: hue-rotate(var(--scroll-hue));
+  transition: filter 0.3s ease;
+}
+
+/* ─── Accordion animation ────────────────────────────────────── */
+.accordion-panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.accordion-chevron {
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.accordion-item.is-open .accordion-chevron {
+  transform: rotate(180deg);
+}

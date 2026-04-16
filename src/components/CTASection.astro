@@ -1,0 +1,78 @@
+---
+interface Props {
+  heading?: string;
+  subheading?: string;
+  ctaText?: string;
+  ctaHref?: string;
+}
+
+const {
+  heading = "Let's build something that actually works.",
+  subheading = "A free 15-minute call. No commitment. No pitch. Just a direct answer on whether we're right for your project — and if not, where to look next.",
+  ctaText = 'Start a Project',
+  ctaHref = '/contact',
+} = Astro.props;
+---
+
+<section class="cta">
+  <div class="container">
+    <div class="cta-inner corner-marked">
+      <span class="section-label section-label--no-rule" style="margin-bottom: 2rem;">[07] / next step</span>
+      <h2 class="cta-head"><em class="serif-accent">{heading.split(' ').slice(0, 1).join(' ')}</em> {heading.split(' ').slice(1).join(' ')}</h2>
+      <p class="cta-sub">{subheading}</p>
+      <div class="cta-row">
+        <a href={ctaHref} class="btn-primary">
+          {ctaText}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </a>
+        <a href="mailto:drake@obsidianwebco.com" class="arrow-link">drake@obsidianwebco.com</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta {
+    padding: 6rem 0 8rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .cta-inner {
+    padding: 5rem 3rem;
+    background: var(--surface);
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 640px) {
+    .cta-inner { padding: 3rem 1.5rem; }
+  }
+
+  .cta-head {
+    font-size: clamp(2rem, 5vw, 3.75rem);
+    line-height: 1.0;
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.03em;
+  }
+
+  .cta-sub {
+    font-size: 1rem;
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 600px;
+    margin: 0 auto 2.5rem;
+  }
+
+  .cta-row {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .section-label--no-rule::before { display: none; }
+</style>

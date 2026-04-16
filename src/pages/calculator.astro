@@ -1,0 +1,451 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+
+// Pricing model (all editable in one place)
+const base_tiers = [
+  { id: 'basic', label: 'Template-based', basePrice: 500, pageRate: 75 },
+  { id: 'custom', label: 'Custom design', basePrice: 1500, pageRate: 200 },
+  { id: 'premium', label: 'Full custom + animations', basePrice: 3000, pageRate: 400 },
+];
+
+const features = [
+  { id: 'blog', label: 'Blog / content section', price: 300 },
+  { id: 'ecommerce', label: 'E-commerce (product catalog)', price: 1500 },
+  { id: 'booking', label: 'Booking / appointments', price: 400 },
+  { id: 'seo', label: 'Advanced SEO setup', price: 250 },
+  { id: 'analytics', label: 'Google Analytics + Search Console', price: 100 },
+  { id: 'social', label: 'Social media integration', price: 100 },
+  { id: 'animations', label: 'Custom animations', price: 350 },
+  { id: 'cms', label: 'Content management system', price: 500 },
+  { id: 'email', label: 'Email marketing integration', price: 200 },
+];
+
+const addons = [
+  { id: 'logo', label: 'Logo design', price: 300 },
+  { id: 'brand', label: 'Full brand kit', price: 800 },
+  { id: 'copywriting', label: 'Copywriting', price: 500 },
+  { id: 'hosting', label: 'Hosting setup', price: 150 },
+  { id: 'training', label: 'Training call + documentation', price: 150 },
+];
+---
+
+<PageLayout
+  title="Pricing Calculator"
+  description="Estimate your project cost instantly. Pick your pages, features, and add-ons to see a custom quote range."
+>
+  <section style="padding: 5rem 0 2rem;">
+    <div class="container">
+      <div style="text-align: center; max-width: 800px; margin: 0 auto 3rem;">
+        <div class="section-label">Pricing Calculator</div>
+        <h1 style="margin: 1rem 0 1.5rem;">Get an instant <span class="gradient-text">ballpark quote.</span></h1>
+        <p style="font-size: 1.15rem; color: var(--muted);">
+          Pick your options below. The price updates in real time. For a firm quote, fill out the contact form — we respond within 24 hours.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding: 0 0 4rem;">
+    <div class="container">
+      <div class="calc-layout">
+        <div class="calc-form" id="calc-form">
+          <!-- Section 1: Base tier -->
+          <div class="calc-section">
+            <h2 class="calc-heading">1. Design approach</h2>
+            <div class="radio-group">
+              {base_tiers.map((t, i) => (
+                <label class="radio-card">
+                  <input type="radio" name="tier" value={t.id} data-base={t.basePrice} data-rate={t.pageRate} checked={i === 1} />
+                  <div class="radio-card-inner">
+                    <div class="radio-title">{t.label}</div>
+                    <div class="radio-desc">Base: ${t.basePrice.toLocaleString()} + ${t.pageRate}/page</div>
+                  </div>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          <!-- Section 2: Pages -->
+          <div class="calc-section">
+            <h2 class="calc-heading">2. Number of pages</h2>
+            <div class="slider-row">
+              <input type="range" id="pages" min="1" max="20" value="5" />
+              <div class="slider-val" id="pages-val">5 pages</div>
+            </div>
+          </div>
+
+          <!-- Section 3: Features -->
+          <div class="calc-section">
+            <h2 class="calc-heading">3. Features</h2>
+            <div class="check-grid">
+              {features.map((f) => (
+                <label class="check-card">
+                  <input type="checkbox" name="features" value={f.id} data-price={f.price} />
+                  <div class="check-card-inner">
+                    <div class="check-label">{f.label}</div>
+                    <div class="check-price">+${f.price.toLocaleString()}</div>
+                  </div>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          <!-- Section 4: Add-ons -->
+          <div class="calc-section">
+            <h2 class="calc-heading">4. Add-ons</h2>
+            <div class="check-grid">
+              {addons.map((a) => (
+                <label class="check-card">
+                  <input type="checkbox" name="addons" value={a.id} data-price={a.price} />
+                  <div class="check-card-inner">
+                    <div class="check-label">{a.label}</div>
+                    <div class="check-price">+${a.price.toLocaleString()}</div>
+                  </div>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          <!-- Section 5: Timeline -->
+          <div class="calc-section">
+            <h2 class="calc-heading">5. Timeline</h2>
+            <div class="radio-group">
+              <label class="radio-card">
+                <input type="radio" name="timeline" value="standard" data-mult="1" checked />
+                <div class="radio-card-inner">
+                  <div class="radio-title">Standard</div>
+                  <div class="radio-desc">2–5 weeks (depending on scope)</div>
+                </div>
+              </label>
+              <label class="radio-card">
+                <input type="radio" name="timeline" value="rush" data-mult="1.3" />
+                <div class="radio-card-inner">
+                  <div class="radio-title">Rush (+30%)</div>
+                  <div class="radio-desc">Cut timeline in half</div>
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <aside class="calc-result" id="calc-result">
+          <div class="result-sticky">
+            <div class="result-label">Your estimate</div>
+            <div class="result-price">
+              <span id="price-min">$1,500</span>
+              <span class="price-dash">–</span>
+              <span id="price-max">$2,500</span>
+            </div>
+            <div class="result-disclaimer">Ballpark range based on your selections. Final quote provided after a discovery call.</div>
+
+            <div class="result-breakdown" id="breakdown">
+              <!-- Populated by JS -->
+            </div>
+
+            <a href="/contact" class="btn-primary btn-glow result-cta" id="result-cta">
+              Get a Firm Quote
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </a>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+</PageLayout>
+
+<script>
+  const form = document.getElementById('calc-form') as HTMLElement | null;
+  const priceMinEl = document.getElementById('price-min') as HTMLElement | null;
+  const priceMaxEl = document.getElementById('price-max') as HTMLElement | null;
+  const breakdown = document.getElementById('breakdown') as HTMLElement | null;
+  const pagesSlider = document.getElementById('pages') as HTMLInputElement | null;
+  const pagesVal = document.getElementById('pages-val') as HTMLElement | null;
+  const resultCta = document.getElementById('result-cta') as HTMLAnchorElement | null;
+
+  if (!form || !priceMinEl || !priceMaxEl || !breakdown || !pagesSlider || !pagesVal || !resultCta) {
+    // Exit silently if structure changed
+  } else {
+    const format = (n: number) => '$' + Math.round(n).toLocaleString();
+
+    const calc = () => {
+      const tierInput = form.querySelector<HTMLInputElement>('input[name="tier"]:checked');
+      const timelineInput = form.querySelector<HTMLInputElement>('input[name="timeline"]:checked');
+      if (!tierInput || !timelineInput) return;
+
+      const base = Number(tierInput.dataset.base);
+      const rate = Number(tierInput.dataset.rate);
+      const mult = Number(timelineInput.dataset.mult);
+      const pages = Number(pagesSlider.value);
+
+      let features_total = 0;
+      const feature_items: string[] = [];
+      form.querySelectorAll<HTMLInputElement>('input[name="features"]:checked').forEach((el) => {
+        features_total += Number(el.dataset.price);
+        const labelEl = el.parentElement?.querySelector('.check-label');
+        if (labelEl) feature_items.push(labelEl.textContent || '');
+      });
+
+      let addons_total = 0;
+      const addon_items: string[] = [];
+      form.querySelectorAll<HTMLInputElement>('input[name="addons"]:checked').forEach((el) => {
+        addons_total += Number(el.dataset.price);
+        const labelEl = el.parentElement?.querySelector('.check-label');
+        if (labelEl) addon_items.push(labelEl.textContent || '');
+      });
+
+      const subtotal = base + pages * rate + features_total + addons_total;
+      const total = subtotal * mult;
+      const min = total * 0.9;
+      const max = total * 1.15;
+
+      priceMinEl.textContent = format(min);
+      priceMaxEl.textContent = format(max);
+      pagesVal.textContent = pages + (pages === 1 ? ' page' : ' pages');
+
+      // Breakdown
+      let html = `
+        <div class="breakdown-row"><span>${tierInput.parentElement?.querySelector('.radio-title')?.textContent}</span><span>${format(base)}</span></div>
+        <div class="breakdown-row"><span>${pages} page${pages === 1 ? '' : 's'} × ${format(rate)}</span><span>${format(pages * rate)}</span></div>
+      `;
+      if (features_total > 0) {
+        html += `<div class="breakdown-row"><span>${feature_items.length} feature${feature_items.length === 1 ? '' : 's'}</span><span>${format(features_total)}</span></div>`;
+      }
+      if (addons_total > 0) {
+        html += `<div class="breakdown-row"><span>${addon_items.length} add-on${addon_items.length === 1 ? '' : 's'}</span><span>${format(addons_total)}</span></div>`;
+      }
+      if (mult > 1) {
+        html += `<div class="breakdown-row"><span>Rush fee (+30%)</span><span>${format(subtotal * (mult - 1))}</span></div>`;
+      }
+      breakdown.innerHTML = html;
+
+      // Encode estimate into CTA URL as query params
+      const params = new URLSearchParams({
+        est_min: Math.round(min).toString(),
+        est_max: Math.round(max).toString(),
+        tier: tierInput.value,
+        pages: pages.toString(),
+      });
+      resultCta.href = `/contact?${params.toString()}`;
+    };
+
+    // Listen to all inputs
+    form.querySelectorAll('input').forEach((el) => {
+      el.addEventListener('change', calc);
+      el.addEventListener('input', calc);
+    });
+
+    calc();
+  }
+</script>
+
+<style>
+  .calc-layout {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 2.5rem;
+    align-items: start;
+  }
+
+  @media (max-width: 900px) {
+    .calc-layout { grid-template-columns: 1fr; }
+  }
+
+  .calc-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .calc-heading {
+    font-size: 1.1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .radio-group,
+  .check-grid {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .check-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 640px) { .check-grid { grid-template-columns: 1fr; } }
+
+  .radio-card,
+  .check-card {
+    cursor: pointer;
+    display: block;
+  }
+
+  .radio-card input,
+  .check-card input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .radio-card-inner,
+  .check-card-inner {
+    padding: 1rem 1.25rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    transition: all 0.2s ease;
+  }
+
+  .radio-card:hover .radio-card-inner,
+  .check-card:hover .check-card-inner {
+    border-color: var(--accent);
+  }
+
+  .radio-card input:checked + .radio-card-inner,
+  .check-card input:checked + .check-card-inner {
+    border-color: var(--accent);
+    background: rgba(34, 211, 238, 0.06);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+
+  .radio-card input:focus-visible + .radio-card-inner,
+  .check-card input:focus-visible + .check-card-inner {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .radio-title,
+  .check-label {
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 0.25rem;
+  }
+
+  .radio-desc,
+  .check-price {
+    color: var(--muted);
+    font-size: 0.875rem;
+  }
+
+  .check-price {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .slider-row {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  input[type="range"] {
+    flex: 1;
+    height: 6px;
+    background: var(--bg);
+    border-radius: 999px;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+  }
+
+  .slider-val {
+    min-width: 100px;
+    text-align: right;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  /* Result sidebar */
+  .result-sticky {
+    position: sticky;
+    top: calc(var(--nav-height) + 1rem);
+    background: var(--surface);
+    border: 2px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 2rem;
+    box-shadow: 0 20px 60px rgba(34, 211, 238, 0.15);
+  }
+
+  .result-label {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+
+  .result-price {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+  }
+
+  .price-dash {
+    color: var(--muted);
+    margin: 0 0.5rem;
+    -webkit-text-fill-color: var(--muted);
+  }
+
+  .result-disclaimer {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+  }
+
+  .result-breakdown {
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .breakdown-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+
+  .breakdown-row span:last-child {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .result-cta {
+    width: 100%;
+    justify-content: center;
+  }
+</style>

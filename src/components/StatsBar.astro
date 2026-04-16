@@ -1,0 +1,82 @@
+---
+const items = [
+  { k: 'performance', v: '95+', note: 'lighthouse / every site' },
+  { k: 'response', v: '<24h', note: 'first reply / every inquiry' },
+  { k: 'approach', v: '100%', note: 'custom built / no templates' },
+  { k: 'typical', v: '2–5w', note: 'idea to launch / flexible' },
+];
+---
+
+<section class="numbers">
+  <div class="container">
+    <div class="numbers-grid">
+      {items.map((item) => (
+        <div class="num-row">
+          <div class="num-key">{item.k}</div>
+          <div class="num-val">{item.v}</div>
+          <div class="num-note">{item.note}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .numbers {
+    padding: 3rem 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .numbers-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2.5rem;
+  }
+
+  @media (max-width: 900px) {
+    .numbers-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 500px) {
+    .numbers-grid { grid-template-columns: 1fr; }
+  }
+
+  .num-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+    border-left: 1px solid var(--border);
+    padding-left: 1.5rem;
+  }
+
+  @media (max-width: 500px) {
+    .num-row { border-left: none; padding-left: 0; border-top: 1px solid var(--border); padding-top: 1rem; }
+    .num-row:first-child { border-top: none; }
+  }
+
+  .num-key {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--muted-2);
+  }
+
+  .num-val {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 5vw, 4.5rem);
+    font-weight: 400;
+    line-height: 0.9;
+    color: var(--text);
+    letter-spacing: -0.04em;
+  }
+
+  .num-note {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--ember);
+  }
+</style>
