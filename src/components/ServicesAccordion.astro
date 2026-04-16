@@ -18,7 +18,7 @@ const roman = ['I', 'II', 'III'];
 
     <div class="spec-list">
       {service_tiers.map((tier, i) => (
-        <article class="spec-card" style={`--spec-accent: ${i === 0 ? 'var(--ember)' : i === 1 ? 'var(--flame)' : 'var(--jade)'}`}>
+        <article class="spec-card" style={`--spec-accent: ${i === 0 ? 'var(--ember)' : i === 1 ? 'var(--flame)' : 'var(--ember-deep)'}`}>
           <div class="spec-num">{roman[i]}</div>
           <div class="spec-body">
             <header class="spec-body-head">
@@ -43,11 +43,8 @@ const roman = ['I', 'II', 'III'];
             </ul>
 
             <footer class="spec-footer">
-              <a href={`/services#${tier.id}`} class="arrow-link">
-                Full specification
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                  <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-                </svg>
+              <a href={`/services#${tier.id}`} class="spec-secondary">
+                Full specification →
               </a>
               <a href="/contact" class="spec-cta">Start {tier.name.split(' ')[0]} →</a>
             </footer>
@@ -222,18 +219,33 @@ const roman = ['I', 'II', 'III'];
     flex-wrap: wrap;
   }
 
-  .spec-cta {
+  .spec-cta,
+  .spec-secondary {
     font-family: var(--font-mono);
     font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 0.12em;
-    color: var(--spec-accent);
     font-weight: 500;
-    transition: all 0.2s ease;
+    transition: color 0.2s ease, transform 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    border: none;
+    padding: 0;
   }
 
-  .spec-cta:hover {
+  .spec-cta {
+    color: var(--spec-accent);
+  }
+
+  .spec-secondary {
+    color: var(--muted);
+  }
+
+  .spec-cta:hover,
+  .spec-secondary:hover {
     color: var(--text);
     text-decoration: none;
+    transform: translateX(2px);
   }
 </style>

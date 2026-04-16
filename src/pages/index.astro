@@ -1,5 +1,6 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
+import WorldScrollSection from '../components/WorldScrollSection.astro';
 import Hero from '../components/Hero.astro';
 import StatsBar from '../components/StatsBar.astro';
 import ServicesAccordion from '../components/ServicesAccordion.astro';
@@ -27,6 +28,7 @@ const faqSchema = {
   description={site.description}
   jsonLd={[faqSchema]}
 >
+  <WorldScrollSection />
   <Hero
     title="Websites built"
     titleAccent="to outwork you."
