@@ -126,11 +126,11 @@ body.scroll-fx .section-label {
 .accordion-panel {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: max-height var(--accordion-duration) var(--accordion-ease);
 }
 
 .accordion-chevron {
-  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform var(--accordion-duration) var(--accordion-ease);
 }
 
 .accordion-item.is-open .accordion-chevron {

@@ -40,6 +40,28 @@
   --nav-height: 72px;
   --container: 1240px;
 
+  /* Section rhythm — unify vertical padding across components */
+  --section-padding: 8rem;
+  --section-padding-compact: 6rem;
+
+  /* Motion — single source of truth for accordions */
+  --accordion-duration: 0.6s;
+  --accordion-ease: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Text on colored backgrounds — replaces hardcoded #15100a / #0a0705 */
+  --text-on-ember: #0a0705;     /* near-black for amber fills */
+  --text-on-cream: #15100a;     /* deepest near-black for warm cream */
+
+  /* Form status colors — replaces ad-hoc hex in contact form */
+  --color-success: #9dd6c5;     /* jade-leaning mint */
+  --color-error:   #f0a8a3;     /* flame-leaning coral */
+  --color-warning: #f1c288;     /* ember-leaning wheat */
+
+  /* Responsive breakpoints (reference values — CSS doesn't use vars
+     in @media queries yet; these are for consistency reminders) */
+  --bp-mobile: 640px;
+  --bp-tablet: 900px;
+
   /* Scroll effects */
   --scroll-prog: 0;
   --scroll-hue: 0deg;
@@ -106,9 +128,6 @@ body::after {
   z-index: 0;
   opacity: 0.5;
 }
-
-/* Legacy orb system kept but zeroed out — replaced by background treatment above */
-.orbs { display: none; }
 
 /* Page content above grain/grid */
 main, nav, footer, section {
@@ -289,7 +308,7 @@ a:hover {
   gap: 0.625rem;
   padding: 0.95rem 1.75rem;
   background: var(--ember);
-  color: #15100a;
+  color: var(--text-on-cream);
   font-family: var(--font-body);
   font-weight: 500;
   font-size: 0.95rem;
@@ -305,7 +324,7 @@ a:hover {
 
 .btn-primary:hover {
   background: var(--text);
-  color: #15100a;
+  color: var(--text-on-cream);
   border-color: var(--text);
   text-decoration: none;
   transform: translateY(-1px);
@@ -455,7 +474,7 @@ a:hover {
   padding: 0.6rem 1.25rem !important;
   font-size: 0.9rem !important;
   font-weight: 600 !important;
-  color: #0a0705 !important;  /* deeper black for stronger contrast on amber */
+  color: var(--text-on-ember) !important;  /* deeper black for stronger contrast on amber */
   letter-spacing: 0.01em !important;
 }
 
@@ -494,7 +513,7 @@ a:hover {
   top: -40px;
   left: 0;
   background: var(--ember);
-  color: #0a0705;
+  color: var(--text-on-ember);
   padding: 0.5rem 1rem;
   z-index: 200;
   font-family: var(--font-mono);
@@ -633,7 +652,7 @@ section {
 /* Selection */
 ::selection {
   background: var(--ember);
-  color: #0a0705;
+  color: var(--text-on-ember);
 }
 
 /* Reduced motion */

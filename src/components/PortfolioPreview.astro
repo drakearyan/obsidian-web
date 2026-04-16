@@ -1,15 +1,9 @@
 ---
 import { case_studies } from '../data/portfolio';
+import { INDUSTRY_COLORS, INDUSTRY_COLORS_DEFAULT } from '../data/industry-colors';
 const featured = case_studies.filter((c) => c.featured).slice(0, 3);
 
-const palettes: Record<string, { bg: string; fg: string; name: string }> = {
-  restaurant: { bg: '#D4481E', fg: '#F5ECD9', name: 'cinnabar' },
-  legal: { bg: '#1E3A52', fg: '#E8DCC4', name: 'ink' },
-  fitness: { bg: '#3D6B5C', fg: '#F5ECD9', name: 'moss' },
-  healthcare: { bg: '#6B4E7A', fg: '#F5ECD9', name: 'iris' },
-  trades: { bg: '#8B4513', fg: '#F5ECD9', name: 'copper' },
-  ecommerce: { bg: '#2C3E50', fg: '#E9A246', name: 'slate' },
-};
+const palettes = INDUSTRY_COLORS;
 ---
 
 <section class="work-index">
@@ -21,7 +15,7 @@ const palettes: Record<string, { bg: string; fg: string; name: string }> = {
 
     <div class="work-list">
       {featured.map((cs, i) => {
-        const p = palettes[cs.industrySlug] || { bg: '#1a1a1a', fg: '#fff', name: 'void' };
+        const p = palettes[cs.industrySlug] || INDUSTRY_COLORS_DEFAULT;
         return (
           <a href="/portfolio" class="work-item">
             <div class="work-num">{String(i + 1).padStart(2, '0')}</div>

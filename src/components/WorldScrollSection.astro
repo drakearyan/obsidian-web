@@ -136,14 +136,13 @@
                    L 402 400 Z" />
         </g>
 
-        <!-- LYNCHBURG PIN: on eastern edge of Virginia -->
+        <!-- LYNCHBURG PIN: on eastern edge of Virginia.
+             Strokes/fills reference var(--ember) via CSS (.globe-pin rule below)
+             so a brand-color shift in global.css propagates here automatically. -->
         <g class="globe-pin">
-          <!-- Ping ring -->
-          <circle class="pin-ping" cx="436" cy="410" r="6" fill="none" stroke="#E9A246" stroke-width="1" />
-          <!-- Soft halo -->
-          <circle class="pin-halo" cx="436" cy="410" r="4" fill="#E9A246" opacity="0.28" />
-          <!-- Center dot -->
-          <circle class="pin-dot" cx="436" cy="410" r="2.4" fill="#E9A246" />
+          <circle class="pin-ping" cx="436" cy="410" r="6" fill="none" stroke-width="1" />
+          <circle class="pin-halo" cx="436" cy="410" r="4" opacity="0.28" />
+          <circle class="pin-dot"  cx="436" cy="410" r="2.4" />
         </g>
       </svg>
     </div>
@@ -391,8 +390,11 @@
   [data-world-scroll][data-stage="2"] .globe-va { opacity: 0.9; }
   [data-world-scroll][data-stage="3"] .globe-va { opacity: 1; }
 
-  /* Lynchburg pin */
+  /* Lynchburg pin — centralize fill/stroke so SVG stays brand-agnostic */
   .globe-pin { opacity: 0; transition: opacity 0.5s ease; }
+  .globe-pin .pin-ping { stroke: var(--ember); }
+  .globe-pin .pin-halo { fill: var(--ember); }
+  .globe-pin .pin-dot  { fill: var(--ember); }
   [data-world-scroll][data-stage="3"] .globe-pin { opacity: 1; }
 
   .pin-ping {
