@@ -13,10 +13,13 @@
 
 <section class="world-scroll" data-world-scroll aria-label="Intro scroll animation: globe zooms into Lynchburg, Virginia">
   <div class="world-pin">
-    <!-- Top-left meta, parallels existing Hero style -->
+    <!-- Top-left meta, parallels existing Hero style.
+         On narrow viewports the long descriptor is hidden (see CSS
+         @media below) so only "[00]" shows, preventing label collision. -->
     <div class="world-meta world-meta--tl">
       <span class="world-label">[00]</span>
-      <span class="world-meta-text">FROM LYNCHBURG TO EVERYWHERE</span>
+      <span class="world-meta-text world-meta-text--full">FROM LYNCHBURG TO EVERYWHERE</span>
+      <span class="world-meta-text world-meta-text--short">LYNCHBURG → WORLD</span>
     </div>
 
     <!-- Top-right meta: scroll progress indicator -->
@@ -303,6 +306,8 @@
     top: calc(var(--nav-height) + 1.25rem);
     right: 2rem;
   }
+  /* Default: show the full descriptor, hide the short one */
+  .world-meta-text--short { display: none; }
   .world-label {
     color: var(--ember);
     font-weight: 500;
@@ -518,9 +523,17 @@
   @media (max-width: 768px) {
     .world-scroll { height: 320vh; }
     .world-globe svg { width: 88vmin; }
-    .world-meta--tl { top: calc(var(--nav-height) + 0.75rem); left: 1rem; }
-    .world-meta--tr { top: calc(var(--nav-height) + 0.75rem); right: 1rem; }
-    .world-progress { width: 56px; }
+    .world-meta--tl {
+      top: calc(var(--nav-height) + 0.75rem);
+      left: 1rem;
+      font-size: 0.68rem;
+    }
+    /* Hide the right-side SCROLL progress on mobile — touch scroll is
+       intuitive and the indicator caused a hard label collision at <640px. */
+    .world-meta--tr { display: none; }
+    /* Swap long descriptor for short one to prevent horizontal overflow */
+    .world-meta-text--full { display: none; }
+    .world-meta-text--short { display: inline-flex; }
     .world-text { padding: 0 1.25rem; }
   }
 
