@@ -184,32 +184,61 @@
 </section>
 
 <script>
-  // Scroll-driven progress. Runs once per frame via requestAnimationFrame.
+  // Scroll-driven progress. Minimizes per-frame work:
+  //   - Cache sectionTop + maxScroll on resize, not every frame
+  //   - Use window.scrollY (cheap) instead of getBoundingClientRect (triggers layout)
+  //   - Only write to DOM when values change
+  //   - rAF throttle: one update per paint, no more
   (function initWorldScroll() {
     const section = document.querySelector<HTMLElement>('[data-world-scroll]');
     if (!section) return;
 
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduce) {
-      // Jump straight to final stage — no pin, no scroll-linked animation
       section.style.setProperty('--p', '1');
       section.dataset.stage = '3';
       return;
     }
 
+    // Cached layout values — refreshed only on resize
+    let sectionTop = 0;
+    let maxScroll = 1;
+    let lastP = -1;
+    let lastStage = -1;
     let ticking = false;
-    const update = () => {
-      const rect = section.getBoundingClientRect();
-      const total = section.offsetHeight - window.innerHeight;
-      const raw = total > 0 ? -rect.top / total : 0;
-      const p = Math.max(0, Math.min(1, raw));
-      section.style.setProperty('--p', p.toFixed(4));
-      // Four stages, crossfaded: 0=[0,.25) 1=[.25,.5) 2=[.5,.75) 3=[.75,1]
-      const stage = p < 0.25 ? 0 : p < 0.5 ? 1 : p < 0.75 ? 2 : 3;
-      if (section.dataset.stage !== String(stage)) {
-        section.dataset.stage = String(stage);
+
+    const measure = () => {
+      // offsetTop gives the section's natural document position,
+      // unaffected by sticky children or current scroll state.
+      // getBoundingClientRect().top + scrollY would be WRONG here
+      // because the inner .world-pin is sticky and can be pinned
+      // at the time measure() runs.
+      let top = 0;
+      let node: HTMLElement | null = section;
+      while (node) {
+        top += node.offsetTop;
+        node = node.offsetParent as HTMLElement | null;
       }
+      sectionTop = top;
+      maxScroll = Math.max(1, section.offsetHeight - window.innerHeight);
+    };
+
+    const update = () => {
       ticking = false;
+      const y = window.scrollY - sectionTop;
+      const p = y <= 0 ? 0 : y >= maxScroll ? 1 : y / maxScroll;
+
+      // Only write --p when it changes meaningfully (avoid style-engine thrash on idle scroll)
+      if (Math.abs(p - lastP) > 0.001) {
+        section.style.setProperty('--p', p.toFixed(4));
+        lastP = p;
+      }
+
+      const stage = p < 0.25 ? 0 : p < 0.5 ? 1 : p < 0.75 ? 2 : 3;
+      if (stage !== lastStage) {
+        section.dataset.stage = String(stage);
+        lastStage = stage;
+      }
     };
 
     const onScroll = () => {
@@ -218,9 +247,10 @@
       requestAnimationFrame(update);
     };
 
+    measure();
     update();
     window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll, { passive: true });
+    window.addEventListener('resize', () => { measure(); onScroll(); }, { passive: true });
   })();
 </script>
 
@@ -232,6 +262,8 @@
     height: 380vh;
     --p: 0;
     background: var(--bg);
+    /* Isolate paint so zooming doesn't re-render the page */
+    contain: layout paint;
   }
 
   .world-pin {
@@ -246,6 +278,9 @@
     background:
       radial-gradient(ellipse 70% 55% at 50% 48%, rgba(233, 162, 70, 0.07), transparent 70%),
       radial-gradient(ellipse 40% 30% at 50% 100%, rgba(201, 122, 28, 0.04), transparent 80%);
+    /* New stacking + paint context — scroll repaints don't bleed out */
+    contain: layout paint;
+    isolation: isolate;
   }
 
   /* ───────── Meta (corner labels) ───────── */
@@ -284,8 +319,9 @@
     inset: 0;
     background: var(--ember);
     transform-origin: left center;
-    transform: scaleX(calc(var(--p, 0)));
-    transition: transform 0.08s linear;
+    /* translateZ forces its own composite layer — no transition, scroll drives directly */
+    transform: translateZ(0) scaleX(calc(var(--p, 0)));
+    will-change: transform;
   }
 
   /* ───────── Globe (scaled on scroll) ───────── */
@@ -294,17 +330,39 @@
     inset: 0;
     display: grid;
     place-items: center;
-    /* Progressive zoom 1× → 14×, centered on Virginia (≈ 43.6%, 41%) */
+    /* Progressive zoom 1× → 14×, centered on Virginia (≈ 43.6%, 41%).
+       translateZ(0) forces a dedicated GPU layer so scroll scaling
+       doesn't trigger full-page repaints. No transition — scroll
+       drives the scale directly; smoothness comes from rAF + browser
+       compositor, not CSS easing. */
     transform-origin: 43.6% 41%;
-    transform: scale(calc(1 + var(--p, 0) * 13));
-    transition: transform 0.08s linear;
+    transform: translateZ(0) scale(calc(1 + var(--p, 0) * 13));
     will-change: transform;
-    filter: drop-shadow(0 0 80px rgba(233, 162, 70, 0.06));
+    backface-visibility: hidden;
   }
   .world-globe svg {
     width: min(92vmin, 820px);
     height: auto;
     display: block;
+    /* SVG repaint hint — helps browsers keep the globe on a single layer */
+    transform: translateZ(0);
+  }
+  /* Soft amber glow behind the globe — rendered as a separate static
+     element so it doesn't get scaled 14× with the globe (drop-shadow
+     on a scaled element is a major perf killer). */
+  .world-pin::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: min(92vmin, 820px);
+    height: min(92vmin, 820px);
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle at 50% 50%, rgba(233, 162, 70, 0.12), transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+    /* Fade out as zoom progresses — glow only makes sense at globe scale */
+    opacity: calc(1 - var(--p, 0));
   }
 
   /* Gridlines (meridians/parallels) */
