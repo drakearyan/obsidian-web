@@ -2,16 +2,9 @@
 import PageLayout from '../layouts/PageLayout.astro';
 import CTASection from '../components/CTASection.astro';
 import { case_studies, industries } from '../data/portfolio';
+import { INDUSTRY_COLORS, INDUSTRY_COLORS_DEFAULT } from '../data/industry-colors';
 
-// Solid editorial tints (no gradients) — keyed off ember/flame/jade palette
-const thumb_map: Record<string, { bg: string; fg: string }> = {
-  restaurant:  { bg: '#C97A1C', fg: '#F5ECD9' }, // ember-deep
-  legal:       { bg: '#3D6B5C', fg: '#F5ECD9' }, // jade
-  fitness:     { bg: '#DB3A34', fg: '#F5ECD9' }, // flame
-  healthcare:  { bg: '#1e1a14', fg: '#E9A246' }, // surface + ember
-  trades:      { bg: '#E9A246', fg: '#15100a' }, // ember
-  ecommerce:   { bg: '#B8D8D0', fg: '#15100a' }, // ice
-};
+const thumb_map = INDUSTRY_COLORS;
 ---
 
 <PageLayout
@@ -47,7 +40,7 @@ const thumb_map: Record<string, { bg: string; fg: string }> = {
 
       <div class="portfolio-grid" id="portfolio-grid">
         {case_studies.map((cs, idx) => {
-          const t = thumb_map[cs.industrySlug] || { bg: '#1e1a14', fg: '#E9A246' };
+          const t = thumb_map[cs.industrySlug] || INDUSTRY_COLORS_DEFAULT;
           return (
             <article class="case-card" data-industry={cs.industrySlug}>
               <div class="case-thumb" style={`background: ${t.bg}; color: ${t.fg};`}>
@@ -172,7 +165,7 @@ const thumb_map: Record<string, { bg: string; fg: string }> = {
 
   .filter-btn.is-active {
     background: var(--ember);
-    color: #15100a;
+    color: var(--text-on-ember);
     border-color: var(--ember);
     font-weight: 500;
   }

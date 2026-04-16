@@ -336,19 +336,19 @@ const formspree_id = import.meta.env.PUBLIC_FORMSPREE_ID || 'YOUR_FORMSPREE_ID';
   .form-status--success {
     background: rgba(61, 107, 92, 0.18);
     border: 1px solid rgba(61, 107, 92, 0.5);
-    color: #9dd6c5;
+    color: var(--color-success);
   }
 
   .form-status--error {
     background: rgba(219, 58, 52, 0.12);
     border: 1px solid rgba(219, 58, 52, 0.45);
-    color: #f0a8a3;
+    color: var(--color-error);
   }
 
   .form-status--warn {
     background: rgba(233, 162, 70, 0.12);
     border: 1px solid rgba(233, 162, 70, 0.45);
-    color: #f1c288;
+    color: var(--color-warning);
   }
 
   .form-status--pending {

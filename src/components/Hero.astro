@@ -123,12 +123,16 @@ const year = new Date().getFullYear();
   @media (max-width: 768px) {
     .hero-grid {
       grid-template-columns: 1fr;
+      /* Include ALL meta areas so nothing falls into the implicit grid.
+         Previously 'tr' was unnamed on mobile which let the browser drop
+         it into an auto row + auto column, causing a right-aligned ghost. */
       grid-template-areas:
         "tl"
+        "tr"
         "title"
         "bl"
         "br";
-      gap: 1.5rem;
+      gap: 1rem;
     }
   }
 
@@ -139,6 +143,10 @@ const year = new Date().getFullYear();
 
   @media (max-width: 768px) {
     .hero-meta--tr, .hero-meta--br { justify-self: start; }
+    /* Tighten the ticker text a touch so "ACCEPTING Q2 2026 PROJECTS"
+       fits on one line at 375px instead of wrapping awkwardly. */
+    .hero-meta--tr .meta-text { flex-wrap: wrap; }
+    .hero-meta--tr .meta-block { font-size: 0.65rem; letter-spacing: 0.08em; }
   }
 
   .meta-block {
