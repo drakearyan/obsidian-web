@@ -6,9 +6,9 @@ export const site = {
   shortName: 'Obsidian',
   domain: 'obsidianwebco.com',
   url: 'https://obsidianwebco.com',
-  tagline: 'Websites That Work as Hard as You Do',
+  tagline: 'Websites built to outwork you.',
   description:
-    'Obsidian Web Co. designs and builds custom websites for Lynchburg-area small businesses. Fast, beautiful, built to convert.',
+    'Custom websites built to outwork you — for small businesses in Lynchburg, VA and beyond. Fast, hand-coded, owned by you.',
   owner: 'Drake Ryan',
   email: 'drake@obsidianwebco.com',
   phone: '', // Google Voice number — fill in when set up
