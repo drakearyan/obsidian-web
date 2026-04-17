@@ -1,0 +1,197 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import CTASection from '../../components/CTASection.astro';
+
+// A preview of the onboarding questionnaire — one sample question per
+// section so prospects know what to expect and aren't scared off by
+// "11 sections of forms." Reduces intake anxiety, speeds kickoff.
+interface Section {
+  title: string;
+  why: string;
+  sample: string;
+}
+
+const sections: Section[] = [
+  {
+    title: 'Your business in one paragraph',
+    why: "What you do, who you serve, what makes you different — in your own words.",
+    sample: '"What would you tell someone at a dinner party who asked what your business does?"',
+  },
+  {
+    title: 'The customer we\'re talking to',
+    why: "Who should the website speak to? One primary audience beats three.",
+    sample: '"When a new customer lands on your site, who do you hope they are? Age range, what they do, what problem they\'re trying to solve."',
+  },
+  {
+    title: 'The competitors I should look at',
+    why: "3–5 sites I should study before designing anything — what to copy, what to avoid.",
+    sample: '"List 3 websites you like (in any industry) and 3 you don\'t. One sentence on each."',
+  },
+  {
+    title: 'What the site needs to DO',
+    why: "Not 'look pretty' — what decision or action should a visitor take?",
+    sample: '"If every visitor to your site only did one thing before leaving, what would that one thing be?"',
+  },
+  {
+    title: 'Content you already have',
+    why: "Copy, photos, logos, brand guidelines — what exists and what we need to create.",
+    sample: '"Do you have a logo file? Photos of your team or work? Any written copy from a previous site or brochure?"',
+  },
+  {
+    title: 'Voice + tone',
+    why: "Formal or casual, technical or plain, confident or humble — you pick.",
+    sample: '"If your business were a person, would you describe them as: a) expert professor b) trusted friend c) confident guide d) friendly expert?"',
+  },
+  {
+    title: 'Pages we need',
+    why: "Scope check — what pages are in, what pages are out, what might come in a v2.",
+    sample: '"Beyond Home and Contact, which of these pages do you need: About, Services, Portfolio, Blog, FAQ, Testimonials, Pricing, Booking?"',
+  },
+  {
+    title: 'Integrations + tools',
+    why: "Calendly, Mailchimp, Stripe, OpenTable — what exists, what needs wiring up.",
+    sample: '"Do you currently use any of these: CRM, email tool, calendar/booking, payments, analytics, social scheduling?"',
+  },
+  {
+    title: 'Success metrics',
+    why: "We can measure it after launch — what should go up?",
+    sample: '"In 6 months, how will you know the new site was worth it? More leads? Faster bookings? Better search ranking?"',
+  },
+  {
+    title: 'Your timeline',
+    why: "Any fixed deadlines — tax season, a product launch, a trade show.",
+    sample: '"Is there a date by which this site needs to be live? If so, why that date?"',
+  },
+  {
+    title: 'Anything else',
+    why: "Open-ended. Good stuff always shows up here.",
+    sample: '"What haven\'t I asked that I should have? What\'s something weird or specific about your business that a generic web designer would miss?"',
+  },
+];
+---
+
+<PageLayout
+  title="What I'll ask you"
+  description="A preview of the 11-section kickoff questionnaire Obsidian Web Co. sends after a signed proposal — so you know what to expect before you sign."
+>
+  <section class="q-hero">
+    <div class="container">
+      <span class="section-label">[ ? ] / what I'll ask</span>
+      <h1 class="q-title">What I'll ask <em class="serif-accent">before we build.</em></h1>
+      <p class="q-intro">
+        Once you sign the proposal, I send a short kickoff questionnaire. 11 sections, ~30 minutes total, answer at your pace. This page is a preview — one sample question per section — so you know what's coming and aren't surprised.
+      </p>
+      <p class="q-intro">
+        The full questionnaire is longer, but not scary. Most questions have 2–4 multiple-choice answers; a few are short-answer. <strong>No question is mandatory</strong>. If a section doesn't apply, skip it.
+      </p>
+    </div>
+  </section>
+
+  <section class="q-list-sec">
+    <div class="container">
+      <ol class="q-list">
+        {sections.map((s, i) => (
+          <li class="q-item">
+            <div class="q-num">§ {String(i + 1).padStart(2, '0')}</div>
+            <div class="q-body">
+              <h2 class="q-section-title">{s.title}</h2>
+              <p class="q-why">{s.why}</p>
+              <blockquote class="q-sample">
+                <span class="q-sample-label">Sample question</span>
+                <p>{s.sample}</p>
+              </blockquote>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <CTASection
+    heading="Ready to actually start?"
+    subheading="Book a 30-min discovery call. I learn enough to send a real proposal, you get zero commitment and zero cost."
+    ctaText="Book the call"
+    ctaHref="/contact"
+  />
+</PageLayout>
+
+<style>
+  .q-hero { padding: 8rem 0 3rem; }
+  .q-title {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    margin: 0.75rem 0 1.5rem;
+  }
+  .q-intro {
+    font-size: 1.1rem;
+    color: var(--muted);
+    line-height: 1.65;
+    max-width: 680px;
+    margin-bottom: 1rem;
+  }
+  .q-intro strong { color: var(--text); font-weight: 500; }
+
+  .q-list-sec { padding: 3rem 0 5rem; }
+  .q-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    counter-reset: qlist;
+    border-top: 1px solid var(--border);
+  }
+  .q-item {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 2rem;
+    padding: 2.5rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  @media (max-width: 640px) { .q-item { grid-template-columns: 1fr; gap: 0.75rem; padding: 2rem 0; } }
+
+  .q-num {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 2rem;
+    color: var(--ember);
+    line-height: 1;
+    padding-top: 0.25rem;
+  }
+  .q-section-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
+    line-height: 1.15;
+    margin: 0 0 0.5rem;
+    color: var(--text);
+  }
+  .q-why {
+    font-size: 0.98rem;
+    color: var(--muted);
+    line-height: 1.55;
+    margin: 0 0 1rem;
+  }
+  .q-sample {
+    background: var(--surface);
+    border-left: 2px solid var(--ember);
+    padding: 1rem 1.25rem;
+    margin: 0;
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+  .q-sample-label {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ember);
+    margin-bottom: 0.5rem;
+  }
+  .q-sample p {
+    margin: 0;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.05rem;
+    line-height: 1.55;
+    color: var(--text);
+  }
+</style>

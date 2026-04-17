@@ -1,6 +1,7 @@
 ---
 import { site } from '../data/site';
 import NewsletterSignup from './NewsletterSignup.astro';
+import LighthouseBadge from './LighthouseBadge.astro';
 
 const year = new Date().getFullYear();
 ---
@@ -58,9 +59,23 @@ const year = new Date().getFullYear();
       <div class="footer-col">
         <h4>Resources</h4>
         <ul>
+          <li><a href="/resources">All resources</a></li>
           <li><a href="/audit">Free Website Audit</a></li>
-          <li><a href="/refer">Referral Program</a></li>
+          <li><a href="/quiz">Tier Quiz</a></li>
           <li><a href="/calculator">Pricing Calculator</a></li>
+          <li><a href="/resources/glossary">Glossary</a></li>
+          <li><a href="/resources/tech-stack">Tech Stack</a></li>
+          <li><a href="/refer">Referral Program</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Studio Pulse</h4>
+        <ul>
+          <li><a href="/now">What I'm doing now</a></li>
+          <li><a href="/roadmap">Roadmap</a></li>
+          <li><a href="/resources/proposal-example">Proposal example</a></li>
+          <li><a href="/resources/what-ill-ask">Kickoff questions</a></li>
         </ul>
       </div>
 
@@ -104,6 +119,13 @@ const year = new Date().getFullYear();
           <li><a href="/web-design-madison-heights">Madison Heights, VA</a></li>
         </ul>
       </div>
+    </div>
+
+    <div class="footer-proof">
+      <LighthouseBadge />
+      <p class="footer-proof-copy">
+        Every Obsidian site targets these scores at launch. Click the badge to run a live audit on this page yourself.
+      </p>
     </div>
 
     <div class="footer-bottom">
@@ -230,5 +252,37 @@ const year = new Date().getFullYear();
   .footer-discover-col a:hover {
     color: var(--ember);
     text-decoration: none;
+  }
+
+  /* Lighthouse proof block — anchors the page with a concrete performance
+     claim. Sits between the industry/service-area strip and copyright. */
+  .footer-proof {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 2rem;
+    align-items: center;
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  @media (max-width: 640px) {
+    .footer-proof { grid-template-columns: 1fr; gap: 1rem; }
+  }
+  .footer-proof-copy {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.55;
+    max-width: 480px;
+  }
+
+  .footer-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+  @media (max-width: 1100px) {
+    .footer-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 700px) {
+    .footer-grid { grid-template-columns: 1fr 1fr; }
   }
 </style>

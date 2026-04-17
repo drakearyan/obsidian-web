@@ -1,0 +1,325 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import CTASection from '../../components/CTASection.astro';
+---
+
+<PageLayout
+  title="Proposal Example"
+  description="A sanitized example of the proposal Obsidian Web Co. sends after a discovery call — scope, timeline, deliverables, payment schedule. No mystery."
+>
+  <section class="prop-hero">
+    <div class="container">
+      <span class="section-label">[ ¶ ] / proposal · example</span>
+      <h1 class="prop-title">What a real proposal <em class="serif-accent">looks like.</em></h1>
+      <p class="prop-intro">
+        After a 30-min discovery call, you get a document that looks exactly like this — just with your name, your scope, and your numbers. No hourly mystery. No "final quote depends on."
+      </p>
+      <div class="prop-watermark">EXAMPLE · not a real client</div>
+    </div>
+  </section>
+
+  <section class="prop-doc-sec">
+    <div class="container">
+      <article class="prop-doc">
+
+        <header class="prop-header">
+          <div>
+            <div class="prop-kicker">Project Proposal</div>
+            <h2>Blue Ridge Eats — Website Redesign &amp; Launch</h2>
+          </div>
+          <div class="prop-header-meta">
+            <div>Prepared by Drake Ryan</div>
+            <div>Obsidian Web Co.</div>
+            <div>Proposal #2026-0042 · Valid 14 days</div>
+          </div>
+        </header>
+
+        <section class="prop-section">
+          <h3>01 · The project in one paragraph</h3>
+          <p>
+            Blue Ridge Eats is a family restaurant on Main Street losing dinner reservations to a cluttered, slow website that sends customers to a PDF menu instead of a booking widget. This project replaces the existing site with a fast, custom-built Astro site that puts tap-to-call + OpenTable booking above the fold, indexes the menu as real text, and ranks for "lynchburg restaurants" + three related local queries.
+          </p>
+        </section>
+
+        <section class="prop-section">
+          <h3>02 · What's in scope</h3>
+          <ul class="prop-check-list">
+            <li>6-page custom site (Home, Menu, About, Reservations, Gallery, Contact)</li>
+            <li>Hand-coded Astro + Tailwind — no page builder, no plugin rot</li>
+            <li>OpenTable reservation integration (sticky mobile button + header link)</li>
+            <li>Plain-text menu synced from a Google Doc you control</li>
+            <li>Google Business Profile optimization (description, categories, 12 photos)</li>
+            <li>Local SEO schema (LocalBusiness, Restaurant, Menu, FAQ)</li>
+            <li>GA4 + Microsoft Clarity analytics setup</li>
+            <li>Lighthouse 95+ mobile performance (contractually guaranteed)</li>
+            <li>90-day post-launch support — unlimited small edits</li>
+          </ul>
+        </section>
+
+        <section class="prop-section">
+          <h3>03 · What's NOT in scope</h3>
+          <ul class="prop-x-list">
+            <li>Food photography (recommend DIY iPhone + natural light; shoot guide included)</li>
+            <li>Copy for more than the 6 pages listed above</li>
+            <li>Video production or embedded video</li>
+            <li>Online ordering / delivery integration (separate quote if desired)</li>
+            <li>Ongoing monthly maintenance after day 90 (retainer available separately)</li>
+          </ul>
+        </section>
+
+        <section class="prop-section">
+          <h3>04 · Timeline</h3>
+          <ol class="prop-timeline">
+            <li><strong>Week 1</strong> — Kickoff call, brand intake, competitor review, sitemap approval</li>
+            <li><strong>Week 2</strong> — Home + menu page mockups (Figma), 1 revision round</li>
+            <li><strong>Week 3</strong> — Remaining 4 pages designed, 1 revision round</li>
+            <li><strong>Week 4</strong> — Full build on staging URL, content entry, QA</li>
+            <li><strong>Week 5</strong> — Launch day: DNS cutover, analytics live, GBP updated</li>
+          </ol>
+          <p class="prop-note">
+            Total: 5 weeks from signed proposal + deposit to live site. If anything blocks us (waiting on approvals, photos, etc.) the timeline pauses — no hidden extension fees.
+          </p>
+        </section>
+
+        <section class="prop-section">
+          <h3>05 · Investment</h3>
+          <div class="prop-price-table">
+            <div class="prop-price-row">
+              <div>Professional tier website build</div>
+              <div>$2,200</div>
+            </div>
+            <div class="prop-price-row">
+              <div>Google Business Profile optimization</div>
+              <div>$300</div>
+            </div>
+            <div class="prop-price-row">
+              <div>Menu content migration (~40 items)</div>
+              <div>$0 · included</div>
+            </div>
+            <div class="prop-price-row prop-price-total">
+              <div>Total</div>
+              <div>$2,500</div>
+            </div>
+          </div>
+          <p class="prop-note">
+            No hourly estimates. No "contingency buffer." No surprise invoices. The quote you sign is the amount you pay, so long as scope doesn't change.
+          </p>
+        </section>
+
+        <section class="prop-section">
+          <h3>06 · Payment schedule</h3>
+          <div class="prop-payment">
+            <div class="prop-payment-row">
+              <div><strong>50% deposit</strong></div>
+              <div>$1,250</div>
+              <div>Due on proposal signature. Kicks off week 1.</div>
+            </div>
+            <div class="prop-payment-row">
+              <div><strong>50% on launch</strong></div>
+              <div>$1,250</div>
+              <div>Due when the site goes live at your domain.</div>
+            </div>
+          </div>
+          <p class="prop-note">
+            Paid via Stripe (card or ACH). ACH saves 2.9% — if you pay by bank transfer I pass the savings back at invoice time.
+          </p>
+        </section>
+
+        <section class="prop-section">
+          <h3>07 · Guarantees</h3>
+          <ul class="prop-check-list">
+            <li><strong>Lighthouse 95+ mobile</strong> at launch. If we miss it, I fix it before invoice #2.</li>
+            <li><strong>You own everything</strong> — domain in your name, code in your GitHub, Vercel hosting on your account.</li>
+            <li><strong>90-day unlimited edits</strong> post-launch. Small changes free; anything requiring a new page at $75.</li>
+            <li><strong>Zero lock-in</strong>. If we stop working together, every login + credential gets handed over in 24h.</li>
+          </ul>
+        </section>
+
+        <section class="prop-section prop-sign">
+          <h3>08 · Next step</h3>
+          <p>
+            Reply to the proposal email or reach out directly. On confirmation, I'll send a Stripe link for the deposit and we schedule week 1. Questions are free — always.
+          </p>
+          <p class="prop-sign-line">— Drake Ryan, Obsidian Web Co.</p>
+        </section>
+
+      </article>
+    </div>
+  </section>
+
+  <CTASection
+    heading="Want a proposal like this for your project?"
+    subheading="30-min discovery call first. Proposal lands in your inbox within 2 business days. No cost, no obligation."
+    ctaText="Book a discovery call"
+    ctaHref="/contact"
+  />
+</PageLayout>
+
+<style>
+  .prop-hero { padding: 8rem 0 2rem; }
+  .prop-title {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    margin: 0.75rem 0 1.5rem;
+  }
+  .prop-intro {
+    font-size: 1.1rem;
+    color: var(--muted);
+    line-height: 1.65;
+    max-width: 680px;
+    margin-bottom: 2rem;
+  }
+  .prop-watermark {
+    display: inline-block;
+    padding: 0.4rem 1rem;
+    background: rgba(219, 58, 52, 0.08);
+    border: 1px solid rgba(219, 58, 52, 0.35);
+    border-radius: var(--radius-pill);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--flame);
+  }
+
+  .prop-doc-sec { padding: 3rem 0 5rem; }
+  .prop-doc {
+    max-width: 780px;
+    margin: 0 auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 3rem 3rem;
+  }
+  @media (max-width: 640px) { .prop-doc { padding: 2rem 1.5rem; } }
+
+  .prop-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2rem;
+  }
+  @media (max-width: 640px) { .prop-header { flex-direction: column; gap: 1rem; } }
+
+  .prop-kicker {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ember);
+    margin-bottom: 0.5rem;
+  }
+  .prop-header h2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    line-height: 1.15;
+    color: var(--text);
+    margin: 0;
+  }
+  .prop-header-meta {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    text-align: right;
+    line-height: 1.8;
+  }
+  @media (max-width: 640px) { .prop-header-meta { text-align: left; } }
+
+  .prop-section { margin-bottom: 2.5rem; }
+  .prop-section h3 {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ember);
+    margin-bottom: 1rem;
+    font-weight: 500;
+  }
+  .prop-section p {
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--text);
+    margin: 0 0 1rem;
+  }
+
+  .prop-check-list, .prop-x-list, .prop-timeline {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.65rem;
+  }
+  .prop-check-list li, .prop-x-list li, .prop-timeline li {
+    padding-left: 1.75rem;
+    position: relative;
+    font-size: 0.98rem;
+    line-height: 1.55;
+    color: var(--text);
+  }
+  .prop-check-list li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--ember);
+    font-weight: 600;
+  }
+  .prop-x-list li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--muted);
+  }
+  .prop-x-list li { color: var(--muted); }
+
+  .prop-timeline { counter-reset: tl; }
+  .prop-timeline li { padding-left: 0; padding-top: 0.25rem; color: var(--text); }
+  .prop-timeline li::before { content: ''; }
+
+  .prop-note {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--muted);
+    letter-spacing: 0.03em;
+    line-height: 1.6;
+    margin-top: 1rem !important;
+  }
+
+  .prop-price-table, .prop-payment {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1rem;
+  }
+  .prop-price-row, .prop-payment-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1.5rem;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.98rem;
+  }
+  .prop-price-row:last-child, .prop-payment-row:last-child { border-bottom: 0; }
+  .prop-price-total {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    color: var(--ember);
+  }
+  .prop-payment-row {
+    grid-template-columns: auto auto 1fr;
+    color: var(--muted);
+  }
+  .prop-payment-row > div:nth-child(2) { color: var(--ember); font-family: var(--font-mono); font-size: 0.9rem; }
+  .prop-payment-row > div:last-child { color: var(--muted); font-size: 0.9rem; }
+
+  .prop-sign { border-top: 1px solid var(--border); padding-top: 2rem; }
+  .prop-sign-line {
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--ember);
+    font-size: 1.1rem !important;
+  }
+</style>
