@@ -1,6 +1,6 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
-import NewsletterSignup from '../components/NewsletterSignup.astro';
+import AuditForm from '../components/AuditForm.astro';
 import { site } from '../data/site';
 ---
 
@@ -24,14 +24,7 @@ import { site } from '../data/site';
       </p>
 
       <div class="audit-form-wrap">
-        <NewsletterSignup
-          variant="hero"
-          heading=""
-          subheading=""
-          ctaLabel="Get My Audit"
-          tag="audit-request"
-          placeholder="your-website.com — no http:// needed"
-        />
+        <AuditForm variant="hero" ctaLabel="Get My Audit" />
         <p class="audit-fine">
           I'll email within 24 hours with your 1-page PDF. No automated drip sequence, no phone calls unless you ask.
         </p>
@@ -99,13 +92,11 @@ import { site } from '../data/site';
     <div class="container">
       <h2 class="cta-title">Still here? <em class="serif-accent">Send me the link.</em></h2>
       <div class="audit-form-wrap audit-form-wrap--compact">
-        <NewsletterSignup
+        <AuditForm
           variant="card"
           heading="Your Site, Audited"
-          subheading="Drop your URL below. 24-hour turnaround, 1-page PDF, zero pitch."
+          subheading="Drop your URL + email below. 24-hour turnaround, 1-page PDF, zero pitch."
           ctaLabel="Get My Audit"
-          tag="audit-request"
-          placeholder="your-website.com"
         />
       </div>
     </div>

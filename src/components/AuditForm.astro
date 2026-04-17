@@ -1,0 +1,286 @@
+---
+/*
+  AuditForm
+  ─────────────────────────────────────────────────────────────
+  Two-field audit request form (website URL + email). Submits
+  to Formspree via AJAX so Drake gets the request in his inbox
+  immediately, with inline confirmation for the user — no new
+  tab, no Mailchimp delay. Drake manually runs the audit and
+  replies within 24 hours (per lead-magnets.md).
+
+  Why not Mailchimp: the audit is a MANUAL deliverable. Drake
+  needs the URL + email side-by-side in his inbox to run the
+  audit, not buried in a Mailchimp list. Newsletter signups
+  still use NewsletterSignup → Mailchimp.
+
+  Variants:
+    variant="hero"  → big centered form for landing page hero
+    variant="card"  → bordered card for secondary placements
+*/
+
+interface Props {
+  variant?: 'hero' | 'card';
+  heading?: string;
+  subheading?: string;
+  ctaLabel?: string;
+}
+
+const {
+  variant = 'hero',
+  heading = '',
+  subheading = '',
+  ctaLabel = 'Get My Audit',
+} = Astro.props;
+
+const formspree_id = import.meta.env.PUBLIC_FORMSPREE_ID || 'YOUR_FORMSPREE_ID';
+const formId = `audit-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<div class={`audit-form audit-form--${variant}`}>
+  {heading && <h3 class="audit-form-heading">{heading}</h3>}
+  {subheading && <p class="audit-form-sub">{subheading}</p>}
+
+  <form
+    action={`https://formspree.io/f/${formspree_id}`}
+    method="POST"
+    class="audit-form-inner"
+    id={formId}
+    data-audit-form
+    novalidate
+  >
+    <!-- Honeypot — humans never fill this, bots do -->
+    <input type="text" name="_gotcha" style="display:none !important" tabindex="-1" autocomplete="off" />
+    <input type="hidden" name="_subject" value="Website Audit Request — obsidianwebco.com/audit" />
+    <input type="hidden" name="form_type" value="5-minute-audit" />
+
+    <div class="audit-form-grid">
+      <label class="audit-field">
+        <span class="audit-label">Your website URL</span>
+        <input
+          type="text"
+          name="website"
+          placeholder="your-business.com"
+          required
+          autocomplete="url"
+          inputmode="url"
+        />
+      </label>
+
+      <label class="audit-field">
+        <span class="audit-label">Your email</span>
+        <input
+          type="email"
+          name="email"
+          placeholder="you@your-business.com"
+          required
+          autocomplete="email"
+        />
+      </label>
+    </div>
+
+    <button type="submit" class="audit-submit">
+      <span class="audit-submit-label">{ctaLabel}</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+      </svg>
+    </button>
+
+    <p class="audit-status" role="status" aria-live="polite"></p>
+  </form>
+</div>
+
+<style>
+  .audit-form {
+    font-family: var(--font-body);
+    color: var(--text);
+  }
+
+  /* ── Variant: hero ─────────────────────────────────────── */
+  .audit-form--hero {
+    max-width: 620px;
+    margin: 0 auto;
+  }
+
+  /* ── Variant: card ─────────────────────────────────────── */
+  .audit-form--card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2.5rem;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  .audit-form-heading {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.75rem;
+    color: var(--text);
+  }
+
+  .audit-form-sub {
+    font-size: 1rem;
+    color: var(--muted);
+    line-height: 1.55;
+    margin-bottom: 1.5rem;
+  }
+
+  /* ── Field grid (side-by-side on desktop, stacked on mobile) ── */
+  .audit-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  @media (max-width: 560px) {
+    .audit-form-grid { grid-template-columns: 1fr; }
+  }
+
+  .audit-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .audit-label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+  }
+
+  .audit-field input {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.75rem 1rem;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease;
+  }
+  .audit-field input:focus {
+    outline: none;
+    border-color: var(--ember);
+  }
+  .audit-field input::placeholder { color: var(--muted-2); }
+
+  /* ── Submit button ─────────────────────────────────────── */
+  .audit-submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: var(--ember);
+    color: var(--text-on-ember);
+    border: 1px solid var(--ember);
+    border-radius: var(--radius);
+    padding: 0.85rem 1.5rem;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  }
+  .audit-submit:hover:not(:disabled) {
+    background: var(--text);
+    border-color: var(--text);
+    transform: translateY(-1px);
+  }
+  .audit-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  /* ── Status (success/error/loading) ─────────────────────── */
+  .audit-status {
+    margin-top: 0.9rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    min-height: 1.3em;
+    line-height: 1.5;
+  }
+  .audit-status[data-state="loading"] { color: var(--muted); }
+  .audit-status[data-state="success"] { color: var(--color-success); }
+  .audit-status[data-state="error"]   { color: var(--color-error); }
+</style>
+
+<script>
+  /*
+    AJAX submission so the user gets instant inline feedback
+    instead of a tab-opening delay. Formspree accepts standard
+    form submissions with application/json + Accept header.
+  */
+  document.querySelectorAll<HTMLFormElement>('[data-audit-form]').forEach((form) => {
+    const status = form.querySelector<HTMLElement>('.audit-status');
+    const submit = form.querySelector<HTMLButtonElement>('.audit-submit');
+    const submitLabel = form.querySelector<HTMLElement>('.audit-submit-label');
+    const originalLabel = submitLabel?.textContent ?? 'Submit';
+    const websiteInput = form.querySelector<HTMLInputElement>('input[name="website"]');
+    const emailInput = form.querySelector<HTMLInputElement>('input[name="email"]');
+
+    const setStatus = (state: 'loading' | 'success' | 'error' | '', text: string) => {
+      if (!status) return;
+      status.textContent = text;
+      if (state) status.dataset.state = state;
+      else delete status.dataset.state;
+    };
+
+    const setSubmitting = (submitting: boolean) => {
+      if (submit) submit.disabled = submitting;
+      if (submitLabel) submitLabel.textContent = submitting ? 'Sending…' : originalLabel;
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Light URL normalization — accept "example.com", "www.example.com",
+      // or full "https://example.com/path"
+      const rawWebsite = websiteInput?.value.trim() || '';
+      const email = emailInput?.value.trim() || '';
+
+      if (!rawWebsite) {
+        setStatus('error', "Please share the website URL you'd like me to audit.");
+        websiteInput?.focus();
+        return;
+      }
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        setStatus('error', "That email doesn't look right — double-check and try again.");
+        emailInput?.focus();
+        return;
+      }
+
+      setSubmitting(true);
+      setStatus('loading', 'Sending your audit request…');
+
+      const formData = new FormData(form);
+
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          body: formData,
+          headers: { Accept: 'application/json' },
+        });
+
+        if (res.ok) {
+          setStatus('success', '✓ Got it. I\'ll audit your site and email you within 24 hours. Check your spam folder if it hasn\'t arrived by tomorrow.');
+          form.reset();
+        } else {
+          const data = await res.json().catch(() => ({}));
+          const msg = data?.errors?.[0]?.message || 'Something broke on our end. Email drake@obsidianwebco.com directly.';
+          setStatus('error', msg);
+        }
+      } catch {
+        setStatus('error', 'Network error — check your connection, or email drake@obsidianwebco.com directly.');
+      } finally {
+        setSubmitting(false);
+      }
+    });
+  });
+</script>
