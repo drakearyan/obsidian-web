@@ -13,7 +13,12 @@ export async function getStaticPaths() {
 
 interface Props { post: CollectionEntry<'blog'> }
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
+
+// Build table of contents from h2 + h3 headings. Only render TOC if
+// the post has at least 3 sections — otherwise it's visual clutter.
+const toc_items = headings.filter((h) => h.depth === 2 || h.depth === 3);
+const show_toc = toc_items.length >= 3;
 
 const all_posts = await getCollection('blog', ({ data }) => !data.draft);
 const sorted = all_posts.sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
@@ -49,6 +54,7 @@ const jsonLd = [
   description={post.data.description}
   jsonLd={jsonLd}
 >
+
   <article class="post">
     <header class="post-header">
       <div class="container container--narrow">
@@ -73,7 +79,22 @@ const jsonLd = [
     </header>
 
     <div class="post-body">
-      <div class="container container--narrow">
+      <div class="container container--narrow post-body-inner">
+        {show_toc && (
+          <aside class="post-toc" aria-label="Table of contents">
+            <div class="toc-sticky">
+              <div class="toc-label">On this page</div>
+              <ol class="toc-list">
+                {toc_items.map((h) => (
+                  <li class={`toc-item toc-item--h${h.depth}`}>
+                    <a href={`#${h.slug}`} data-toc-link={h.slug}>{h.text}</a>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </aside>
+        )}
+
         <div class="prose">
           <Content />
         </div>
@@ -116,6 +137,43 @@ const jsonLd = [
     />
   </article>
 </PageLayout>
+
+<script>
+  // TOC scroll-spy — highlights the currently-visible section's link in
+  // the sticky sidebar. Uses IntersectionObserver with a generous
+  // rootMargin so the "current" heading changes when the section is
+  // near the top of the viewport, not when it enters the bottom.
+  const toc_links = document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]');
+  if (toc_links.length > 0) {
+    const link_map = new Map<string, HTMLAnchorElement>();
+    toc_links.forEach((a) => {
+      const slug = a.dataset.tocLink;
+      if (slug) link_map.set(slug, a);
+    });
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        // Find entries currently intersecting; pick the top-most
+        const active = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+        if (!active) return;
+        toc_links.forEach((a) => a.classList.remove('is-current'));
+        const link = link_map.get(active.target.id);
+        if (link) link.classList.add('is-current');
+      },
+      {
+        rootMargin: '-100px 0px -70% 0px',
+        threshold: 0,
+      }
+    );
+
+    link_map.forEach((_, slug) => {
+      const el = document.getElementById(slug);
+      if (el) io.observe(el);
+    });
+  }
+</script>
 
 <style>
   .container--narrow { max-width: 760px; }
@@ -213,6 +271,74 @@ const jsonLd = [
   /* Body */
   .post-body {
     padding: 4rem 0 5rem;
+  }
+
+  /* Sticky TOC sidebar — floats to the left of the reading column on
+     screens wider than 1200px. Hidden on narrower screens (the reading
+     column stays centered with no intrusion). */
+  .post-body-inner {
+    position: relative;
+  }
+  .post-toc {
+    display: none;
+  }
+  @media (min-width: 1200px) {
+    .post-toc {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: calc((100vw - 760px) / -2 + 2rem);
+      width: calc((100vw - 760px) / 2 - 3rem);
+      max-width: 260px;
+      height: 100%;
+      pointer-events: none; /* let the sticky child take clicks */
+    }
+    .toc-sticky {
+      position: sticky;
+      top: calc(var(--nav-height) + 2rem);
+      pointer-events: auto;
+      padding-right: 1rem;
+    }
+  }
+  .toc-label {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ember);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .toc-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.5rem;
+    max-height: calc(100vh - var(--nav-height) - 6rem);
+    overflow-y: auto;
+  }
+  .toc-item a {
+    display: block;
+    font-size: 0.82rem;
+    line-height: 1.4;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 0.25rem 0;
+    border-left: 2px solid transparent;
+    padding-left: 0.75rem;
+    margin-left: -0.75rem;
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+  .toc-item--h3 a { padding-left: 1.5rem; font-size: 0.78rem; }
+  .toc-item a:hover {
+    color: var(--text);
+    text-decoration: none;
+  }
+  .toc-item a.is-current {
+    color: var(--ember);
+    border-left-color: var(--ember);
   }
 
   .prose {

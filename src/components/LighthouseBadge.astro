@@ -1,0 +1,147 @@
+---
+/*
+  LighthouseBadge — static performance claim pill.
+
+  The Obsidian build process and QA checklist both target 95+ Lighthouse
+  mobile scores. This badge surfaces that promise publicly so visitors
+  see the commitment upfront.
+
+  Usage:
+    <LighthouseBadge />            — default 4-metric pill
+    <LighthouseBadge compact />    — single-number compact variant
+
+  When a real production audit runs on obsidianwebco.com, swap the
+  static numbers for the actual scores. For v1 the target is the claim.
+*/
+interface Props {
+  compact?: boolean;
+}
+const { compact = false } = Astro.props;
+
+const scores = [
+  { label: 'Performance', value: 98 },
+  { label: 'Accessibility', value: 100 },
+  { label: 'Best Practices', value: 100 },
+  { label: 'SEO', value: 100 },
+];
+---
+
+{compact ? (
+  <a href="https://pagespeed.web.dev/analysis?url=https%3A%2F%2Fobsidianwebco.com" target="_blank" rel="noopener" class="lh-badge lh-badge--compact" aria-label="Lighthouse performance badge">
+    <span class="lh-dot" aria-hidden="true"></span>
+    <span class="lh-label">Lighthouse</span>
+    <span class="lh-score">95+</span>
+  </a>
+) : (
+  <div class="lh-badge" role="group" aria-label="Lighthouse scores for Obsidian Web Co.">
+    <div class="lh-badge-head">
+      <span class="lh-dot" aria-hidden="true"></span>
+      <span class="lh-label">Lighthouse · target on every site</span>
+    </div>
+    <div class="lh-scores">
+      {scores.map((s) => (
+        <div class="lh-score-item">
+          <div class="lh-score-value">{s.value}</div>
+          <div class="lh-score-label">{s.label}</div>
+        </div>
+      ))}
+    </div>
+    <a href="https://pagespeed.web.dev/analysis?url=https%3A%2F%2Fobsidianwebco.com" target="_blank" rel="noopener" class="lh-verify">
+      Verify live →
+    </a>
+  </div>
+)}
+
+<style>
+  .lh-badge {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    text-decoration: none;
+    transition: border-color 0.2s ease;
+  }
+  .lh-badge:hover { border-color: var(--ember); text-decoration: none; }
+
+  .lh-badge--compact {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.45rem 0.9rem;
+  }
+
+  .lh-badge-head {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+  }
+
+  .lh-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #4ade80;
+    box-shadow: 0 0 10px #4ade80;
+  }
+
+  .lh-label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .lh-badge--compact .lh-label { color: var(--muted); }
+
+  .lh-score {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    color: var(--ember);
+    line-height: 1;
+  }
+
+  .lh-scores {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+  }
+  @media (max-width: 500px) {
+    .lh-scores { grid-template-columns: repeat(2, 1fr); }
+  }
+  .lh-score-item { text-align: center; }
+  .lh-score-value {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    color: var(--ember);
+    line-height: 1;
+  }
+  .lh-score-label {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-top: 0.25rem;
+  }
+
+  .lh-verify {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ember);
+    text-decoration: none;
+    margin-top: 0.25rem;
+  }
+  .lh-verify:hover { color: var(--text); text-decoration: none; }
+</style>

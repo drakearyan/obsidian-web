@@ -1,0 +1,233 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import CTASection from '../../components/CTASection.astro';
+
+// Plain-English glossary. 15 terms small-business owners hear but rarely
+// get defined. Each entry links to a blog post or a related resource when
+// there's a relevant one — otherwise just the definition.
+interface Entry {
+  term: string;
+  short: string;
+  body: string;
+  related?: { label: string; href: string };
+}
+
+const entries: Entry[] = [
+  {
+    term: 'Lighthouse score',
+    short: "Google's free 0–100 grade for how good a site is.",
+    body: "A report Google Chrome generates for any public page. Four grades (performance, accessibility, best practices, SEO) each out of 100. 90+ is good, 95+ is what a serious site should aim for. Every Obsidian site ships at 95+ mobile.",
+    related: { label: 'Why page speed is a revenue line item', href: '/blog/website-speed-costs-money' },
+  },
+  {
+    term: 'Core Web Vitals',
+    short: "Three specific Google speed measurements that affect search rankings.",
+    body: "LCP (how fast the biggest thing on your page loads), INP (how fast the page responds to clicks), CLS (whether stuff jumps around as the page loads). Google uses these in rankings since 2021. Failing any of them quietly hurts your SEO.",
+  },
+  {
+    term: 'JSON-LD / schema markup',
+    short: "Hidden text that tells Google what your page is about.",
+    body: "A structured chunk of code in every page's <head> that describes your business, your products, your articles, your reviews. Google uses it to render rich results (star ratings, FAQ accordions, price snippets) in search. Every page on this site has schema.",
+    related: { label: 'Local SEO checklist for Lynchburg businesses', href: '/blog/local-seo-checklist-lynchburg' },
+  },
+  {
+    term: 'Google Business Profile (GBP)',
+    short: "Your free Google listing — the card that shows up on Maps.",
+    body: "The hours/phone/photos card Google shows for local searches. Free to claim. Usually drives 40–60% of a small business's organic traffic via Maps. Most Lynchburg businesses have thin, outdated profiles — the opportunity is wide open.",
+    related: { label: 'Local SEO checklist', href: '/blog/local-seo-checklist-lynchburg' },
+  },
+  {
+    term: 'DNS',
+    short: "The phonebook that points your domain to your website.",
+    body: "Domain Name System — the records at your domain registrar (for you: Porkbun) that tell browsers where 'obsidianwebco.com' actually lives. Includes A records (points to an IP), CNAME records (points to another name), MX records (email), TXT records (verification + security).",
+  },
+  {
+    term: 'SSL / HTTPS',
+    short: "The padlock icon in the browser bar.",
+    body: "Encrypts traffic between the visitor and your site so nobody on the Wi-Fi network can snoop. Free via Vercel / Let's Encrypt. Google penalizes sites without HTTPS in search rankings. Every Obsidian site ships with it.",
+  },
+  {
+    term: 'Static site',
+    short: "Every page is pre-built HTML. Nothing runs on the server at request time.",
+    body: "The opposite of a WordPress-style 'build the page on every request' site. Static sites load in under a second, can't be hacked through the server (no server logic = no attack surface), and cost nothing to host. Every Obsidian site is static.",
+    related: { label: 'Custom vs template: the honest math', href: '/blog/custom-vs-template-website' },
+  },
+  {
+    term: 'Page builder',
+    short: "Drag-and-drop tools like Elementor, Divi, Beaver Builder.",
+    body: "Let a non-coder build pages inside WordPress or Squarespace. Fast to start, slow in the end — builders ship 10x more code than a hand-coded page needs, which tanks performance and SEO. Obsidian does not use page builders.",
+    related: { label: 'Why your website is losing you customers', href: '/blog/why-your-website-is-losing-you-customers' },
+  },
+  {
+    term: 'Responsive design',
+    short: "One codebase that looks right on phone, tablet, and desktop.",
+    body: "The site rearranges its own layout based on screen size. Mobile-first responsive design is table stakes in 2026 — over half your visitors will be on a phone. Every Obsidian site is responsive down to a 375px iPhone viewport.",
+  },
+  {
+    term: 'Conversion rate',
+    short: "The percentage of visitors who actually do the thing you want.",
+    body: "Book a call, fill the form, buy the thing, call the number. For most small-business sites, 1–3% is typical, 5%+ is very good, 10%+ is exceptional. Every design choice on the site should move this number up.",
+  },
+  {
+    term: 'Call to action (CTA)',
+    short: "The button or link asking the visitor to take the next step.",
+    body: "'Book a call.' 'Get a quote.' 'Start your project.' Every page should have a primary CTA. Most failing small-business sites have too many — three competing buttons that split attention. One strong CTA beats five weak ones.",
+  },
+  {
+    term: 'Above the fold',
+    short: "What a visitor sees before they scroll.",
+    body: "Borrowed from newspaper terminology. On mobile: the first ~600 pixels. On desktop: the first ~800. Your value proposition, phone number, and primary CTA should all be here. If the visitor has to scroll to learn what you do, half of them never will.",
+  },
+  {
+    term: 'Honeypot',
+    short: "An invisible form field that traps spam bots.",
+    body: "A hidden input that humans never see (styled display:none). Bots, which parse the HTML directly, fill in every field they find. When the honeypot has a value, we silently discard the submission. Spam reduction with zero friction for real users. Every Obsidian form has one.",
+  },
+  {
+    term: 'SPF / DKIM / DMARC',
+    short: "Three DNS records that prove your emails are really from you.",
+    body: "Email authentication. Without them, Gmail and Outlook assume your cold emails are spoofed and dump them in the spam folder. Setting them up is a one-time DNS configuration — Obsidian handles it during launch if you're running email from the domain.",
+  },
+  {
+    term: 'Deliverable',
+    short: "The thing you get at the end — not 'we did our best'.",
+    body: "A written list of exactly what a project produces. A live website at your domain. Five page templates. A Figma file. Three rounds of revisions. If a quote doesn't spell out deliverables, it's an hourly contract in disguise.",
+    related: { label: 'What a good website actually costs', href: '/blog/what-a-good-website-costs' },
+  },
+];
+---
+
+<PageLayout
+  title="Glossary"
+  description="Plain-English definitions of web design, SEO, and performance terms — written for small-business owners, not other developers."
+>
+  <section class="gloss-hero">
+    <div class="container">
+      <span class="section-label">[ a ] / glossary</span>
+      <h1 class="gloss-title">Plain-English <em class="serif-accent">glossary.</em></h1>
+      <p class="gloss-intro">
+        Fifteen terms you'll hear if you talk to anyone about websites. Each one defined like it's being explained to a business owner at a coffee shop — not a developer in a standup.
+      </p>
+    </div>
+  </section>
+
+  <section class="gloss-list-sec">
+    <div class="container">
+      <dl class="gloss-list">
+        {entries.map((e, i) => (
+          <div class="gloss-entry" id={e.term.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}>
+            <dt>
+              <span class="gloss-num">§ {String(i + 1).padStart(2, '0')}</span>
+              <span class="gloss-term">{e.term}</span>
+              <span class="gloss-short">{e.short}</span>
+            </dt>
+            <dd>
+              <p>{e.body}</p>
+              {e.related && (
+                <p class="gloss-related">
+                  <a href={e.related.href}>
+                    Read more: {e.related.label}
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                    </svg>
+                  </a>
+                </p>
+              )}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <CTASection
+    heading="Missing a term you've heard?"
+    subheading="Send it over — if it shows up once in a discovery call, it's already on the list. The glossary grows with what clients ask."
+    ctaText="Email me the term"
+    ctaHref="/contact"
+  />
+</PageLayout>
+
+<style>
+  .gloss-hero { padding: 8rem 0 3rem; }
+  .gloss-title {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    margin: 0.75rem 0 1.5rem;
+  }
+  .gloss-intro {
+    font-size: 1.1rem;
+    color: var(--muted);
+    line-height: 1.65;
+    max-width: 680px;
+  }
+
+  .gloss-list-sec { padding: 3rem 0 5rem; }
+  .gloss-list {
+    border-top: 1px solid var(--border);
+    margin: 0;
+  }
+  .gloss-entry {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 3rem;
+    padding: 2.5rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  @media (max-width: 768px) {
+    .gloss-entry { grid-template-columns: 1fr; gap: 1rem; padding: 2rem 0; }
+  }
+
+  .gloss-entry dt {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .gloss-num {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--ember);
+    letter-spacing: 0.12em;
+  }
+  .gloss-term {
+    font-family: var(--font-display);
+    font-size: clamp(1.4rem, 2.2vw, 1.85rem);
+    color: var(--text);
+    line-height: 1.1;
+  }
+  .gloss-short {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--ember);
+    line-height: 1.4;
+    max-width: 380px;
+  }
+
+  .gloss-entry dd {
+    margin: 0;
+    color: var(--text);
+  }
+  .gloss-entry dd p {
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--muted);
+    margin: 0 0 0.75rem;
+  }
+  .gloss-related {
+    margin-top: 1rem !important;
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .gloss-related a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--ember);
+    text-decoration: none;
+  }
+  .gloss-related a:hover { color: var(--text); }
+</style>
