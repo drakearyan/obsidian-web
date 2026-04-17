@@ -74,21 +74,29 @@ const year = new Date().getFullYear();
     </div>
   </div>
 
-  <!-- Ticker at very bottom -->
+  <!-- Ticker at very bottom.
+       Two identical ticker-group nodes. Each group ends with its own
+       trailing dot so when translateX(-50%) wraps the track, the next
+       group lines up exactly where the previous one started — no
+       visible reset at the "E-commerce" seam. -->
   <div class="ticker" aria-hidden="true">
     <div class="ticker-track">
-      <span>Restaurants</span><span>●</span>
-      <span>Legal</span><span>●</span>
-      <span>Healthcare</span><span>●</span>
-      <span>Fitness</span><span>●</span>
-      <span>Trades</span><span>●</span>
-      <span>E-commerce</span><span>●</span>
-      <span>Restaurants</span><span>●</span>
-      <span>Legal</span><span>●</span>
-      <span>Healthcare</span><span>●</span>
-      <span>Fitness</span><span>●</span>
-      <span>Trades</span><span>●</span>
-      <span>E-commerce</span><span>●</span>
+      <div class="ticker-group">
+        <span>Restaurants</span><span>●</span>
+        <span>Legal</span><span>●</span>
+        <span>Healthcare</span><span>●</span>
+        <span>Fitness</span><span>●</span>
+        <span>Trades</span><span>●</span>
+        <span>E-commerce</span><span>●</span>
+      </div>
+      <div class="ticker-group" aria-hidden="true">
+        <span>Restaurants</span><span>●</span>
+        <span>Legal</span><span>●</span>
+        <span>Healthcare</span><span>●</span>
+        <span>Fitness</span><span>●</span>
+        <span>Trades</span><span>●</span>
+        <span>E-commerce</span><span>●</span>
+      </div>
     </div>
   </div>
 </section>
@@ -268,16 +276,32 @@ const year = new Date().getFullYear();
 
   .ticker-track {
     display: flex;
-    gap: 3rem;
+    /* NO gap here — the seam between the two groups must be exactly
+       the same as the seam between items inside a group. Gap on the
+       track would add one extra 3rem only at the wrap point, causing
+       the visible jump Drake described. */
     white-space: nowrap;
     animation: ticker 40s linear infinite;
+    /* GPU layer hint for smooth sub-pixel scroll */
+    will-change: transform;
+  }
+
+  .ticker-group {
+    display: flex;
+    gap: 3rem;
+    /* Trailing padding = same as inter-item gap so the last bullet
+       of group 1 is 3rem from the first word of group 2, matching
+       every other item-to-item spacing exactly. */
+    padding-right: 3rem;
+    flex-shrink: 0;
     font-family: var(--font-display);
     font-style: italic;
     font-size: 1.35rem;
     color: var(--muted);
   }
 
-  .ticker-track span:nth-child(even) {
+  /* Style the bullet dots — every 2nd child in each group. */
+  .ticker-group span:nth-child(even) {
     color: var(--ember);
     font-family: var(--font-mono);
     font-style: normal;
@@ -286,6 +310,11 @@ const year = new Date().getFullYear();
 
   @keyframes ticker {
     from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
+    to   { transform: translateX(-50%); }
+  }
+
+  /* Pause animation for users who prefer reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .ticker-track { animation: none; }
   }
 </style>
