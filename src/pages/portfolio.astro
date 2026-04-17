@@ -93,28 +93,55 @@ const thumb_map = INDUSTRY_COLORS;
 </PageLayout>
 
 <script>
+  // Portfolio filter with URL state.
+  //
+  // Clicking a filter pill updates ?industry=<slug> in the URL so filters
+  // are shareable + survive refresh/back-button navigation. Reading the
+  // param on load re-applies the filter.
   const buttons = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
   const cards = document.querySelectorAll<HTMLElement>('.case-card');
   const noResults = document.querySelector<HTMLElement>('.no-results');
 
+  const applyFilter = (filter: string, updateUrl: boolean) => {
+    buttons.forEach((b) => {
+      const match = b.dataset.filter === filter;
+      b.classList.toggle('is-active', match);
+      b.setAttribute('aria-selected', match ? 'true' : 'false');
+    });
+
+    let visible = 0;
+    cards.forEach((card) => {
+      const show = filter === 'all' || card.dataset.industry === filter;
+      card.hidden = !show;
+      if (show) visible++;
+    });
+    if (noResults) noResults.hidden = visible > 0;
+
+    if (updateUrl) {
+      const url = new URL(window.location.href);
+      if (filter === 'all') url.searchParams.delete('industry');
+      else url.searchParams.set('industry', filter);
+      window.history.replaceState({}, '', url);
+    }
+  };
+
+  // Handle clicks — update state + URL
   buttons.forEach((btn) => {
     btn.addEventListener('click', () => {
-      const filter = btn.dataset.filter;
-      buttons.forEach((b) => {
-        b.classList.toggle('is-active', b === btn);
-        b.setAttribute('aria-selected', b === btn ? 'true' : 'false');
-      });
-
-      let visible = 0;
-      cards.forEach((card) => {
-        const show = filter === 'all' || card.dataset.industry === filter;
-        card.hidden = !show;
-        if (show) visible++;
-      });
-
-      if (noResults) noResults.hidden = visible > 0;
+      applyFilter(btn.dataset.filter || 'all', true);
     });
   });
+
+  // On load, read ?industry= and apply. Also handle back/forward.
+  const readParam = () => {
+    const param = new URL(window.location.href).searchParams.get('industry') || 'all';
+    // Only apply if the param matches a real filter button (otherwise stay on 'all')
+    const valid = Array.from(buttons).some((b) => b.dataset.filter === param);
+    applyFilter(valid ? param : 'all', false);
+  };
+
+  readParam();
+  window.addEventListener('popstate', readParam);
 </script>
 
 <style>

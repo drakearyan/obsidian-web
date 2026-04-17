@@ -1,0 +1,190 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import CTASection from '../../components/CTASection.astro';
+
+const resources = [
+  {
+    kind: 'Free tool',
+    title: '5-Minute Website Audit',
+    body: "Send me your URL. I run PageSpeed, accessibility, SEO, and conversion checks — send back a 1-page PDF with what's broken and what's worth fixing.",
+    href: '/audit',
+    cta: 'Get my audit',
+  },
+  {
+    kind: 'Free tool',
+    title: 'Pricing Calculator',
+    body: "Answer 6 questions. Get a ballpark quote. Anchored to the same Starter / Professional / Premium tiers published on the Services page.",
+    href: '/calculator',
+    cta: 'Try the calculator',
+  },
+  {
+    kind: 'Guide',
+    title: 'Tech stack & how the sites are built',
+    body: 'Astro, Tailwind, Vercel, Formspree, Mailchimp. What we use, why, and what it costs you if you self-host after launch.',
+    href: '/resources/tech-stack',
+    cta: 'See the stack',
+  },
+  {
+    kind: 'Guide',
+    title: 'Referral program',
+    body: "Send a Lynchburg business my way. If they sign, you get paid. \$100 for friends, 10% for past clients, 15% for partners.",
+    href: '/refer',
+    cta: 'Refer someone',
+  },
+  {
+    kind: 'Library',
+    title: 'Essays on web design, SEO, performance',
+    body: "Field notes written for owners, not other developers. Categories: design, SEO, performance, business, Lynchburg.",
+    href: '/blog',
+    cta: 'Read the essays',
+  },
+  {
+    kind: 'Status',
+    title: 'What Drake is working on now',
+    body: "Current availability, what's in flight, how long replies are taking this week. Updated monthly.",
+    href: '/now',
+    cta: "See what's now",
+  },
+  {
+    kind: 'Status',
+    title: 'Roadmap',
+    body: "What's coming next at Obsidian Web Co. — quarterly plan, shipped work, what's planned but not committed.",
+    href: '/roadmap',
+    cta: 'See the roadmap',
+  },
+];
+---
+
+<PageLayout
+  title="Resources"
+  description="Free tools, guides, and essays from Obsidian Web Co. — website audits, pricing calculator, tech stack transparency, referral program, and more."
+>
+  <section class="res-hero">
+    <div class="container">
+      <span class="section-label">[ i ] / resources</span>
+      <h1 class="res-title">Free tools &amp; <em class="serif-accent">honest guides.</em></h1>
+      <p class="res-intro">
+        Everything here is free. No email gate on the calculator. The audit does ask for your email — because I have to send the PDF somewhere — but I don't add you to anything. The idea is: if you find any of it useful, you already know where to reach me.
+      </p>
+    </div>
+  </section>
+
+  <section class="res-grid-section">
+    <div class="container">
+      <ul class="res-grid">
+        {resources.map((r, i) => (
+          <li class="res-card">
+            <a href={r.href} class="res-link">
+              <div class="res-num">{String(i + 1).padStart(2, '0')}</div>
+              <div class="res-body">
+                <span class="res-kind">{r.kind}</span>
+                <h2 class="res-name">{r.title}</h2>
+                <p class="res-desc">{r.body}</p>
+                <span class="res-cta">
+                  {r.cta}
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                    <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                  </svg>
+                </span>
+              </div>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <CTASection
+    heading="Missing something?"
+    subheading="If there's a guide or tool you wish existed, tell me. Most of what's here started as a question a client asked."
+    ctaText="Ask for it"
+  />
+</PageLayout>
+
+<style>
+  .res-hero { padding: 8rem 0 3rem; }
+  .res-title {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    margin: 0.75rem 0 1.5rem;
+  }
+  .res-intro {
+    font-size: 1.1rem;
+    color: var(--muted);
+    line-height: 1.65;
+    max-width: 680px;
+  }
+
+  .res-grid-section { padding: 3rem 0 5rem; }
+  .res-grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  @media (max-width: 768px) { .res-grid { grid-template-columns: 1fr; } }
+
+  .res-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    transition: border-color 0.3s ease, transform 0.3s ease;
+  }
+  .res-card:hover { border-color: var(--ember); transform: translateY(-2px); }
+
+  .res-link {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 1.5rem;
+    padding: 2rem;
+    color: inherit;
+    text-decoration: none;
+  }
+  .res-link:hover { text-decoration: none; }
+  @media (max-width: 500px) {
+    .res-link { grid-template-columns: 1fr; gap: 0.75rem; padding: 1.5rem; }
+  }
+
+  .res-num {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 2.25rem;
+    color: var(--ember);
+    line-height: 1;
+  }
+
+  .res-kind {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+  }
+  .res-name {
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+    line-height: 1.15;
+    margin: 0.5rem 0 0.75rem;
+  }
+  .res-desc {
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.55;
+    margin-bottom: 1.25rem;
+  }
+  .res-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ember);
+    transition: gap 0.2s ease;
+  }
+  .res-link:hover .res-cta { gap: 0.75rem; }
+</style>

@@ -17,6 +17,20 @@ const formspree_id = import.meta.env.PUBLIC_FORMSPREE_ID || 'YOUR_FORMSPREE_ID';
         <p class="contact-lead">
           Tell us about your project below. We respond <strong>{site.responseTime}</strong> — usually much faster.
         </p>
+
+        <div class="contact-badges" role="list">
+          <span class="contact-badge" role="listitem">
+            <span class="badge-dot"></span>
+            Typically replies in under 4 hours
+          </span>
+          <span class="contact-badge" role="listitem">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <rect x="3" y="11" width="18" height="11" rx="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            Form is encrypted + spam-filtered
+          </span>
+        </div>
       </div>
 
       <div class="contact-grid">
@@ -96,7 +110,7 @@ const formspree_id = import.meta.env.PUBLIC_FORMSPREE_ID || 'YOUR_FORMSPREE_ID';
             </button>
 
             <p class="form-disclaimer">
-              By submitting, you agree to our <a href="/privacy">Privacy Policy</a>. We'll never share your info.
+              🔒 Submissions go directly to <strong>drake@obsidianwebco.com</strong> via encrypted Formspree. Never sold, never shared, never spammed. By submitting, you agree to our <a href="/privacy">Privacy Policy</a>.
             </p>
           </form>
         </div>
@@ -245,6 +259,42 @@ const formspree_id = import.meta.env.PUBLIC_FORMSPREE_ID || 'YOUR_FORMSPREE_ID';
   .contact-lead strong {
     color: var(--text);
     font-weight: 500;
+  }
+
+  /* Response-time + encryption trust badges below the lead copy.
+     Pulse dot on the first badge signals live/accepting; lock icon
+     on the second signals data security. */
+  .contact-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1rem;
+    margin-top: 1.5rem;
+  }
+  .contact-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.85rem;
+    background: rgba(233, 162, 70, 0.06);
+    border: 1px solid rgba(233, 162, 70, 0.25);
+    border-radius: var(--radius-pill);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: var(--ember);
+  }
+  .badge-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #4ade80;
+    box-shadow: 0 0 8px #4ade80;
+    animation: badge-pulse 2s ease-in-out infinite;
+  }
+  @keyframes badge-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
   }
 
   .contact-grid {

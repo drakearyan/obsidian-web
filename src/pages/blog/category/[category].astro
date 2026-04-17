@@ -1,0 +1,264 @@
+---
+/*
+  Blog category landing pages.
+  Each of the 5 categories (design, seo, performance, business, lynchburg)
+  gets its own page listing posts in that category. Good for SEO — each
+  category page becomes a ranked landing page for that topic.
+*/
+import PageLayout from '../../../layouts/PageLayout.astro';
+import CTASection from '../../../components/CTASection.astro';
+import { getCollection } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+
+export const getStaticPaths = (async () => {
+  const all_posts = await getCollection('blog', ({ data }) => !data.draft);
+  const categories = [...new Set(all_posts.map((p) => p.data.category))];
+  return categories.map((category) => ({
+    params: { category },
+    props: {
+      category,
+      posts: all_posts
+        .filter((p) => p.data.category === category)
+        .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime()),
+    },
+  }));
+}) satisfies GetStaticPaths;
+
+const { category, posts } = Astro.props;
+
+const category_meta: Record<string, { label: string; kicker: string; title: string; accent: string; intro: string; metaTitle: string; metaDescription: string }> = {
+  design: {
+    label: 'Design',
+    kicker: '[◆] / category / design',
+    title: 'Design',
+    accent: 'essays on what actually converts.',
+    intro: "Notes on layout, type, color, and the design patterns that quietly decide whether a visitor becomes a customer. Written for small-business owners, not other designers.",
+    metaTitle: 'Web Design Essays — Obsidian Web Co.',
+    metaDescription: 'Essays on web design for small-business owners — layout, typography, visual hierarchy, and the patterns that convert visitors into customers.',
+  },
+  seo: {
+    label: 'SEO',
+    kicker: '[⊙] / category / seo',
+    title: 'SEO',
+    accent: 'making Google find you.',
+    intro: "Field notes on showing up for the searches your customers actually type — without hiring an SEO agency or writing 3,000-word filler posts.",
+    metaTitle: 'Small-Business SEO Essays — Obsidian Web Co.',
+    metaDescription: 'Practical SEO essays for small businesses — local search, Google Business Profile, schema markup, technical SEO that actually ranks.',
+  },
+  performance: {
+    label: 'Performance',
+    kicker: '[◊] / category / performance',
+    title: 'Performance',
+    accent: 'speed as a business line item.',
+    intro: "Why a one-second load-time drop costs you 7% of conversions, why page builders are the usual suspect, and what to do when your site is slow.",
+    metaTitle: 'Website Performance Essays — Obsidian Web Co.',
+    metaDescription: 'Essays on website performance, Core Web Vitals, page speed, and why speed is a revenue line item — not a developer vanity metric.',
+  },
+  business: {
+    label: 'Business',
+    kicker: '[§] / category / business',
+    title: 'Business',
+    accent: 'the money side of websites.',
+    intro: "Pricing, hiring, custom vs. template, what a website really costs, and how to tell when the quote you got is fair, high, or a rip-off.",
+    metaTitle: 'Web Design Business Essays — Obsidian Web Co.',
+    metaDescription: 'Essays on the business of websites — pricing tiers, hiring a designer, custom vs. template, and what a fair web design quote looks like.',
+  },
+  lynchburg: {
+    label: 'Lynchburg',
+    kicker: '[◎] / category / lynchburg',
+    title: 'Lynchburg',
+    accent: 'written for Central Virginia.',
+    intro: "Essays specifically for business owners in Lynchburg, Forest, Madison Heights, Amherst, Bedford, Appomattox, Altavista, and Rustburg. Local market, local search, local hiring.",
+    metaTitle: 'Lynchburg Web Design Essays — Obsidian Web Co.',
+    metaDescription: 'Essays on web design, SEO, and local marketing specifically for Lynchburg, Forest, Madison Heights, and Central Virginia business owners.',
+  },
+};
+
+const meta = category_meta[category] || {
+  label: category,
+  kicker: `[●] / category / ${category}`,
+  title: category.charAt(0).toUpperCase() + category.slice(1),
+  accent: 'essays.',
+  intro: '',
+  metaTitle: `${category} Essays — Obsidian Web Co.`,
+  metaDescription: '',
+};
+
+const format_date = (d: Date) =>
+  d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+
+<PageLayout
+  title={meta.metaTitle}
+  description={meta.metaDescription}
+  canonical={`https://obsidianwebco.com/blog/category/${category}`}
+>
+  <section class="cat-hero">
+    <div class="container">
+      <span class="section-label">{meta.kicker}</span>
+      <h1 class="cat-title">{meta.title} <em class="serif-accent">{meta.accent}</em></h1>
+      {meta.intro && <p class="cat-intro">{meta.intro}</p>}
+      <p class="cat-count">{posts.length} {posts.length === 1 ? 'essay' : 'essays'}</p>
+    </div>
+  </section>
+
+  <section class="cat-list">
+    <div class="container">
+      <ul class="post-list">
+        {posts.map((p, i) => (
+          <li class="post-row">
+            <a href={`/blog/${p.id}/`} class="post-link">
+              <span class="post-index">{String(i + 1).padStart(2, '0')}</span>
+              <div class="post-body">
+                <div class="post-meta">
+                  <time datetime={p.data.publishDate.toISOString()}>{format_date(p.data.publishDate)}</time>
+                  <span>{p.data.readingTime} min</span>
+                  {p.data.featured && <span class="post-featured">Featured</span>}
+                </div>
+                <h2 class="post-title">{p.data.title}</h2>
+                <p class="post-desc">{p.data.description}</p>
+              </div>
+              <span class="post-arrow" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                </svg>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <div class="back-link">
+        <a href="/blog">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+          </svg>
+          All essays
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <CTASection />
+</PageLayout>
+
+<style>
+  .cat-hero { padding: 8rem 0 3rem; }
+  .cat-title {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    margin: 0.75rem 0 1.5rem;
+  }
+  .cat-intro {
+    font-size: 1.1rem;
+    color: var(--muted);
+    line-height: 1.65;
+    max-width: 680px;
+  }
+  .cat-count {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ember);
+    margin-top: 1.25rem;
+  }
+
+  .cat-list { padding: 3rem 0 5rem; }
+
+  .post-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-top: 1px solid var(--border);
+  }
+  .post-row { border-bottom: 1px solid var(--border); }
+  .post-link {
+    display: grid;
+    grid-template-columns: 60px 1fr auto;
+    gap: 2rem;
+    padding: 2.25rem 0.5rem;
+    color: inherit;
+    text-decoration: none;
+    align-items: center;
+    transition: background 0.25s ease, padding 0.25s ease;
+  }
+  .post-link:hover {
+    background: var(--surface);
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    text-decoration: none;
+  }
+  @media (max-width: 700px) {
+    .post-link { grid-template-columns: auto 1fr; gap: 1.25rem; padding: 1.75rem 0.25rem; }
+    .post-arrow { display: none; }
+  }
+
+  .post-index {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--ember);
+    letter-spacing: 0.1em;
+    align-self: start;
+    padding-top: 0.4rem;
+  }
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .post-featured {
+    color: var(--ember);
+    padding: 0.15rem 0.5rem;
+    border: 1px solid var(--ember);
+    border-radius: var(--radius-pill);
+  }
+  .post-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.45rem, 2.5vw, 2rem);
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+  }
+  .post-link:hover .post-title { color: var(--ember); }
+  .post-desc {
+    font-size: 0.98rem;
+    color: var(--muted);
+    line-height: 1.55;
+    max-width: 720px;
+  }
+  .post-arrow {
+    color: var(--muted);
+    transition: color 0.2s ease, transform 0.2s ease;
+  }
+  .post-link:hover .post-arrow {
+    color: var(--ember);
+    transform: translateX(4px);
+  }
+
+  .back-link {
+    margin-top: 3rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .back-link a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .back-link a:hover {
+    color: var(--ember);
+    text-decoration: none;
+  }
+</style>

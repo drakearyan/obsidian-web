@@ -69,6 +69,12 @@ const format_date = (d: Date) =>
       <div class="list-head">
         <span class="section-label">[ ii ] / all essays</span>
         <h2 class="list-title">The <em class="serif-accent">archive.</em></h2>
+        <nav class="blog-cats" aria-label="Blog categories">
+          <span class="blog-cats-label">Browse:</span>
+          {Object.entries(category_labels).map(([slug, label]) => (
+            <a href={`/blog/category/${slug}`} class="blog-cat-pill">{label}</a>
+          ))}
+        </nav>
       </div>
 
       <ul class="post-list">
@@ -200,6 +206,39 @@ const format_date = (d: Date) =>
   .blog-list { padding: 5rem 0; border-top: 1px solid var(--border); }
 
   .list-head { margin-bottom: 3rem; max-width: 900px; }
+
+  .blog-cats {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+    margin-top: 1.5rem;
+  }
+  .blog-cats-label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin-right: 0.25rem;
+  }
+  .blog-cat-pill {
+    padding: 0.35rem 0.85rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+  .blog-cat-pill:hover {
+    color: var(--ember);
+    border-color: var(--ember);
+    text-decoration: none;
+  }
 
   .list-title {
     font-size: clamp(2rem, 4.5vw, 3.25rem);
