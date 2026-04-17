@@ -127,18 +127,19 @@ const formspree_id = import.meta.env.PUBLIC_FORMSPREE_ID || 'YOUR_FORMSPREE_ID';
             </p>
           </div>
 
-          <div class="contact-card contact-card--map">
+          <figure class="contact-card contact-card--map">
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d410167.7!2d-79.3!3d37.4!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89b3d00cd4af7a27%3A0x8146b3f748c7b7e0!2sLynchburg%2C%20VA!5e0!3m2!1sen!2sus!4v1700000000000"
               width="100%"
               height="240"
-              style="border:0; border-radius: 2px; filter: grayscale(0.45) contrast(1.05);"
+              style="border:0; border-radius: var(--radius);"
               allowfullscreen
               loading="lazy"
               referrerpolicy="no-referrer-when-downgrade"
-              title="Lynchburg, VA map"
+              title="Map of Lynchburg, VA showing Obsidian Web Co. service area"
             ></iframe>
-          </div>
+            <figcaption class="sr-only">Map of Lynchburg, Virginia — Obsidian Web Co.'s service area. We work with clients across Central Virginia and remotely nationwide.</figcaption>
+          </figure>
         </aside>
       </div>
     </div>

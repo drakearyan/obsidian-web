@@ -313,10 +313,15 @@ const addons = [
     box-shadow: 0 0 0 1px var(--accent);
   }
 
+  /* WCAG 2.4.7 — native input is visually hidden (position: absolute;
+     opacity: 0) so the focus ring has to land on the visible card.
+     Box-shadow renders cleanly inside the card boundary without an
+     ugly offset, and stacks with the checked-state shadow below. */
   .radio-card input:focus-visible + .radio-card-inner,
   .check-card input:focus-visible + .check-card-inner {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
+    outline: none;
+    border-color: var(--ember);
+    box-shadow: 0 0 0 3px var(--ember);
   }
 
   .radio-title,

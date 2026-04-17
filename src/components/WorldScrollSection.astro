@@ -249,9 +249,45 @@
       requestAnimationFrame(update);
     };
 
+    // IntersectionObserver gate — only listen to scroll when the section
+    // is anywhere near the viewport. On long pages (home scrolls ~12,000px)
+    // this saves hundreds of rAF ticks while the user scrolls the services,
+    // portfolio, and blog sections far below the globe.
+    let scrollBound = false;
+    const bind = () => {
+      if (scrollBound) return;
+      scrollBound = true;
+      window.addEventListener('scroll', onScroll, { passive: true });
+    };
+    const unbind = () => {
+      if (!scrollBound) return;
+      scrollBound = false;
+      window.removeEventListener('scroll', onScroll);
+    };
+
     measure();
     update();
-    window.addEventListener('scroll', onScroll, { passive: true });
+
+    if ('IntersectionObserver' in window) {
+      // rootMargin 50% above + below = bind scroll listener when section
+      // is within one viewport height of being visible. Prevents stutter
+      // at the moment the user first crosses into the section.
+      const io = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            bind();
+            update();
+          } else {
+            unbind();
+          }
+        }
+      }, { rootMargin: '50% 0px 50% 0px' });
+      io.observe(section);
+    } else {
+      // Old browser fallback — just always listen
+      bind();
+    }
+
     window.addEventListener('resize', () => { measure(); onScroll(); }, { passive: true });
   })();
 </script>
