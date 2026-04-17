@@ -1,0 +1,71 @@
+---
+import VerticalPage from '../components/VerticalPage.astro';
+
+const pains = [
+  {
+    title: 'The menu is a PDF',
+    body: "Nobody reads it on mobile. Google can't index it. You can't update the specials fast. Your competitor's menu loads in 1 second as real text.",
+  },
+  {
+    title: 'No reservation or tap-to-call',
+    body: "A hungry diner on the corner of Main wants to book in 3 taps. If they can't, they're at the restaurant next door in 5 minutes. That's a real lost table.",
+  },
+  {
+    title: 'Stock food photography',
+    body: 'Generic photos of "a steak" read as fake in half a second. People want to see YOUR food — your plating, your light, your kitchen.',
+  },
+];
+
+const wins = [
+  {
+    title: 'Menu as plain text, updated in 30 seconds',
+    body: 'You edit a Google Doc, the site updates. Google indexes every dish. Diners with disabilities can read it. Diners on 4G see it instantly.',
+  },
+  {
+    title: 'Tap-to-call + OpenTable above the fold',
+    body: 'Your phone number is one tap on mobile. Reservation button — OpenTable, Resy, Tock, or Google Reserve — sits in the header on every page, not buried in a contact form.',
+  },
+  {
+    title: 'Real photos, real guidance',
+    body: "I help you shoot dishes with an iPhone and natural light — no studio budget needed. Captions that sell the story of the dish, not just what's on the plate.",
+  },
+];
+
+const faqs = [
+  {
+    question: 'Can I update the menu myself without calling you?',
+    answer: "Yes. Menu lives in a Google Doc you own. Edit, save, the site updates within a minute. No portal to log into, no agency to ping.",
+  },
+  {
+    question: 'Do you integrate with OpenTable, Resy, or Tock?',
+    answer: "All three. Plus Google Reserve and Tock. I wire the reservation widget into the header + a sticky mobile button so it's always one tap away.",
+  },
+  {
+    question: 'How fast do these sites load on 4G?',
+    answer: "Target is sub-1.5 seconds on 4G mobile. The restaurant case study on my portfolio hit 98/100 PageSpeed on mobile with full photography + an OpenTable embed.",
+  },
+  {
+    question: 'What about Google Maps and local SEO?',
+    answer: "Local SEO is a big chunk of a restaurant's traffic. I tune schema markup, integrate with Google Business Profile, and structure the content for 'restaurants near me' queries. Usually see Maps ranking improvements within 6–8 weeks.",
+  },
+  {
+    question: 'Can I keep my existing domain?',
+    answer: "Yes, always. Your domain stays yours — I just update the DNS to point to the new site. No lock-in, no 'managed hosting' contract.",
+  },
+];
+---
+
+<VerticalPage
+  slug="/web-design-restaurants"
+  kicker="[ ● ] / for restaurants"
+  title="Websites for Lynchburg restaurants"
+  titleAccent="that actually fill tables."
+  subtitle="Most restaurant sites in Central Virginia lose reservations at the tap. Custom-built sites that show real food, book tables in two taps, and load in a second on the Main Street 4G."
+  pains={pains}
+  wins={wins}
+  faqs={faqs}
+  caseStudyIndustrySlug="restaurant"
+  blogTags={['lynchburg', 'conversion', 'restaurants']}
+  metaTitle="Restaurant Web Design — Lynchburg, VA"
+  metaDescription="Custom websites for Lynchburg restaurants — fast menus, tap-to-call, OpenTable integration, local SEO. Built to fill tables, not brochures."
+/>

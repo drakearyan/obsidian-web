@@ -1,0 +1,71 @@
+---
+import VerticalPage from '../components/VerticalPage.astro';
+
+const pains = [
+  {
+    title: 'Generic "Meet the Team" pages',
+    body: "Every small-firm site has the same grid of suit photos and the same bullet-point bios. Nothing about your actual approach, your wins, or why you'd be different for this case.",
+  },
+  {
+    title: 'No online consultation booking',
+    body: "Prospect finds you at 8pm, wants to talk, can't book. They call the next firm tomorrow. You play phone tag for 2 days. By then they've already hired someone.",
+  },
+  {
+    title: 'No practice-area depth',
+    body: 'One "services" page with 6 bullet points. Competing for "Lynchburg estate attorney" against Richmond firms who have full dedicated landing pages. You\'re invisible on page 2.',
+  },
+];
+
+const wins = [
+  {
+    title: 'One page per practice area',
+    body: "Real content — FAQs, process, who it's right for — for each practice area. Each page targets its own search term. Each ranks separately. Each converts its own prospect.",
+  },
+  {
+    title: 'Calendly-backed consultation flow',
+    body: "Prospect self-books a consultation — 30-min or 60-min slots, paid or free — at 8pm on their phone. Lands on your calendar. You prep in advance, not in a phone-tag loop.",
+  },
+  {
+    title: 'Local schema for Central Virginia search',
+    body: "LocalBusiness + Attorney schema, NAP consistency, practice-area-specific structured data. Targets the 'lynchburg [practice area] attorney' queries where the bigger firms can't match your local focus.",
+  },
+];
+
+const faqs = [
+  {
+    question: 'Can I still use LexisNexis, Clio, MyCase, or other practice management tools?',
+    answer: "Yes. The site is the client-facing front — your practice management stays exactly as it is. I just make sure the intake + booking flow connects cleanly to whatever you use internally.",
+  },
+  {
+    question: 'How do you handle testimonials given Virginia bar ethics rules?',
+    answer: "Carefully. Virginia Bar Rule 7.2 allows testimonials with appropriate disclaimers. I include the required 'case results depend on facts' language, only use explicitly consented quotes, and avoid comparison claims. I'll flag anything that feels risky before it ships.",
+  },
+  {
+    question: 'Do you write the practice area content?',
+    answer: "I can — \$200–\$500 per practice area page depending on depth. Most attorneys prefer to write it themselves (you know the law better than I do) and I polish it for web. Either works.",
+  },
+  {
+    question: 'Are the consultation forms secure?',
+    answer: 'Forms use encrypted delivery. For anything subject to attorney-client privilege, I recommend a simple "schedule a call to discuss details" flow rather than letting prospects write case details into a web form. We\'ll set it up based on your privilege posture.',
+  },
+  {
+    question: 'How does this rank against bigger Richmond firms?',
+    answer: "You rank BETTER for local Lynchburg queries because (a) you're physically in Lynchburg, (b) the site is specifically tuned for Central Virginia geography, and (c) the bigger firms don't bother optimizing for smaller markets. My legal case study shows #3 Google ranking for primary keyword within 90 days.",
+  },
+];
+---
+
+<VerticalPage
+  slug="/web-design-legal"
+  kicker="[ § ] / for law firms"
+  title="Websites for law firms"
+  titleAccent="that triple qualified consultations."
+  subtitle="Most small-firm sites in Central Virginia look like a yellow-pages ad with a photo slapped on. When your reputation depends on trust and your competition includes the big Richmond firms, a custom site is the difference between a phone call and a cold click."
+  pains={pains}
+  wins={wins}
+  faqs={faqs}
+  caseStudyIndustrySlug="legal"
+  blogTags={['local seo', 'lynchburg', 'conversion']}
+  metaTitle="Law Firm Web Design — Lynchburg, VA"
+  metaDescription="Custom websites for Central Virginia law firms — practice-area landing pages, online consultation booking, local SEO. Triple qualified consultation bookings."
+/>

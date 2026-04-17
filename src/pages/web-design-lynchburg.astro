@@ -1,0 +1,70 @@
+---
+import VerticalPage from '../components/VerticalPage.astro';
+
+const pains = [
+  {
+    title: "The 'cheap local' designer builds on a template",
+    body: "$400 quote, site live next week, looks like every other small business in Lynchburg because it's the same Squarespace template with swapped photos. You get what you pay for — which is a template, not a website.",
+  },
+  {
+    title: 'The big Richmond or DC agency treats you like a small account',
+    body: "$25K+ quote, six-month timeline, three layers of account managers between you and the person actually designing. You're paying for their office, their sales team, and their HR — not your site.",
+  },
+  {
+    title: "The remote freelancer doesn't speak Lynchburg",
+    body: "Someone optimizing for San Francisco tech startups doesn't know what 'near the Liberty campus' means, doesn't know which neighborhoods your customers drive in from, can't meet you at Jitters to review mockups.",
+  },
+];
+
+const wins = [
+  {
+    title: '\$500–\$6K tier pricing — one-person studio rates',
+    body: "Custom work, custom design, custom code — without agency overhead. Starter for a 3-page site, Professional for a full marketing site, Premium when you need e-commerce or custom functionality. Published tiers, no hourly mystery.",
+  },
+  {
+    title: 'Based in Lynchburg. Meet in person if you want.',
+    body: "Coffee at Jitters, lunch at Shoemakers, whatever works. I live here. I know your competition, your market, the search terms your customers actually use. That insight is part of the deliverable.",
+  },
+  {
+    title: 'Every site tuned for Central Virginia search',
+    body: "LocalBusiness schema, Google Business Profile optimization, city + neighborhood + county coverage in copy and structured data. 'Restaurant near me', 'plumber Lynchburg VA', 'Forest dentist' — real queries your customers type.",
+  },
+];
+
+const faqs = [
+  {
+    question: 'Do you work with businesses outside of Lynchburg?',
+    answer: "Yes. Most work is remote regardless of location. Local businesses in Forest, Madison Heights, Amherst, Bedford, and Appomattox get the same tier pricing. Out-of-state clients are fine too — just means no in-person meetings.",
+  },
+  {
+    question: 'Do we meet in person or is it all remote?',
+    answer: "Your call. Most clients prefer remote — Zoom for kickoff, email for updates, Slack or text for day-to-day. If you want to meet in person, I'm happy to grab coffee anywhere in Lynchburg. I'm not going to push you either way.",
+  },
+  {
+    question: "How do you understand my industry if I'm not a restaurant or law firm?",
+    answer: "Discovery call is 30 minutes, and it's mostly me asking about your business. I also spend 1–2 hours researching your specific industry + your top 3 local competitors before the first mockup. You'll see the homework in the proposal.",
+  },
+  {
+    question: 'Can you help with Google Business Profile?',
+    answer: "Yes, it's usually part of the launch package. I write the GBP description, categories, and FAQ; you provide photos and hours. After launch, I give you a copy-paste monthly post template so you can keep the listing active.",
+  },
+  {
+    question: "What's the typical Lynchburg project timeline?",
+    answer: "Starter: 5–7 business days. Professional: 10–14 business days. Premium: 3–5 weeks. Lynchburg projects tend to ship on the faster end of that range because decision-makers are usually the owner — no committee review delays.",
+  },
+];
+---
+
+<VerticalPage
+  slug="/web-design-lynchburg"
+  kicker="[ ◎ ] / lynchburg, va"
+  title="Web design in Lynchburg, VA"
+  titleAccent="for local businesses that mean it."
+  subtitle="I build custom websites for small businesses in Lynchburg — restaurants, law firms, dentists, contractors, shops, studios. I live here. I meet in person if you want. Your site isn't a commodity — it's how new customers find you, and it should be built by someone who actually cares if it works."
+  pains={pains}
+  wins={wins}
+  faqs={faqs}
+  blogTags={['lynchburg', 'local seo']}
+  metaTitle="Web Design Lynchburg VA — Custom Sites for Local Businesses"
+  metaDescription="Custom web design for Lynchburg, VA small businesses. \$500–\$6K tiers, based locally, meets in person, every site tuned for Central Virginia search."
+/>

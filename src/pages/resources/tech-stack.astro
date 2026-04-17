@@ -1,0 +1,233 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import CTASection from '../../components/CTASection.astro';
+
+const stack = [
+  {
+    layer: 'Framework',
+    tool: 'Astro',
+    why: 'Static-first. Ships zero JavaScript by default. 95+ Lighthouse out of the box. Your site stays fast forever because it has to be — there is no "plugin you can install to speed it up."',
+    cost: 'Free, open source',
+  },
+  {
+    layer: 'Styling',
+    tool: 'Tailwind CSS + CSS variables',
+    why: 'Small footprint, no framework lock-in. Your design tokens (colors, fonts, spacing) live in one file and are portable to any future framework.',
+    cost: 'Free',
+  },
+  {
+    layer: 'Content',
+    tool: 'MDX (Astro content collections)',
+    why: 'Blog posts are Markdown files in git. No CMS to log into, no database to pay for, no vendor lock-in. You can edit a post from any text editor.',
+    cost: 'Free',
+  },
+  {
+    layer: 'Hosting',
+    tool: 'Vercel',
+    why: 'Auto-deploys on every git push. Global CDN, free HTTPS, free preview URLs for every branch. Free tier covers most small-business traffic.',
+    cost: 'Free (Hobby) → \$20/mo (Pro, only if you exceed 100GB bandwidth)',
+  },
+  {
+    layer: 'Forms',
+    tool: 'Formspree',
+    why: 'Contact forms post directly to Formspree. It emails you every submission. Honeypot spam protection, rate limiting, AJAX-friendly. No backend server required.',
+    cost: 'Free (50 submissions/mo) → \$10/mo if you need more',
+  },
+  {
+    layer: 'Email / list',
+    tool: 'Mailchimp',
+    why: 'Newsletter signups, audit follow-ups, nurture sequences. Also provides the physical-address footer required by CAN-SPAM.',
+    cost: 'Free (up to 500 contacts, 1K sends/mo) → \$13/mo for Essentials',
+  },
+  {
+    layer: 'Booking',
+    tool: 'Calendly',
+    why: 'Prospect self-books a discovery call 24/7. Syncs to your Google Calendar. No phone-tag.',
+    cost: 'Free',
+  },
+  {
+    layer: 'Analytics',
+    tool: 'Google Analytics 4 + Microsoft Clarity',
+    why: 'GA4 for traffic + conversion tracking. Clarity for session recordings + heatmaps so you see what real users do, not just what numbers say.',
+    cost: 'Free, both of them',
+  },
+  {
+    layer: 'Domain + DNS',
+    tool: 'Porkbun',
+    why: 'Cheapest registrar with a clean UI. Free WHOIS privacy. DNS panel is straightforward for adding MX / SPF / DKIM records later.',
+    cost: '~\$11/year for a .com',
+  },
+  {
+    layer: 'Email hosting',
+    tool: 'Google Workspace',
+    why: "drake@obsidianwebco.com, calendar, docs, drive. Standard professional stack. Required before you can use most cold-outreach tools.",
+    cost: '\$7.20/month per user',
+  },
+];
+---
+
+<PageLayout
+  title="Tech Stack"
+  description="Exactly what we use to build and run Obsidian Web Co. websites — and what it would cost you to keep running after launch."
+>
+  <section class="ts-hero">
+    <div class="container">
+      <span class="section-label">[ i ] / tech stack</span>
+      <h1 class="ts-title">What we use, <em class="serif-accent">and what it costs you after.</em></h1>
+      <p class="ts-intro">
+        Most web design shops won't tell you what they're building on. That's a tell. You end up renting a site on someone else's platform with their ongoing fees and no way to take it with you when the relationship ends.
+      </p>
+      <p class="ts-intro">
+        Here's the entire stack Obsidian Web Co. uses. Each tool is named, each tier is published, and each line is something you can keep running yourself after launch. Total ongoing cost for a typical small-business site: usually under \$20/month in year one.
+      </p>
+    </div>
+  </section>
+
+  <section class="ts-table-section">
+    <div class="container">
+      <div class="ts-table">
+        <div class="ts-row ts-row--head">
+          <div>Layer</div>
+          <div>Tool</div>
+          <div>Why</div>
+          <div>What it costs you</div>
+        </div>
+        {stack.map((s) => (
+          <div class="ts-row">
+            <div class="ts-layer">{s.layer}</div>
+            <div class="ts-tool">{s.tool}</div>
+            <div class="ts-why">{s.why}</div>
+            <div class="ts-cost">{s.cost}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="ts-own-section">
+    <div class="container">
+      <div class="ts-own">
+        <span class="section-label">[ ii ] / ownership</span>
+        <h2 class="ts-own-title">You own everything. <em class="serif-accent">Full stop.</em></h2>
+        <ul class="ts-own-list">
+          <li><strong class="ts-highlight">Domain:</strong> in your name at Porkbun. I have no control.</li>
+          <li><strong class="ts-highlight">Code:</strong> pushed to your GitHub account. Full source, clean history.</li>
+          <li><strong class="ts-highlight">Hosting:</strong> deployed to your Vercel account. You can kick me out and re-deploy in 5 minutes.</li>
+          <li><strong class="ts-highlight">Content:</strong> blog posts, images, copy — all in your git repo.</li>
+          <li><strong class="ts-highlight">Analytics:</strong> GA4 + Clarity are both connected to your Google accounts.</li>
+          <li><strong class="ts-highlight">Email list:</strong> Mailchimp audience is on your account.</li>
+        </ul>
+        <p class="ts-own-note">
+          No "managed hosting" lock-in. No proprietary CMS you can't export from. No domain I register in my name. If we stop working together for any reason, you can keep everything running without me.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <CTASection
+    heading="Want a site built on this stack?"
+    subheading="30-minute discovery call — I'll walk you through the architecture specific to your business and what you'd pay."
+    ctaText="Book a call"
+    ctaHref="/contact"
+  />
+</PageLayout>
+
+<style>
+  .ts-hero { padding: 8rem 0 3rem; }
+  .ts-title {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    margin: 0.75rem 0 1.5rem;
+  }
+  .ts-intro {
+    font-size: 1.1rem;
+    color: var(--muted);
+    line-height: 1.65;
+    max-width: 720px;
+    margin-bottom: 1.25rem;
+  }
+
+  .ts-table-section { padding: 3rem 0; }
+  .ts-table {
+    border-top: 1px solid var(--border);
+  }
+  .ts-row {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 3fr 1.5fr;
+    gap: 2rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--border);
+    align-items: start;
+  }
+  .ts-row--head {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ember);
+    padding: 1rem 0;
+  }
+  @media (max-width: 900px) {
+    .ts-row { grid-template-columns: 1fr; gap: 0.5rem; padding: 1.5rem 0; }
+    .ts-row--head { display: none; }
+  }
+
+  .ts-layer {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+  .ts-tool {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    color: var(--text);
+  }
+  .ts-why {
+    color: var(--text);
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+  .ts-cost {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--ember);
+  }
+
+  .ts-own-section { padding: 5rem 0; background: var(--surface); border-top: 1px solid var(--border); }
+  .ts-own { max-width: 820px; }
+  .ts-own-title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1;
+    margin: 0.75rem 0 2rem;
+  }
+  .ts-own-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2rem;
+    display: grid;
+    gap: 0.9rem;
+  }
+  .ts-own-list li {
+    font-size: 1rem;
+    color: var(--text);
+    line-height: 1.55;
+    padding-left: 1.25rem;
+    position: relative;
+  }
+  .ts-own-list li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--ember);
+  }
+  .ts-highlight { color: var(--ember); font-weight: 500; }
+  .ts-own-note {
+    font-size: 1rem;
+    color: var(--muted);
+    line-height: 1.65;
+    max-width: 680px;
+  }
+</style>

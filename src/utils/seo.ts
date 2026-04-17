@@ -53,6 +53,38 @@ export function websiteSchema() {
   };
 }
 
+export function breadcrumbSchema(path: string) {
+  // Build a BreadcrumbList from a URL path like "/blog/category/lynchburg"
+  // → Home > Blog > Category > Lynchburg
+  const clean = path.replace(/^\/+|\/+$/g, '');
+  if (!clean) return null; // homepage has no breadcrumb
+
+  const segments = clean.split('/');
+  const items: { '@type': string; position: number; name: string; item: string }[] = [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: site.url },
+  ];
+
+  let acc = '';
+  segments.forEach((seg, i) => {
+    acc += `/${seg}`;
+    const pretty = seg
+      .replace(/-/g, ' ')
+      .replace(/\b\w/g, (c) => c.toUpperCase());
+    items.push({
+      '@type': 'ListItem',
+      position: i + 2,
+      name: pretty,
+      item: `${site.url}${acc}`,
+    });
+  });
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items,
+  };
+}
+
 export function blogPostSchema(opts: {
   title: string;
   description: string;

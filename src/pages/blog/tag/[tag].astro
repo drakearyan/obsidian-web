@@ -1,0 +1,191 @@
+---
+/*
+  Blog tag landing pages — narrower than categories, for cross-cutting
+  topics like "conversion", "lynchburg", "pricing". Each tag becomes its
+  own indexable landing page for internal linking + SEO.
+*/
+import PageLayout from '../../../layouts/PageLayout.astro';
+import CTASection from '../../../components/CTASection.astro';
+import { getCollection } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+
+export const getStaticPaths = (async () => {
+  const all_posts = await getCollection('blog', ({ data }) => !data.draft);
+  const tag_map = new Map<string, typeof all_posts>();
+
+  for (const post of all_posts) {
+    for (const tag of post.data.tags) {
+      const slug = tag.toLowerCase().replace(/\s+/g, '-');
+      if (!tag_map.has(slug)) tag_map.set(slug, []);
+      tag_map.get(slug)!.push(post);
+    }
+  }
+
+  return [...tag_map.entries()].map(([tag_slug, posts]) => ({
+    params: { tag: tag_slug },
+    props: {
+      tag_slug,
+      // Recover the display name from the first post that uses this tag
+      tag_label: posts[0].data.tags.find(
+        (t) => t.toLowerCase().replace(/\s+/g, '-') === tag_slug
+      ) ?? tag_slug,
+      posts: posts.sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime()),
+    },
+  }));
+}) satisfies GetStaticPaths;
+
+const { tag_slug, tag_label, posts } = Astro.props;
+
+const format_date = (d: Date) =>
+  d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+const category_labels: Record<string, string> = {
+  design: 'Design',
+  seo: 'SEO',
+  performance: 'Performance',
+  business: 'Business',
+  lynchburg: 'Lynchburg',
+};
+---
+
+<PageLayout
+  title={`#${tag_label} essays`}
+  description={`Essays tagged "${tag_label}" — deep dives on one specific facet of small-business web design from Obsidian Web Co.`}
+  canonical={`https://obsidianwebco.com/blog/tag/${tag_slug}`}
+>
+  <section class="tag-hero">
+    <div class="container">
+      <span class="section-label">[#] / tag / {tag_label}</span>
+      <h1 class="tag-title">Everything tagged <em class="serif-accent">#{tag_label}</em></h1>
+      <p class="tag-count">{posts.length} {posts.length === 1 ? 'essay' : 'essays'}</p>
+    </div>
+  </section>
+
+  <section class="tag-list">
+    <div class="container">
+      <ul class="post-list">
+        {posts.map((p, i) => (
+          <li class="post-row">
+            <a href={`/blog/${p.id}/`} class="post-link">
+              <span class="post-index">{String(i + 1).padStart(2, '0')}</span>
+              <div class="post-body">
+                <div class="post-meta">
+                  <span class="post-cat">{category_labels[p.data.category] ?? p.data.category}</span>
+                  <time datetime={p.data.publishDate.toISOString()}>{format_date(p.data.publishDate)}</time>
+                  <span>{p.data.readingTime} min</span>
+                </div>
+                <h2 class="post-title">{p.data.title}</h2>
+                <p class="post-desc">{p.data.description}</p>
+              </div>
+              <span class="post-arrow" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                </svg>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <div class="back-link">
+        <a href="/blog">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+          </svg>
+          All essays
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <CTASection />
+</PageLayout>
+
+<style>
+  .tag-hero { padding: 8rem 0 3rem; }
+  .tag-title {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    margin: 0.75rem 0 1.5rem;
+  }
+  .tag-count {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ember);
+  }
+
+  .tag-list { padding: 3rem 0 5rem; }
+
+  .post-list { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--border); }
+  .post-row { border-bottom: 1px solid var(--border); }
+  .post-link {
+    display: grid;
+    grid-template-columns: 60px 1fr auto;
+    gap: 2rem;
+    padding: 2.25rem 0.5rem;
+    color: inherit;
+    text-decoration: none;
+    align-items: center;
+    transition: background 0.25s ease, padding 0.25s ease;
+  }
+  .post-link:hover {
+    background: var(--surface);
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    text-decoration: none;
+  }
+  @media (max-width: 700px) {
+    .post-link { grid-template-columns: auto 1fr; gap: 1.25rem; padding: 1.75rem 0.25rem; }
+    .post-arrow { display: none; }
+  }
+  .post-index {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--ember);
+    letter-spacing: 0.1em;
+    align-self: start;
+    padding-top: 0.4rem;
+  }
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .post-cat { color: var(--ember); }
+  .post-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.45rem, 2.5vw, 2rem);
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+  }
+  .post-link:hover .post-title { color: var(--ember); }
+  .post-desc { font-size: 0.98rem; color: var(--muted); line-height: 1.55; max-width: 720px; }
+  .post-arrow { color: var(--muted); transition: color 0.2s ease, transform 0.2s ease; }
+  .post-link:hover .post-arrow { color: var(--ember); transform: translateX(4px); }
+
+  .back-link {
+    margin-top: 3rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .back-link a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .back-link a:hover { color: var(--ember); text-decoration: none; }
+</style>

@@ -1,0 +1,71 @@
+---
+import VerticalPage from '../components/VerticalPage.astro';
+
+const pains = [
+  {
+    title: "No website, or a Facebook page Google can't crawl",
+    body: "Half the trades businesses in Madison Heights run on Facebook alone. Google indexes almost nothing there. When someone searches 'HVAC madison heights' at 11pm with a broken furnace, the competitor with a real website gets the call.",
+  },
+  {
+    title: 'Hours, phone, and service area buried',
+    body: "Customer wants to know: are you open now, can you come out today, do you even come out to my ZIP code? If those answers aren't visible on the homepage in 3 seconds, they call the next result.",
+  },
+  {
+    title: 'Corporate design on a trades business',
+    body: "A stock photo of a man in a suit sells nothing. Madison Heights customers trust the business that shows up with the right truck and the right tools. Your site should feel like your shop, not a LinkedIn ad.",
+  },
+];
+
+const wins = [
+  {
+    title: 'Emergency-first design',
+    body: "Tap-to-call button huge and sticky on mobile. Service area map. Hours including after-hours emergency rates. 24-hour availability clearly marked if you offer it. The information customers actually need in a crisis, front and center.",
+  },
+  {
+    title: 'Real photos of your work',
+    body: "Your trucks, your crew, your finished work, before/after where it makes sense. iPhone photography is fine — I'll direct the shoot. This beats any stock image because it proves you exist and do the work.",
+  },
+  {
+    title: "'Near me' local schema",
+    body: "LocalBusiness + service-area schema listing every ZIP code you cover — 24572 Madison Heights, 24521 Amherst, 24523 Bedford, whatever your radius is. Shows up in 'HVAC near me' + 'plumber in Madison Heights' instantly.",
+  },
+];
+
+const faqs = [
+  {
+    question: 'Do you work with companies that have no website at all?',
+    answer: "That's often the IDEAL starting point. No bad template to work around, no SEO history to preserve. Starter tier (\$500–\$800) builds a 3-page site — home, services, contact — that gets you indexable on Google within a week.",
+  },
+  {
+    question: "What's the minimum I need to get started?",
+    answer: "Business name, phone number, service area (ZIP codes or counties), list of services, and 5–10 photos of trucks/crew/work. That's literally it. I can write the rest and refine with you during review.",
+  },
+  {
+    question: 'Do you handle Google Business Profile setup?',
+    answer: "Yes — if you don't have one yet, I set it up as part of the launch package. If you have one but it's empty, I fill it in. GBP for trades businesses in Madison Heights is a huge leverage point because most of your competition has a thin listing.",
+  },
+  {
+    question: 'Can I keep my Facebook page and link to it?',
+    answer: "Absolutely. Facebook stays as your social hub; the website is the searchable, trustable business front. I link them together (Facebook icon in footer, 'Follow us' block) but make sure the main conversion path — phone call or quote request — doesn't route through Facebook.",
+  },
+  {
+    question: 'How do I handle emergency calls off-hours?',
+    answer: "Two options: (1) Google Voice with after-hours forwarding to your cell — free, simple; (2) dedicated answering service if you want human triage — ~\$50–\$150/mo through providers like PATLive or AnswerConnect. I'll recommend based on your call volume.",
+  },
+];
+---
+
+<VerticalPage
+  slug="/web-design-madison-heights"
+  kicker="[ ◎ ] / madison heights, va"
+  title="Web design in Madison Heights, VA"
+  titleAccent="for trades, service, and industry."
+  subtitle="Madison Heights is a working town — HVAC, plumbing, automotive, small manufacturing, construction, landscaping. These businesses need websites that show up when someone's furnace dies at 7pm, not brochures that sit unread in a server closet."
+  pains={pains}
+  wins={wins}
+  faqs={faqs}
+  caseStudyIndustrySlug="trades"
+  blogTags={['lynchburg', 'local seo']}
+  metaTitle="Web Design Madison Heights VA — Trades + Service Sites"
+  metaDescription="Custom web design for Madison Heights, VA trades and service businesses — HVAC, plumbing, automotive, construction. Emergency-first design, real photos, local SEO."
+/>

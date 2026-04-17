@@ -1,0 +1,200 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import CTASection from '../components/CTASection.astro';
+
+// Public roadmap — honest quarterly view of what's shipped, in flight, and
+// planned-but-uncommitted. Update the status fields as quarters progress.
+const quarters = [
+  {
+    quarter: 'Q2 2026',
+    status: 'In progress',
+    statusTone: 'active',
+    items: [
+      { label: 'Site launch on obsidianwebco.com', done: true },
+      { label: 'Phase 4 conversion features (audit, refer, Calendly, verticals)', done: true },
+      { label: 'Phase 5 SEO infrastructure (category pages, breadcrumbs, resources hub)', done: true },
+      { label: 'Phase 6 trust signals (Lighthouse badge, support badges, now page)', done: true },
+      { label: 'First 3 Lynchburg small-business client projects shipped', done: false },
+      { label: 'Smartlead cold outreach warmed + first campaign live', done: false },
+    ],
+  },
+  {
+    quarter: 'Q3 2026',
+    status: 'Planned',
+    statusTone: 'planned',
+    items: [
+      { label: 'Retainer program — ongoing site maintenance \$100–\$200/mo', done: false },
+      { label: 'Video testimonials from first 3 shipped clients', done: false },
+      { label: 'First hire: part-time designer (contract, Lynchburg-area preferred)', done: false },
+      { label: 'Open up Premium tier capacity — currently 1 project/month', done: false },
+      { label: 'Expand service area pages — Amherst, Bedford, Appomattox, Altavista, Rustburg', done: false },
+    ],
+  },
+  {
+    quarter: 'Q4 2026',
+    status: 'Planned',
+    statusTone: 'planned',
+    items: [
+      { label: 'Automated 5-minute audit tool (no human review required)', done: false },
+      { label: 'Sales dashboard live — Attio + Smartlead + Claude agents', done: false },
+      { label: 'Graduation from Liberty → Obsidian Web Co. becomes full-time', done: false },
+      { label: 'LLC registration + business bank account', done: false },
+    ],
+  },
+  {
+    quarter: '2027+',
+    status: 'Exploring',
+    statusTone: 'exploring',
+    items: [
+      { label: 'Productized audit subscription — monthly site health report for retainer clients', done: false },
+      { label: 'Open-source the Astro starter behind the Obsidian sites', done: false },
+      { label: 'Industry-specific site templates (restaurants, legal, dental) as standalone products', done: false },
+      { label: 'Move into Richmond / Charlottesville markets', done: false },
+    ],
+  },
+];
+---
+
+<PageLayout
+  title="Roadmap"
+  description="The public Obsidian Web Co. roadmap — what's shipped, what's in flight, what's planned for the next several quarters, and what's being explored."
+>
+  <section class="rm-hero">
+    <div class="container">
+      <span class="section-label">[ → ] / roadmap</span>
+      <h1 class="rm-title">What's <em class="serif-accent">coming next.</em></h1>
+      <p class="rm-intro">
+        Most agencies don't publish their plans. That's a tell. Here's where Obsidian Web Co. is headed — quarter by quarter, with checkmarks against what's actually shipped. Nothing here is a guarantee; it's the current plan. If priorities shift, this page updates.
+      </p>
+    </div>
+  </section>
+
+  <section class="rm-list-sec">
+    <div class="container">
+      <ol class="rm-list">
+        {quarters.map((q, i) => (
+          <li class="rm-row">
+            <div class="rm-meta">
+              <div class="rm-quarter">{q.quarter}</div>
+              <div class={`rm-status rm-status--${q.statusTone}`}>{q.status}</div>
+            </div>
+            <ul class="rm-items">
+              {q.items.map((item) => (
+                <li class={`rm-item ${item.done ? 'rm-item--done' : ''}`}>
+                  <span class="rm-check" aria-hidden="true">
+                    {item.done ? (
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                    ) : (
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>
+                    )}
+                  </span>
+                  <span>{item.label}</span>
+                </li>
+              ))}
+            </ul>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <CTASection
+    heading="Want to shape this?"
+    subheading="If there's something on (or not on) this roadmap you'd want sooner, tell me. Client input is the main thing that moves the order."
+    ctaText="Send a note"
+    ctaHref="/contact"
+  />
+</PageLayout>
+
+<style>
+  .rm-hero { padding: 8rem 0 3rem; }
+  .rm-title {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    margin: 0.75rem 0 1.5rem;
+  }
+  .rm-intro {
+    font-size: 1.1rem;
+    color: var(--muted);
+    line-height: 1.65;
+    max-width: 680px;
+  }
+
+  .rm-list-sec { padding: 3rem 0 5rem; }
+  .rm-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 3rem;
+    border-top: 1px solid var(--border);
+    padding-top: 3rem;
+  }
+  .rm-row {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 2rem;
+  }
+  @media (max-width: 768px) {
+    .rm-row { grid-template-columns: 1fr; gap: 1rem; }
+  }
+
+  .rm-quarter {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    line-height: 1;
+    color: var(--text);
+  }
+  .rm-status {
+    display: inline-block;
+    margin-top: 0.75rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+  .rm-status--active {
+    background: rgba(233, 162, 70, 0.1);
+    border: 1px solid var(--ember);
+    color: var(--ember);
+  }
+  .rm-status--planned {
+    background: rgba(232, 220, 196, 0.05);
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+  .rm-status--exploring {
+    background: transparent;
+    border: 1px dashed var(--border);
+    color: var(--muted-2);
+  }
+
+  .rm-items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.85rem;
+  }
+  .rm-item {
+    display: grid;
+    grid-template-columns: 20px 1fr;
+    gap: 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--muted);
+    align-items: start;
+  }
+  .rm-item--done { color: var(--text); }
+  .rm-check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 24px;
+    color: var(--muted-2);
+  }
+  .rm-item--done .rm-check { color: var(--ember); }
+</style>

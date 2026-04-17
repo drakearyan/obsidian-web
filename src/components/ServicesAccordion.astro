@@ -42,6 +42,13 @@ const roman = ['I', 'II', 'III'];
               ))}
             </ul>
 
+            <div class="spec-support-badge" aria-label="Included with every tier">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+              {i === 2 ? '90-day launch support included' : '30-day launch support included'}
+            </div>
+
             <footer class="spec-footer">
               <a href={`/services#${tier.id}`} class="spec-secondary">
                 Full specification →
@@ -217,6 +224,25 @@ const roman = ['I', 'II', 'III'];
     padding-top: 1rem;
     gap: 1rem;
     flex-wrap: wrap;
+  }
+
+  /* "30/90-day launch support" proof badge rendered between the features
+     list and the footer CTAs. Small but visible — signals Obsidian stays
+     around after launch, which most freelancers don't. */
+  .spec-support-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    padding: 0.45rem 0.9rem;
+    background: rgba(233, 162, 70, 0.08);
+    border: 1px solid rgba(233, 162, 70, 0.3);
+    border-radius: var(--radius-pill);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ember);
   }
 
   .spec-cta,

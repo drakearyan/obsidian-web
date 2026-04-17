@@ -1,0 +1,594 @@
+---
+/*
+  VerticalPage
+  ─────────────────────────────────────────────────────────────
+  Shared template for industry + neighborhood landing pages.
+  Each page file passes content via props; this component
+  handles layout, SEO, and consistent editorial treatment so
+  all 7 pages feel like one family.
+
+  Content model:
+    - Hero: kicker, title, titleAccent, subtitle
+    - Pain points: 3 specific things broken about this vertical
+    - Wins: 3 specific things Obsidian ships to fix them
+    - Proof: one featured case study (by industrySlug) OR a
+      generic "recent work" block for neighborhood pages
+    - FAQ: vertical-specific Q&A
+    - Two CTAs sprinkled: free audit (top) + contact (bottom)
+*/
+
+import PageLayout from '../layouts/PageLayout.astro';
+import { getCollection } from 'astro:content';
+import { case_studies } from '../data/portfolio';
+import { INDUSTRY_COLORS, INDUSTRY_COLORS_DEFAULT } from '../data/industry-colors';
+import { site } from '../data/site';
+
+export interface PainOrWin {
+  title: string;
+  body: string;
+}
+export interface FAQ {
+  question: string;
+  answer: string;
+}
+
+interface Props {
+  /** URL path, used for breadcrumb + canonical. */
+  slug: string;
+  /** "[ ● ] / FOR RESTAURANTS" or "[ ◎ ] / LYNCHBURG, VA" */
+  kicker: string;
+  /** Display title — roman-ish first clause. */
+  title: string;
+  /** Italic amber accent phrase — last clause of the headline. */
+  titleAccent: string;
+  /** One-paragraph hero lead. */
+  subtitle: string;
+  /** 3 pain points specific to this vertical/geo. */
+  pains: PainOrWin[];
+  /** 3 wins Obsidian delivers. */
+  wins: PainOrWin[];
+  /** 3–5 vertical-specific FAQs. */
+  faqs: FAQ[];
+  /** Optional portfolio filter — matches industrySlug. */
+  caseStudyIndustrySlug?: string;
+  /** Optional blog filter — include posts whose tags intersect this array. */
+  blogTags?: string[];
+  /** SEO title + description overrides (default builds from title/subtitle). */
+  metaTitle?: string;
+  metaDescription?: string;
+}
+
+const {
+  slug,
+  kicker,
+  title,
+  titleAccent,
+  subtitle,
+  pains,
+  wins,
+  faqs,
+  caseStudyIndustrySlug,
+  blogTags,
+  metaTitle,
+  metaDescription,
+} = Astro.props;
+
+// Pull the first matching case study, if any
+const featuredCase = caseStudyIndustrySlug
+  ? case_studies.find((c) => c.industrySlug === caseStudyIndustrySlug)
+  : undefined;
+
+const caseThumb = featuredCase
+  ? INDUSTRY_COLORS[featuredCase.industrySlug] || INDUSTRY_COLORS_DEFAULT
+  : null;
+
+// Filter blog posts by tag (intersection)
+let relatedPosts: { slug: string; data: any }[] = [];
+if (blogTags && blogTags.length > 0) {
+  const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+  relatedPosts = allPosts
+    .filter((p) => {
+      const tags = (p.data.tags as string[] | undefined) || [];
+      return tags.some((t) => blogTags.includes(t.toLowerCase()));
+    })
+    .sort((a, b) => (b.data.publishDate as Date).valueOf() - (a.data.publishDate as Date).valueOf())
+    .slice(0, 3)
+    .map((p) => ({ slug: p.id.replace(/\.mdx$/, ''), data: p.data }));
+}
+
+// FAQ JSON-LD so Google can pull these into rich results
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.question,
+    acceptedAnswer: { '@type': 'Answer', text: f.answer },
+  })),
+};
+---
+
+<PageLayout
+  title={metaTitle || `${title} ${titleAccent}`}
+  description={metaDescription || subtitle}
+  canonical={`${site.url}${slug}`}
+  jsonLd={[faqSchema]}
+>
+  <!-- HERO ─────────────────────────────────────────── -->
+  <section class="vp-hero">
+    <div class="container">
+      <span class="section-label section-label--centered">{kicker}</span>
+      <h1 class="vp-title">
+        {title}
+        <em class="serif-accent vp-accent">{titleAccent}</em>
+      </h1>
+      <p class="vp-lead">{subtitle}</p>
+      <div class="vp-hero-cta">
+        <a href="/audit" class="btn-primary">
+          Get a Free Audit
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </a>
+        <a href="/contact" class="arrow-link">
+          Or start a project
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAIN ─────────────────────────────────────────── -->
+  <section class="vp-section vp-pains">
+    <div class="container">
+      <div class="vp-section-head">
+        <span class="section-label">[ × ] / what's broken</span>
+        <h2 class="vp-section-title">Where <em class="serif-accent">you're leaking</em> customers.</h2>
+      </div>
+
+      <div class="vp-grid">
+        {pains.map((p, i) => (
+          <article class="vp-card vp-card--pain">
+            <span class="vp-card-num">{['I.', 'II.', 'III.', 'IV.'][i] || `${i + 1}.`}</span>
+            <h3 class="vp-card-title">{p.title}</h3>
+            <p class="vp-card-body">{p.body}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- WINS ─────────────────────────────────────────── -->
+  <section class="vp-section vp-wins">
+    <div class="container">
+      <div class="vp-section-head">
+        <span class="section-label">[ ✓ ] / what we ship</span>
+        <h2 class="vp-section-title">What <em class="serif-accent">actually gets fixed.</em></h2>
+      </div>
+
+      <div class="vp-grid">
+        {wins.map((w, i) => (
+          <article class="vp-card vp-card--win">
+            <span class="vp-card-num">{['I.', 'II.', 'III.', 'IV.'][i] || `${i + 1}.`}</span>
+            <h3 class="vp-card-title">{w.title}</h3>
+            <p class="vp-card-body">{w.body}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CASE STUDY (if industry match) ────────────────── -->
+  {featuredCase && caseThumb && (
+    <section class="vp-section vp-case">
+      <div class="container">
+        <div class="vp-section-head">
+          <span class="section-label">[ № ] / recent work</span>
+          <h2 class="vp-section-title">Case study: <em class="serif-accent">{featuredCase.client}</em></h2>
+        </div>
+
+        <article class="case-panel">
+          <div class="case-thumb" style={`background: ${caseThumb.bg}; color: ${caseThumb.fg};`}>
+            <span class="case-thumb-initials">
+              {featuredCase.client.split(' ').slice(0, 2).map((w) => w[0]).join('')}
+            </span>
+          </div>
+          <div class="case-body">
+            <h3 class="case-title">{featuredCase.title}</h3>
+            <p class="case-summary">{featuredCase.summary}</p>
+            <p class="case-solution"><strong>What we did:</strong> {featuredCase.solution}</p>
+            <dl class="case-metrics">
+              {featuredCase.results.map((r) => (
+                <div class="case-metric">
+                  <dt>{r.metric}</dt>
+                  <dd>{r.value}</dd>
+                </div>
+              ))}
+            </dl>
+            <a href="/portfolio" class="arrow-link">
+              See full portfolio
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </a>
+          </div>
+        </article>
+      </div>
+    </section>
+  )}
+
+  <!-- RELATED READING ────────────────────────────────── -->
+  {relatedPosts.length > 0 && (
+    <section class="vp-section vp-reading">
+      <div class="container">
+        <div class="vp-section-head">
+          <span class="section-label">[ ∎ ] / related reading</span>
+          <h2 class="vp-section-title">Go <em class="serif-accent">deeper.</em></h2>
+        </div>
+
+        <div class="reading-grid">
+          {relatedPosts.map((p) => (
+            <a href={`/blog/${p.slug}`} class="reading-card">
+              <span class="reading-kicker">{p.data.category}</span>
+              <h3 class="reading-title">{p.data.title}</h3>
+              <p class="reading-sub">{p.data.description}</p>
+              <span class="reading-cta">Read post →</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- FAQ ──────────────────────────────────────────── -->
+  <section class="vp-section vp-faq">
+    <div class="container">
+      <div class="vp-section-head">
+        <span class="section-label">[ ? ] / common questions</span>
+        <h2 class="vp-section-title">Before <em class="serif-accent">you ask.</em></h2>
+      </div>
+
+      <div class="faq-list">
+        {faqs.map((f) => (
+          <details class="faq-item">
+            <summary>
+              <span class="faq-q">{f.question}</span>
+              <svg class="faq-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </summary>
+            <div class="faq-a">{f.answer}</div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- BOTTOM CTA ────────────────────────────────────── -->
+  <section class="vp-section vp-bottom">
+    <div class="container">
+      <h2 class="vp-bottom-title">Ready to <em class="serif-accent">fix this?</em></h2>
+      <p class="vp-bottom-sub">Free 5-minute audit if you want to see what's broken first. Or jump straight into a project.</p>
+      <div class="vp-bottom-cta">
+        <a href="/audit" class="btn-primary">
+          Get My Free Audit
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </a>
+        <a href="/contact" class="btn-secondary">
+          Start a Project
+        </a>
+      </div>
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  /* ─── Hero ─────────────────────────────────────────── */
+  .vp-hero {
+    padding: calc(var(--nav-height) + 5rem) 0 4rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-label--centered {
+    justify-content: center;
+  }
+
+  .vp-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 6.5vw, 5.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+    max-width: 960px;
+    margin: 1rem auto 1.5rem;
+    text-wrap: balance;
+  }
+
+  .vp-accent {
+    display: block;
+    font-style: italic;
+    color: var(--ember);
+    font-weight: 400;
+  }
+
+  .vp-lead {
+    font-size: 1.1rem;
+    color: var(--muted);
+    line-height: 1.65;
+    max-width: 680px;
+    margin: 0 auto 2.5rem;
+  }
+
+  .vp-hero-cta {
+    display: inline-flex;
+    gap: 1.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  /* ─── Generic sections ─────────────────────────────── */
+  .vp-section {
+    padding: 6rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .vp-section-head {
+    max-width: 760px;
+    margin-bottom: 3rem;
+  }
+  .vp-section-title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4.5vw, 3.25rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-top: 1rem;
+  }
+
+  /* ─── Grid cards (pains + wins) ────────────────────── */
+  .vp-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+  @media (max-width: 900px) {
+    .vp-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+  }
+
+  .vp-card {
+    border-top: 2px solid var(--border);
+    padding-top: 1.5rem;
+  }
+  .vp-card--pain { border-top-color: var(--flame); }
+  .vp-card--win  { border-top-color: var(--ember); }
+
+  .vp-card-num {
+    display: block;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.75rem;
+    color: var(--ember);
+    line-height: 1;
+    margin-bottom: 0.75rem;
+  }
+  .vp-card--pain .vp-card-num { color: var(--flame); }
+
+  .vp-card-title {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    line-height: 1.1;
+    margin-bottom: 0.75rem;
+    color: var(--text);
+  }
+  .vp-card-body {
+    color: var(--muted);
+    line-height: 1.6;
+    font-size: 0.98rem;
+  }
+
+  /* ─── Case study panel ─────────────────────────────── */
+  .vp-wins { background: var(--surface); }
+
+  .case-panel {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+  @media (max-width: 900px) {
+    .case-panel { grid-template-columns: 1fr; gap: 2rem; }
+  }
+
+  .case-thumb {
+    aspect-ratio: 1 / 1;
+    border-radius: var(--radius);
+    display: grid;
+    place-items: center;
+    position: relative;
+  }
+  .case-thumb::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.05), transparent 60%);
+    border-radius: inherit;
+  }
+  .case-thumb-initials {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 4rem;
+    letter-spacing: -0.02em;
+  }
+
+  .case-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    line-height: 1.1;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+  .case-summary {
+    color: var(--muted);
+    line-height: 1.65;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+  .case-solution {
+    color: var(--text);
+    line-height: 1.65;
+    font-size: 0.98rem;
+    margin-bottom: 1.5rem;
+  }
+  .case-solution strong { color: var(--ember); font-weight: 500; }
+
+  .case-metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .case-metric {
+    padding: 0.85rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  .case-metric dt {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin-bottom: 0.35rem;
+  }
+  .case-metric dd {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    color: var(--ember);
+    line-height: 1;
+  }
+
+  /* ─── Related reading ──────────────────────────────── */
+  .reading-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  @media (max-width: 900px) {
+    .reading-grid { grid-template-columns: 1fr; }
+  }
+
+  .reading-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.75rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    text-decoration: none;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+  .reading-card:hover {
+    border-color: var(--ember);
+    transform: translateY(-2px);
+    text-decoration: none;
+  }
+  .reading-kicker {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--ember);
+  }
+  .reading-title {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    line-height: 1.15;
+    color: var(--text);
+    margin: 0.35rem 0 0.5rem;
+  }
+  .reading-sub {
+    color: var(--muted);
+    font-size: 0.92rem;
+    line-height: 1.5;
+    flex: 1;
+  }
+  .reading-cta {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ember);
+    margin-top: 0.75rem;
+  }
+
+  /* ─── FAQ (native details) ─────────────────────────── */
+  .vp-faq { background: var(--surface); }
+
+  .faq-list {
+    max-width: 820px;
+    border-top: 1px solid var(--border);
+  }
+  .faq-item {
+    border-bottom: 1px solid var(--border);
+  }
+  .faq-item summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem 0;
+    cursor: pointer;
+    list-style: none;
+  }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-q {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    color: var(--text);
+    line-height: 1.3;
+  }
+  .faq-chev {
+    color: var(--ember);
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+  }
+  .faq-item[open] .faq-chev { transform: rotate(180deg); }
+
+  .faq-a {
+    padding: 0 0 1.5rem;
+    color: var(--muted);
+    line-height: 1.65;
+    font-size: 0.98rem;
+    max-width: 720px;
+  }
+
+  /* ─── Bottom CTA ───────────────────────────────────── */
+  .vp-bottom {
+    text-align: center;
+    border-bottom: none;
+  }
+  .vp-bottom-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-bottom: 1rem;
+  }
+  .vp-bottom-sub {
+    color: var(--muted);
+    font-size: 1.05rem;
+    line-height: 1.6;
+    max-width: 620px;
+    margin: 0 auto 2rem;
+  }
+  .vp-bottom-cta {
+    display: inline-flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+</style>
