@@ -1,0 +1,71 @@
+---
+import VerticalPage from '../components/VerticalPage.astro';
+
+const pains = [
+  {
+    title: 'Shopify plus 12 plugins equals an 8-second load',
+    body: "Every plugin is another script blocking the page, another \$10–\$30/mo subscription, another attack surface. The initial build was fast. A year in, the site is slow, expensive, and you're paying rent to someone else's code.",
+  },
+  {
+    title: 'Generic checkout wastes every conversion win',
+    body: "You can optimize landing pages all day, but if checkout is 4 Shopify screens of 'oops something broke' and 'please create an account,' half the carts die on the way to payment.",
+  },
+  {
+    title: 'Product page SEO is a mess',
+    body: "No product schema, no rich results, no proper canonical URLs, pagination eats your crawl budget. Google can't rank what it can't understand, and your organic traffic plateaus around month 3.",
+  },
+];
+
+const wins = [
+  {
+    title: 'Hand-coded frontend on a real backend',
+    body: "Headless Shopify, Medusa, or custom — whichever fits. Fast frontend in Astro or Next.js that loads in under a second and doesn't care how many products you have. Zero plugin rot.",
+  },
+  {
+    title: 'Checkout that actually converts',
+    body: "Custom checkout (when the platform allows) or aggressively tuned native checkout. One-page, guest-friendly, with every tested conversion pattern — abandoned-cart recovery, upsells, trust badges, the real stuff.",
+  },
+  {
+    title: 'SEO built for products, not brochures',
+    body: "Product schema + Offer schema + Review schema on every product. Rich results in Google. Proper canonical handling so variants don't compete with parents. Google Shopping feed built clean from day one.",
+  },
+];
+
+const faqs = [
+  {
+    question: 'Shopify, headless, or something else?',
+    answer: "Depends on your catalog size and operations. Under 50 SKUs and simple fulfillment: Shopify standard + a hand-coded theme. Over 500 SKUs or custom fulfillment: headless (Shopify Hydrogen or Medusa). Over 5K SKUs with heavy customization: fully custom. I'll recommend based on your situation, not based on what I want to build.",
+  },
+  {
+    question: 'Can you migrate my existing store?',
+    answer: "Yes. Products, customers, order history, URLs (with 301s so you don't lose SEO). Migration is a fixed-price add-on — usually \$800–\$2,500 depending on volume and complexity. Zero downtime during the cutover.",
+  },
+  {
+    question: 'What about payment processors?',
+    answer: "Stripe, Shopify Payments, PayPal, Square, Authorize.net — all supported. I typically recommend Stripe for flexibility + Shop Pay for conversion. I'll integrate whatever your current processor is so you don't have to change mid-flight.",
+  },
+  {
+    question: 'How do you handle inventory sync?',
+    answer: "Depends on where inventory lives. If it's in Shopify, the site reads from Shopify's API in real time. If you use a warehouse system (ShipStation, NetSuite, QuickBooks), we either sync one-way or use a middleware layer like Zapier for smaller volumes.",
+  },
+  {
+    question: 'Is SEO really different on e-commerce?',
+    answer: "Very. Product schema, variant handling, faceted navigation crawl budget, canonical consistency, sitemap generation — all ecommerce-specific concerns that most template sites get wrong. Expect 6–12 weeks for meaningful organic ranking improvement post-launch.",
+  },
+];
+---
+
+<VerticalPage
+  slug="/web-design-ecommerce"
+  kicker="[ $ ] / for e-commerce"
+  title="E-commerce sites"
+  titleAccent="built for speed, not plugins."
+  subtitle="Shopify gets you selling in a week. A year later you're paying \$300/mo in plugins and loading in 8 seconds on mobile. Custom e-commerce sites that load in under a second, rank on Google, and convert on checkout — on the platform that fits your business, not the one that fits a template shop."
+  pains={pains}
+  wins={wins}
+  faqs={faqs}
+  caseStudyIndustrySlug="ecommerce"
+  blogTags={['performance', 'page speed', 'conversion']}
+  metaTitle="E-commerce Web Design — Custom Shopify + Headless"
+  metaDescription="Custom e-commerce websites — fast, hand-coded frontends, no plugin rot. Shopify, headless, or custom. Built for conversion, speed, and product SEO."
+/>

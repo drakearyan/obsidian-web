@@ -1,0 +1,70 @@
+---
+import VerticalPage from '../components/VerticalPage.astro';
+
+const pains = [
+  {
+    title: "Nobody in Forest has a site tuned for 'Forest, VA' searches",
+    body: "Your competition either ranks for 'Lynchburg [service]' (and you lose Forest customers who search more specifically) or doesn't rank at all. Optimizing for 'forest va' in schema + copy is a wide-open lane.",
+  },
+  {
+    title: 'Template sites lump you in with bigger Lynchburg competitors',
+    body: "A Squarespace template built by someone 1,000 miles away can't differentiate a Forest family shop from the Lynchburg chains. Your local identity gets flattened into a generic small-business template.",
+  },
+  {
+    title: 'GBP is dramatically under-served in Forest',
+    body: "Google Business Profile for Forest-area businesses is a huge, mostly-empty opportunity. A thin GBP with 3 photos ranks above a competitor who never filled theirs out — and most Forest businesses haven't.",
+  },
+];
+
+const wins = [
+  {
+    title: 'Forest-specific local SEO',
+    body: "LocalBusiness schema with exact Forest address, Forest + 24551 ZIP code in every footer + contact page, service-area schema naming Forest specifically. Google pulls this into local search results in weeks, not months.",
+  },
+  {
+    title: 'Custom design that stands apart',
+    body: "Hand-coded site in your brand. No template lookalike with three other Forest businesses. Real photos of your shop, your team, the 221 corridor if it's relevant. Feels local because it IS local.",
+  },
+  {
+    title: 'Local knowledge baked in',
+    body: "I know 221 vs 460, know the Boonsboro and Thomas Road commuter patterns, know where your Forest customers actually come from (often Bedford County and east Amherst). Copy targets real patterns, not generic 'locals'.",
+  },
+];
+
+const faqs = [
+  {
+    question: 'How is Forest different from Lynchburg for SEO?',
+    answer: "Forest has its own Google search volume — people who live in Forest search for 'Forest VA' services before they search 'Lynchburg' ones. Plus the Forest/Bedford County boundary matters for service-area targeting. A Lynchburg-centric site misses both signals.",
+  },
+  {
+    question: 'Do you work with the Chamber of Commerce?',
+    answer: "Not formally, but I'm happy to coordinate with Bedford County or Lynchburg Regional Chamber if your membership includes a featured listing. Usually worth syncing your Chamber profile with your GBP and website so the NAP (name, address, phone) matches exactly.",
+  },
+  {
+    question: "What's the closest comparable case study you can show?",
+    answer: "The healthcare and trades case studies on the portfolio page are similar suburban + small-town Central Virginia businesses. Not Forest-specific yet (that's why I'm building this page — Forest is a growing market I want to serve more).",
+  },
+  {
+    question: 'Timeline compared to Lynchburg projects?',
+    answer: "Identical. Starter 5–7 business days, Professional 10–14 business days, Premium 3–5 weeks. Location of the client doesn't change the build — it only changes the copy and SEO targeting.",
+  },
+  {
+    question: 'Can you come to Forest for meetings?',
+    answer: "Yes — Forest is 20 minutes from where I live. Happy to meet at Market at Main, Bistro 221, or any of the coffee shops along 221 / Forest Road. Most clients prefer Zoom, but in-person is always an option.",
+  },
+];
+---
+
+<VerticalPage
+  slug="/web-design-forest-va"
+  kicker="[ ◎ ] / forest, va"
+  title="Web design in Forest, VA"
+  titleAccent="custom sites for a growing suburb."
+  subtitle="Forest is growing — new residents mean new customers, but only if they can find you. Every week someone searches 'forest va [your service]' and your competition ranks for that query. A custom site built specifically for Forest businesses, by someone 20 minutes away."
+  pains={pains}
+  wins={wins}
+  faqs={faqs}
+  blogTags={['lynchburg', 'local seo']}
+  metaTitle="Web Design Forest VA — Local Business Sites"
+  metaDescription="Custom web design for Forest, VA businesses — local SEO tuned for 'forest va' searches, custom sites that stand apart from Lynchburg template shops."
+/>

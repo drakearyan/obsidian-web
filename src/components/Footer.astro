@@ -82,6 +82,30 @@ const year = new Date().getFullYear();
       </div>
     </div>
 
+    <!-- Industry + service-area landing pages, grouped so the main
+         nav grid stays clean and these pages still get crawlable,
+         clickable exposure from every page on the site. -->
+    <div class="footer-discover">
+      <div class="footer-discover-col">
+        <h4>By Industry</h4>
+        <ul>
+          <li><a href="/web-design-restaurants">Restaurants</a></li>
+          <li><a href="/web-design-dental">Dental Practices</a></li>
+          <li><a href="/web-design-legal">Law Firms</a></li>
+          <li><a href="/web-design-ecommerce">E-commerce</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-discover-col">
+        <h4>Service Areas</h4>
+        <ul>
+          <li><a href="/web-design-lynchburg">Lynchburg, VA</a></li>
+          <li><a href="/web-design-forest-va">Forest, VA</a></li>
+          <li><a href="/web-design-madison-heights">Madison Heights, VA</a></li>
+        </ul>
+      </div>
+    </div>
+
     <div class="footer-bottom">
       <span>© {year} Obsidian Web Co. All rights reserved.</span>
       <span>— Forged in Lynchburg, VA —</span>
@@ -160,5 +184,51 @@ const year = new Date().getFullYear();
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
+  }
+
+  /* Industry + service-area link lists — editorial, denser than main
+     footer nav so they don't pull focus but stay crawlable. */
+  .footer-discover {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  @media (max-width: 600px) {
+    .footer-discover { grid-template-columns: 1fr; gap: 1.5rem; }
+  }
+
+  .footer-discover-col h4 {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+    margin-bottom: 1rem;
+    font-weight: 500;
+  }
+
+  .footer-discover-col ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.5rem;
+    padding: 0;
+    margin: 0;
+  }
+
+  .footer-discover-col a {
+    color: var(--muted);
+    font-size: 0.85rem;
+    transition: color 0.2s ease;
+  }
+
+  .footer-discover-col a:hover {
+    color: var(--ember);
+    text-decoration: none;
   }
 </style>

@@ -1,0 +1,71 @@
+---
+import VerticalPage from '../components/VerticalPage.astro';
+
+const pains = [
+  {
+    title: 'No online new-patient intake',
+    body: "Voicemail is the front door. Nobody wants to call at 9pm to book a cleaning, so they book somewhere else. You lose the patient before the front desk even knows.",
+  },
+  {
+    title: 'Insurance + payment questions unanswered',
+    body: 'Every intake call starts with the same 5 questions: do you take Delta Dental, what about HSAs, is there a payment plan? Answer them on the site and you save hours a week.',
+  },
+  {
+    title: 'Generic stock photos of teeth',
+    body: "Bright white smiles on strangers don't help a nervous first-time patient. They need to see YOU, YOUR office, YOUR team. That's the only thing that builds trust.",
+  },
+];
+
+const wins = [
+  {
+    title: 'After-hours online intake',
+    body: "New patients can fill out forms at 9pm, 11pm, Sunday morning. Intake lands in your inbox ready for your front desk to confirm the appointment Monday. No lost bookings.",
+  },
+  {
+    title: 'FAQ that actually answers questions',
+    body: 'Insurances accepted, payment plans, emergency hours, what to expect at the first visit, whether kids are welcome. Every question answered before they call — so when they do, the call is to book, not to ask.',
+  },
+  {
+    title: 'Real photos, real team',
+    body: 'Your office, your hygienists, your dentist — shot naturally, captioned well. Patient testimonials handled carefully (with HIPAA-safe permissions). Trust cues that move real people.',
+  },
+];
+
+const faqs = [
+  {
+    question: 'Can you integrate with my practice management software?',
+    answer: "Yes — Dentrix, Eaglesoft, Open Dental, Curve, Denticon. Intake forms can be wired to push into your system, or delivered as clean CSV/PDF for your front desk to enter. Depends on what your software supports.",
+  },
+  {
+    question: 'Is new-patient intake HIPAA-compliant?',
+    answer: "Yes, if built correctly. I use encrypted form delivery, BAAs with form providers when needed, and don't store PHI in any non-compliant system. I'll walk you through the options so you pick what fits your compliance posture.",
+  },
+  {
+    question: 'Do you handle ongoing updates?',
+    answer: "30 days of post-launch support is included. After that, small updates are \$50–\$150 each, or I can set you up on a \$100–\$200/mo retainer if you need regular changes. Most practices self-manage after launch.",
+  },
+  {
+    question: 'How do you rank me for "dentist near me" in Lynchburg?',
+    answer: "Local SEO is baked in — LocalBusiness schema, service-area optimization, Google Business Profile tuning, NAP consistency across directories. Expect Maps ranking improvements within 6–10 weeks of launch.",
+  },
+  {
+    question: "What's the timeline vs my current website?",
+    answer: "Professional tier builds take 10–14 business days. Your existing site stays live the whole time — we only cut over on launch day, no gap in patient-facing availability.",
+  },
+];
+---
+
+<VerticalPage
+  slug="/web-design-dental"
+  kicker="[ ✚ ] / for dental practices"
+  title="Websites for dental practices"
+  titleAccent="that convert first-time visitors."
+  subtitle="Most small dental practice sites in Central Virginia are stuck on outdated templates that don't address patient anxiety, don't rank on Google, and push new-patient intake to voicemail. Here's what actually converts."
+  pains={pains}
+  wins={wins}
+  faqs={faqs}
+  caseStudyIndustrySlug="healthcare"
+  blogTags={['conversion', 'small business', 'local seo']}
+  metaTitle="Dental Practice Web Design — Lynchburg, VA"
+  metaDescription="Websites for dental practices — online new-patient intake, practice management integration, local SEO. Turn site visits into booked appointments."
+/>
