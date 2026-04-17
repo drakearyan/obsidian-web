@@ -1,0 +1,246 @@
+---
+/*
+  NewsletterSignup
+  ─────────────────────────────────────────────────────────────
+  Mailchimp-backed email capture with honeypot + client-side
+  validation. Supports three visual variants via the `variant`
+  prop, chosen per placement:
+
+    variant="inline"   → footer, blog-post tail (compact)
+    variant="card"     → standalone sections (newsletter pitch)
+    variant="hero"     → landing pages like /audit (big form)
+
+  Each variant uses the same Mailchimp form action but swaps
+  layout + microcopy. Tag is passed through as a hidden field
+  so Mailchimp segments submissions (audit-request vs newsletter).
+*/
+
+import { site } from '../data/site';
+
+interface Props {
+  variant?: 'inline' | 'card' | 'hero';
+  heading?: string;
+  subheading?: string;
+  ctaLabel?: string;
+  tag?: 'newsletter' | 'audit-request';
+  /** Optional placeholder override for the email input. */
+  placeholder?: string;
+}
+
+const {
+  variant = 'inline',
+  heading = 'Field Notes',
+  subheading = 'One essay a month on what makes small-business websites actually work. No spam, unsubscribe any time.',
+  ctaLabel = 'Subscribe',
+  tag = 'newsletter',
+  placeholder = 'you@business.com',
+} = Astro.props;
+
+// Unique ID per instance so multiple newsletter forms on one page don't collide
+const formId = `newsletter-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<div class={`newsletter newsletter--${variant}`} data-newsletter data-newsletter-tag={tag}>
+  {variant !== 'inline' && heading && (
+    <h3 class="newsletter-heading">{heading}</h3>
+  )}
+  {variant !== 'inline' && subheading && (
+    <p class="newsletter-sub">{subheading}</p>
+  )}
+
+  <form
+    action={site.mailchimp.action}
+    method="POST"
+    target="_blank"
+    class="newsletter-form"
+    id={formId}
+    novalidate
+  >
+    <!-- Honeypot: Mailchimp's own anti-bot field. Humans never touch it. -->
+    <div aria-hidden="true" style="position: absolute; left: -5000px;">
+      <input type="text" name={site.mailchimp.honeypot} tabindex="-1" value="" autocomplete="off" />
+    </div>
+
+    <!-- Tag hidden field — Mailchimp uses this to segment submissions.
+         MERGE0 is 'EMAIL', we piggyback on MMERGE to pass a tag. -->
+    <input type="hidden" name="tags" value={tag} />
+
+    <label for={`${formId}-email`} class="sr-only">Email address</label>
+    <div class="newsletter-row">
+      <input
+        id={`${formId}-email`}
+        type="email"
+        name="EMAIL"
+        placeholder={placeholder}
+        required
+        autocomplete="email"
+        class="newsletter-email"
+      />
+      <button type="submit" class="newsletter-btn">
+        {ctaLabel}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <line x1="5" y1="12" x2="19" y2="12"/>
+          <polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </button>
+    </div>
+
+    <p class="newsletter-status" role="status" aria-live="polite"></p>
+
+    {variant === 'inline' && subheading && (
+      <p class="newsletter-fine">{subheading}</p>
+    )}
+  </form>
+</div>
+
+<style>
+  .newsletter {
+    font-family: var(--font-body);
+    color: var(--text);
+  }
+
+  /* ── Variant: inline (footer, blog tail) ─────────────────── */
+  .newsletter--inline {
+    max-width: 440px;
+  }
+
+  /* ── Variant: card (dedicated newsletter section) ───────── */
+  .newsletter--card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2.5rem;
+    max-width: 560px;
+  }
+
+  /* ── Variant: hero (landing page feature) ───────────────── */
+  .newsletter--hero {
+    max-width: 620px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  /* ── Headings ───────────────────────────────────────────── */
+  .newsletter-heading {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.75rem;
+    color: var(--text);
+  }
+  .newsletter--hero .newsletter-heading {
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    margin-bottom: 1rem;
+  }
+
+  .newsletter-sub {
+    font-size: 1rem;
+    color: var(--muted);
+    line-height: 1.55;
+    margin-bottom: 1.5rem;
+    max-width: 520px;
+  }
+  .newsletter--hero .newsletter-sub { margin-left: auto; margin-right: auto; }
+
+  /* ── Form row — email + button ──────────────────────────── */
+  .newsletter-row {
+    display: flex;
+    gap: 0.5rem;
+    align-items: stretch;
+  }
+
+  .newsletter-email {
+    flex: 1;
+    min-width: 0;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.75rem 1rem;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease;
+  }
+  .newsletter-email:focus {
+    outline: none;
+    border-color: var(--ember);
+  }
+  .newsletter-email::placeholder { color: var(--muted-2); }
+
+  .newsletter-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--ember);
+    color: var(--text-on-ember);
+    border: 1px solid var(--ember);
+    border-radius: var(--radius);
+    padding: 0.75rem 1.25rem;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s ease, border-color 0.2s ease;
+  }
+  .newsletter-btn:hover {
+    background: var(--text);
+    border-color: var(--text);
+  }
+
+  @media (max-width: 500px) {
+    .newsletter-row { flex-direction: column; }
+  }
+
+  /* ── Status text (success/error messages) ───────────────── */
+  .newsletter-status {
+    margin-top: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    min-height: 1.2em;
+  }
+  .newsletter-status[data-state="success"] { color: var(--color-success); }
+  .newsletter-status[data-state="error"]   { color: var(--color-error); }
+  .newsletter-status[data-state="warn"]    { color: var(--color-warning); }
+
+  /* ── Fine print (inline variant) ────────────────────────── */
+  .newsletter-fine {
+    margin-top: 0.75rem;
+    font-size: 0.78rem;
+    color: var(--muted-2);
+    line-height: 1.45;
+  }
+</style>
+
+<script>
+  /*
+    Client-side validation + friendly feedback. The form still
+    submits to Mailchimp directly (target="_blank" means the
+    confirmation page opens in a new tab), but we show an inline
+    "thanks" status too so there's instant feedback on this page.
+  */
+  document.querySelectorAll<HTMLFormElement>('.newsletter-form').forEach((form) => {
+    const status = form.querySelector<HTMLElement>('.newsletter-status');
+    const email = form.querySelector<HTMLInputElement>('input[type="email"]');
+
+    form.addEventListener('submit', (e) => {
+      if (!email || !status) return;
+
+      const value = email.value.trim();
+      if (!value || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+        e.preventDefault();
+        status.textContent = 'That doesn\'t look like a valid email.';
+        status.dataset.state = 'error';
+        email.focus();
+        return;
+      }
+
+      // Let the form submit to Mailchimp (opens new tab), show local confirmation
+      status.textContent = 'Opening Mailchimp to confirm — check your inbox.';
+      status.dataset.state = 'success';
+      email.value = '';
+    });
+  });
+</script>

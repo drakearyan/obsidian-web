@@ -1,0 +1,320 @@
+---
+/*
+  ExitIntentModal
+  ─────────────────────────────────────────────────────────────
+  Appears once per session when the user:
+    - moves cursor toward the top of viewport (desktop), OR
+    - scrolls past 60% of the page (mobile, no mouseleave).
+
+  Dismissible via X button or Escape. Never re-shows in the
+  same session (sessionStorage flag). Hidden entirely on the
+  /audit and /audit-confirmed pages — showing an audit-CTA on
+  the audit page itself would be silly.
+
+  The embedded form is the same Mailchimp tag="audit-request"
+  wiring used elsewhere, just presented as a modal instead of
+  a page section.
+*/
+
+import { site } from '../data/site';
+---
+
+<dialog id="exit-intent-modal" class="exit-modal" aria-labelledby="exit-title">
+  <div class="exit-modal-inner">
+    <button
+      type="button"
+      class="exit-close"
+      aria-label="Close"
+      data-exit-close
+    >
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+
+    <div class="exit-content">
+      <span class="exit-kicker">Before you go —</span>
+
+      <h2 id="exit-title" class="exit-title">
+        Get a free <em>5-minute audit</em> of your site.
+      </h2>
+
+      <p class="exit-sub">
+        I'll spend 5 minutes looking at your site and email you a
+        1-page PDF with the top 3 things costing you customers.
+        24-hour turnaround. No pitch.
+      </p>
+
+      <form
+        action={site.mailchimp.action}
+        method="POST"
+        target="_blank"
+        class="exit-form"
+        id="exit-form"
+        novalidate
+      >
+        <div aria-hidden="true" style="position: absolute; left: -5000px;">
+          <input type="text" name={site.mailchimp.honeypot} tabindex="-1" value="" autocomplete="off" />
+        </div>
+        <input type="hidden" name="tags" value="audit-request" />
+
+        <label for="exit-email" class="sr-only">Email address</label>
+        <div class="exit-form-row">
+          <input
+            id="exit-email"
+            type="email"
+            name="EMAIL"
+            placeholder="you@business.com"
+            required
+            autocomplete="email"
+            class="exit-email"
+          />
+          <button type="submit" class="exit-btn">
+            Get My Audit
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </button>
+        </div>
+
+        <p class="exit-fine">
+          One email, no drip sequence. Prefer to explore the full page? <a href="/audit">See the audit page →</a>
+        </p>
+
+        <p class="exit-status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+</dialog>
+
+<style>
+  /* Native <dialog> styling — behaves like a modal but without
+     a dependency on any JS framework. We open via .showModal()
+     and it gets automatic backdrop + Esc-to-close. */
+  .exit-modal {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--text);
+    max-width: 540px;
+    width: calc(100% - 2rem);
+    padding: 0;
+    margin: auto;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.65);
+  }
+  .exit-modal::backdrop {
+    background: rgba(11, 9, 7, 0.82);
+    backdrop-filter: blur(4px);
+  }
+
+  .exit-modal-inner {
+    position: relative;
+    padding: 2.5rem 2.25rem 2rem;
+  }
+
+  .exit-close {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--muted);
+    padding: 0.5rem;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: color 0.2s ease, border-color 0.2s ease;
+    line-height: 0;
+  }
+  .exit-close:hover {
+    color: var(--text);
+    border-color: var(--border);
+  }
+
+  .exit-kicker {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ember);
+  }
+
+  .exit-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    line-height: 1;
+    letter-spacing: -0.028em;
+    color: var(--text);
+    margin: 0.75rem 0 1rem;
+  }
+  .exit-title em {
+    font-style: italic;
+    color: var(--ember);
+  }
+
+  .exit-sub {
+    color: var(--muted);
+    line-height: 1.55;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+  }
+
+  /* Form */
+  .exit-form-row {
+    display: flex;
+    gap: 0.5rem;
+  }
+  @media (max-width: 500px) {
+    .exit-form-row { flex-direction: column; }
+  }
+
+  .exit-email {
+    flex: 1;
+    min-width: 0;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.75rem 1rem;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+  }
+  .exit-email:focus {
+    outline: none;
+    border-color: var(--ember);
+  }
+
+  .exit-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--ember);
+    color: var(--text-on-ember);
+    border: 1px solid var(--ember);
+    border-radius: var(--radius);
+    padding: 0.75rem 1.25rem;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .exit-btn:hover {
+    background: var(--text);
+    border-color: var(--text);
+  }
+
+  .exit-fine {
+    margin-top: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: var(--muted-2);
+  }
+  .exit-fine a { color: var(--ember); }
+
+  .exit-status {
+    margin-top: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    min-height: 1.2em;
+  }
+  .exit-status[data-state="success"] { color: var(--color-success); }
+  .exit-status[data-state="error"]   { color: var(--color-error); }
+</style>
+
+<script>
+  /*
+    Trigger logic:
+    - Desktop: mouseleave event on document with clientY < 10 (cursor
+      heading for the top bar) after 10s on page.
+    - Mobile/touch: scroll past 60% of document height.
+    - Fires exactly once per session (sessionStorage: exitIntentFired).
+    - Suppressed on /audit + /audit-confirmed + during form submission.
+  */
+  (function initExitIntent() {
+    const modal = document.querySelector<HTMLDialogElement>('#exit-intent-modal');
+    if (!modal) return;
+
+    // Suppress on pages where offering the audit would be redundant
+    const path = window.location.pathname;
+    if (path.startsWith('/audit')) return;
+
+    const STORAGE_KEY = 'exitIntentFired';
+    if (sessionStorage.getItem(STORAGE_KEY) === '1') return;
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let armed = false;
+    let fired = false;
+
+    // Arm after 10s — don't ambush readers who just landed
+    const armTimer = window.setTimeout(() => {
+      armed = true;
+    }, 10_000);
+
+    const open = () => {
+      if (fired || !armed) return;
+      fired = true;
+      sessionStorage.setItem(STORAGE_KEY, '1');
+      clearTimeout(armTimer);
+      try {
+        modal.showModal();
+      } catch {
+        modal.setAttribute('open', '');
+      }
+      // Pass focus into the email input so keyboard users can type immediately
+      const emailInput = modal.querySelector<HTMLInputElement>('input[type="email"]');
+      emailInput?.focus();
+    };
+
+    // Desktop: mouseleave toward top
+    const onMouseLeave = (e: MouseEvent) => {
+      if (e.clientY < 10) open();
+    };
+    document.addEventListener('mouseout', onMouseLeave);
+
+    // Mobile/touch: deep scroll (>60%)
+    const isTouch = window.matchMedia('(hover: none)').matches;
+    if (isTouch) {
+      const onScroll = () => {
+        const scrolled = window.scrollY + window.innerHeight;
+        const total = document.documentElement.scrollHeight;
+        if (total > 0 && scrolled / total > 0.6) {
+          open();
+          window.removeEventListener('scroll', onScroll);
+        }
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+    }
+
+    // Close button + Esc already handled by <dialog> natively
+    modal.querySelectorAll<HTMLButtonElement>('[data-exit-close]').forEach((btn) => {
+      btn.addEventListener('click', () => modal.close());
+    });
+
+    // Form submit — show inline confirmation
+    const form = modal.querySelector<HTMLFormElement>('#exit-form');
+    const status = modal.querySelector<HTMLElement>('.exit-status');
+    const email = modal.querySelector<HTMLInputElement>('input[type="email"]');
+
+    form?.addEventListener('submit', (e) => {
+      if (!email || !status) return;
+      const value = email.value.trim();
+      if (!value || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+        e.preventDefault();
+        status.textContent = 'That doesn\'t look like a valid email.';
+        status.dataset.state = 'error';
+        email.focus();
+        return;
+      }
+      status.textContent = 'Opening Mailchimp to confirm — check your inbox.';
+      status.dataset.state = 'success';
+    });
+
+    // Honor reduced motion — no surprise modal
+    if (reduce) {
+      document.removeEventListener('mouseout', onMouseLeave);
+      clearTimeout(armTimer);
+    }
+  })();
+</script>

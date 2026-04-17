@@ -102,6 +102,23 @@ const formspree_id = import.meta.env.PUBLIC_FORMSPREE_ID || 'YOUR_FORMSPREE_ID';
         </div>
 
         <aside class="contact-aside">
+          <div class="contact-card contact-card--booking">
+            <h3>Book a Call</h3>
+            <p class="booking-lead">Skip the back-and-forth — grab a <strong>30-min discovery call</strong> on the calendar below. Google Meet link generated automatically.</p>
+            <a
+              href={site.calendly}
+              target="_blank"
+              rel="noopener"
+              class="btn-primary btn-primary--compact"
+            >
+              See Available Times
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </a>
+            <p class="booking-fine">Mon–Fri, 10am–4pm ET. 24-hour minimum notice.</p>
+          </div>
+
           <div class="contact-card">
             <h3>Direct</h3>
             <p>Prefer email? Reach us at:</p>
@@ -372,6 +389,34 @@ const formspree_id = import.meta.env.PUBLIC_FORMSPREE_ID || 'YOUR_FORMSPREE_ID';
   }
 
   .contact-card--map { padding: 0.35rem; }
+
+  /* Booking card — elevated treatment since it's the primary CTA in the aside */
+  .contact-card--booking {
+    border-color: var(--ember);
+    background: linear-gradient(180deg, rgba(233, 162, 70, 0.06), var(--surface) 70%);
+  }
+  .contact-card--booking h3 { color: var(--ember); }
+  .booking-lead {
+    color: var(--muted) !important;
+    font-size: 0.95rem !important;
+    line-height: 1.6;
+    margin-bottom: 1rem !important;
+  }
+  .booking-lead strong { color: var(--text); }
+  .btn-primary--compact {
+    padding: 0.7rem 1.25rem !important;
+    font-size: 0.9rem !important;
+    width: 100%;
+    justify-content: center;
+  }
+  .booking-fine {
+    margin-top: 1rem !important;
+    font-family: var(--font-mono);
+    font-size: 0.72rem !important;
+    letter-spacing: 0.08em;
+    color: var(--muted-2) !important;
+    text-transform: uppercase;
+  }
 
   .contact-card h3 {
     font-family: var(--font-mono);

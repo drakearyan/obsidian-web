@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import '../styles/animations.css';
 import SEO from '../components/SEO.astro';
+import ExitIntentModal from '../components/ExitIntentModal.astro';
 import type { SEOProps } from '../utils/seo';
 
 interface Props extends SEOProps {
@@ -60,6 +61,10 @@ const clarity_id = import.meta.env.PUBLIC_CLARITY_ID;
     <a href="#main" class="skip-link">Skip to content</a>
 
     <slot />
+
+    <!-- Exit-intent audit offer. Self-suppresses on /audit* pages
+         and on repeat sessions (sessionStorage flag). -->
+    <ExitIntentModal />
 
     <script>
       import '../scripts/animations.ts';

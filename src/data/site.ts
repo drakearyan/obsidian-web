@@ -25,6 +25,19 @@ export const site = {
   },
   responseTime: 'within 24 hours',
   founded: 2026,
+
+  /** Mailchimp embedded form endpoint. Never commit secrets — the
+   *  action URL is public by design (it's on the embedded form). */
+  mailchimp: {
+    action: 'https://obsidianwebco.us16.list-manage.com/subscribe/post?u=1b3b188705690aaba0356db38&id=a6930823f9&f_id=0088c2e1f0',
+    /** Honeypot field name Mailchimp auto-generates for bot detection.
+     *  Pattern: b_{userId}_{audienceId}. Must be included as a hidden
+     *  input on every signup form. */
+    honeypot: 'b_1b3b188705690aaba0356db38_a6930823f9',
+  },
+
+  /** Calendly booking URL for discovery calls. */
+  calendly: 'https://calendly.com/drake-obsidianwebco/discovery-call-obsidian-web-co',
 } as const;
 
 export const nav_links = [

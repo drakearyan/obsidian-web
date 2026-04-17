@@ -1,0 +1,146 @@
+---
+/*
+  ClientLogoGrid
+  ─────────────────────────────────────────────────────────────
+  Editorial logo stand-in: initial monograms in industry-palette
+  tints, laid out in a responsive 3×2 grid (6 clients max on
+  home). Not real logos — the brand direction prefers a typographic
+  grid over mismatched vendor marks.
+*/
+import { clients } from '../data/clients';
+import { INDUSTRY_COLORS, INDUSTRY_COLORS_DEFAULT } from '../data/industry-colors';
+---
+
+<section class="logos">
+  <div class="container">
+    <div class="logos-head">
+      <span class="section-label">[ · ] / select clients</span>
+      <h2 class="logos-title">Trusted by local businesses <em class="serif-accent">you've probably driven past.</em></h2>
+    </div>
+
+    <div class="logos-grid">
+      {clients.map((c) => {
+        const palette = INDUSTRY_COLORS[c.palette] || INDUSTRY_COLORS_DEFAULT;
+        return (
+          <article class="logo-tile" style={`--tile-bg: ${palette.bg}; --tile-fg: ${palette.fg};`} title={`${c.name} — ${c.industry}`}>
+            <div class="logo-mono">{c.initials}</div>
+            <div class="logo-meta">
+              <span class="logo-name">{c.name}</span>
+              <span class="logo-industry">{c.industry}</span>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+  </div>
+</section>
+
+<style>
+  .logos {
+    padding: 5rem 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logos-head {
+    max-width: 760px;
+    margin-bottom: 3rem;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .logos-head .section-label {
+    justify-content: center;
+  }
+
+  .logos-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    margin-top: 1rem;
+    text-wrap: balance;
+  }
+
+  .logos-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 900px) {
+    .logos-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 520px) {
+    .logos-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .logo-tile {
+    aspect-ratio: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: var(--tile-bg);
+    color: var(--tile-fg);
+    border-radius: var(--radius);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .logo-tile::after {
+    /* Faint noise texture to keep it from looking like flat blocks */
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.06), transparent 60%);
+    pointer-events: none;
+  }
+
+  .logo-tile:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  }
+
+  .logo-mono {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--tile-fg);
+    z-index: 1;
+  }
+
+  .logo-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    text-align: center;
+    z-index: 1;
+    min-height: 2.5em;
+  }
+
+  .logo-name {
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--tile-fg);
+    opacity: 0.92;
+    line-height: 1.15;
+  }
+
+  .logo-industry {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--tile-fg);
+    opacity: 0.65;
+  }
+</style>

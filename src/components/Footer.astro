@@ -1,5 +1,6 @@
 ---
 import { site } from '../data/site';
+import NewsletterSignup from './NewsletterSignup.astro';
 
 const year = new Date().getFullYear();
 ---
@@ -18,9 +19,19 @@ const year = new Date().getFullYear();
         </div>
       </div>
 
-      <p class="footer-desc">
-        A boutique web design studio based in {site.location.city}, {site.location.state}. Built by <em class="serif-accent">one developer obsessed with craft.</em>
-      </p>
+      <div class="footer-newsletter">
+        <p class="footer-desc">
+          A boutique web design studio based in {site.location.city}, {site.location.state}. Built by <em class="serif-accent">one developer obsessed with craft.</em>
+        </p>
+        <NewsletterSignup
+          variant="inline"
+          heading=""
+          subheading="One essay a month on what makes small-business websites actually work."
+          ctaLabel="Subscribe"
+          tag="newsletter"
+          placeholder="you@business.com"
+        />
+      </div>
     </div>
 
     <div class="footer-grid">
@@ -41,6 +52,15 @@ const year = new Date().getFullYear();
           <li><a href="/portfolio">Portfolio</a></li>
           <li><a href="/blog">Blog</a></li>
           <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Resources</h4>
+        <ul>
+          <li><a href="/audit">Free Website Audit</a></li>
+          <li><a href="/refer">Referral Program</a></li>
+          <li><a href="/calculator">Pricing Calculator</a></li>
         </ul>
       </div>
 
@@ -123,12 +143,22 @@ const year = new Date().getFullYear();
 
   .footer-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 2.5rem;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 2rem;
     margin-bottom: 3rem;
   }
 
-  @media (max-width: 700px) {
+  @media (max-width: 900px) {
+    .footer-grid { grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+  }
+
+  @media (max-width: 600px) {
     .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+  }
+
+  .footer-newsletter {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
   }
 </style>

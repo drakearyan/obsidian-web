@@ -1,0 +1,428 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import CTASection from '../components/CTASection.astro';
+import { site } from '../data/site';
+---
+
+<PageLayout
+  title="Refer a Business — Get Paid"
+  description="Send Obsidian some work, get a check. Past clients earn 10%, partners earn 15%, friends earn $100 flat. No paperwork, no limits."
+>
+  <section class="refer-hero">
+    <div class="container">
+      <span class="section-label section-label--centered">[ ✦ ] / referral program</span>
+      <h1 class="refer-title">
+        Send some work, <em class="serif-accent">get a check.</em>
+      </h1>
+      <p class="refer-lead">
+        If you know a local business that needs a website, introduce them.
+        If they sign, you get paid. Friends get <strong>$100</strong>.
+        Past clients get <strong>10%</strong>. Partner designers and photographers get <strong>15%</strong>.
+        No paperwork, no limits, no expiration.
+      </p>
+    </div>
+  </section>
+
+  <section class="refer-tiers">
+    <div class="container">
+      <div class="tier-grid">
+        <article class="tier">
+          <div class="tier-num">I.</div>
+          <div class="tier-label">Friend</div>
+          <h3 class="tier-name">$100 flat</h3>
+          <p class="tier-who">Anyone — friend, family, someone you met once at a conference. No prior relationship with Obsidian required.</p>
+          <div class="tier-when">Paid within 7 days of contract signing.</div>
+        </article>
+
+        <article class="tier tier--popular">
+          <div class="tier-num">II.</div>
+          <div class="tier-label">Past Client</div>
+          <h3 class="tier-name">10% of project</h3>
+          <p class="tier-who">Anyone who has paid Obsidian for a completed project. Cash — or double-value credit toward your next update.</p>
+          <div class="tier-when">Half on deposit, half on final invoice.</div>
+        </article>
+
+        <article class="tier">
+          <div class="tier-num">III.</div>
+          <div class="tier-label">Partner</div>
+          <h3 class="tier-name">15% of project</h3>
+          <p class="tier-who">Designer, copywriter, photographer, agency, Chamber member. Anyone with a professional service adjacent to web.</p>
+          <div class="tier-when">Half on deposit, half on final invoice.</div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="refer-examples">
+    <div class="container">
+      <div class="examples-head">
+        <span class="section-label">[ $ ] / what it looks like</span>
+        <h2 class="examples-title">Real numbers. <em class="serif-accent">Paid fast.</em></h2>
+      </div>
+
+      <div class="examples-table">
+        <div class="example-row example-row--head">
+          <span>Project size</span>
+          <span>You are</span>
+          <span>You get</span>
+        </div>
+        <div class="example-row">
+          <span>Starter — $650</span>
+          <span>Friend</span>
+          <span class="example-amount">$100</span>
+        </div>
+        <div class="example-row">
+          <span>Starter — $650</span>
+          <span>Past client</span>
+          <span class="example-amount">$65</span>
+        </div>
+        <div class="example-row">
+          <span>Professional — $1,800</span>
+          <span>Past client</span>
+          <span class="example-amount">$180</span>
+        </div>
+        <div class="example-row">
+          <span>Professional — $1,800</span>
+          <span>Partner</span>
+          <span class="example-amount">$270</span>
+        </div>
+        <div class="example-row">
+          <span>Premium — $4,500</span>
+          <span>Past client</span>
+          <span class="example-amount">$450</span>
+        </div>
+        <div class="example-row">
+          <span>Premium — $4,500</span>
+          <span>Partner</span>
+          <span class="example-amount">$675</span>
+        </div>
+      </div>
+
+      <p class="examples-note">
+        Past clients can swap cash for <strong>2× value</strong> in design credit toward future Obsidian work. $180 cash becomes $360 in credit. Cap: credit is valid for 18 months.
+      </p>
+    </div>
+  </section>
+
+  <section class="refer-how">
+    <div class="container">
+      <div class="how-head">
+        <span class="section-label">[ → ] / how to send an intro</span>
+        <h2 class="how-title">Three ways, <em class="serif-accent">all equally valid.</em></h2>
+      </div>
+
+      <div class="how-grid">
+        <article class="how-card">
+          <h3>1. Email intro</h3>
+          <p>Email me and the lead on the same thread:</p>
+          <code>Intro: [Lead name] ↔ Drake at Obsidian</code>
+          <p class="how-after">I'll reply, drop you from the thread after the first exchange. Simple.</p>
+        </article>
+
+        <article class="how-card">
+          <h3>2. Direct DM</h3>
+          <p>"Hey Drake, I just sent my friend at [business] your info." That's it. I log your name against any new inquiry from that business for the next 90 days.</p>
+        </article>
+
+        <article class="how-card">
+          <h3>3. "Referred by" field</h3>
+          <p>Point the lead at the <a href="/contact">contact form</a> — the "How did you hear about me?" field logs your name automatically.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="refer-rules">
+    <div class="container">
+      <div class="rules-head">
+        <span class="section-label">[ § ] / rules that keep it honest</span>
+        <h2 class="rules-title">A few things <em class="serif-accent">worth knowing.</em></h2>
+      </div>
+
+      <ol class="rules-list">
+        <li><strong>No pyramids.</strong> One hop only. A person earns as a referrer, not a referrer of a referrer.</li>
+        <li><strong>The intro has to happen first.</strong> If a lead already reached out to me last week and a friend "refers" them today, no reward. Timestamps win.</li>
+        <li><strong>Refunds claw back.</strong> If a project is cancelled and refunded in the first 30 days, any paid reward is clawed back or netted against the next one.</li>
+        <li><strong>90-day window.</strong> Referral counts if the lead signs within 90 days of your intro. After that it's a fresh start.</li>
+        <li><strong>I disclose.</strong> If a lead asks whether you're being paid, I say yes. Trust beats pretending.</li>
+        <li><strong>No gating.</strong> I never ask leads who referred them. If the field is blank, it's blank. On the honor system.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="refer-action">
+    <div class="container">
+      <h2 class="action-title">Got someone in mind? <em class="serif-accent">Make the intro.</em></h2>
+      <div class="action-row">
+        <a href={`mailto:${site.email}?subject=${encodeURIComponent('Intro: [Lead name] ↔ Drake at Obsidian')}&body=${encodeURIComponent('Hey Drake,\n\nI wanted to introduce you to [name] from [business]. [Why they might be a fit.]\n\n[Lead name], meet Drake — he runs Obsidian Web Co. in Lynchburg.\n\nI\'ll let you two take it from here.')}`} class="btn-primary">
+          Email an Intro
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </a>
+        <a href="/contact" class="arrow-link">
+          Or use the contact form
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <CTASection />
+</PageLayout>
+
+<style>
+  .refer-hero {
+    padding: calc(var(--nav-height) + 5rem) 0 4rem;
+    text-align: center;
+  }
+
+  .section-label--centered {
+    justify-content: center;
+  }
+
+  .refer-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.75rem, 7vw, 6rem);
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+    max-width: 900px;
+    margin: 1rem auto 1.5rem;
+    text-wrap: balance;
+  }
+
+  .refer-lead {
+    font-size: 1.1rem;
+    color: var(--muted);
+    line-height: 1.65;
+    max-width: 620px;
+    margin: 0 auto;
+  }
+  .refer-lead strong { color: var(--ember); font-weight: 600; }
+
+  /* Tier grid */
+  .refer-tiers {
+    padding: 5rem 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .tier-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  @media (max-width: 768px) {
+    .tier-grid { grid-template-columns: 1fr; }
+  }
+
+  .tier {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    transition: border-color 0.2s ease;
+  }
+  .tier:hover { border-color: var(--ember); }
+
+  .tier--popular {
+    border-color: var(--ember);
+    box-shadow: 0 0 0 1px var(--ember);
+  }
+
+  .tier-num {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 2.25rem;
+    color: var(--ember);
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+  .tier-label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+  .tier-name {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+  .tier-who {
+    color: var(--muted);
+    line-height: 1.55;
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+  }
+  .tier-when {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: var(--ember);
+    text-transform: uppercase;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+
+  /* Examples table */
+  .refer-examples {
+    padding: 5rem 0;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .examples-head { margin-bottom: 3rem; max-width: 700px; }
+
+  .examples-title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-top: 1rem;
+  }
+
+  .examples-table {
+    border-top: 1px solid var(--border);
+  }
+  .example-row {
+    display: grid;
+    grid-template-columns: 2fr 1.5fr 1fr;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.95rem;
+    color: var(--text);
+  }
+  .example-row--head {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+  }
+  .example-amount {
+    color: var(--ember);
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    text-align: right;
+  }
+  @media (max-width: 600px) {
+    .example-row { grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+    .example-row span:first-child { grid-column: 1 / -1; }
+  }
+
+  .examples-note {
+    margin-top: 2rem;
+    padding: 1.25rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--muted);
+    line-height: 1.55;
+    font-size: 0.95rem;
+  }
+  .examples-note strong { color: var(--ember); }
+
+  /* How section */
+  .refer-how {
+    padding: 5rem 0;
+    border-top: 1px solid var(--border);
+  }
+  .how-head { margin-bottom: 3rem; max-width: 700px; }
+  .how-title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-top: 1rem;
+  }
+  .how-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+  @media (max-width: 768px) {
+    .how-grid { grid-template-columns: 1fr; }
+  }
+  .how-card {
+    padding-left: 1.5rem;
+    border-left: 1px solid var(--border);
+  }
+  .how-card h3 {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    line-height: 1;
+    margin-bottom: 0.75rem;
+    color: var(--text);
+  }
+  .how-card p {
+    color: var(--muted);
+    line-height: 1.55;
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+  }
+  .how-card code {
+    display: inline-block;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.35rem 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--ember);
+  }
+  .how-after { margin-top: 0.75rem; }
+
+  /* Rules */
+  .refer-rules {
+    padding: 5rem 0;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .rules-head { margin-bottom: 2.5rem; max-width: 700px; }
+  .rules-title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-top: 1rem;
+  }
+  .rules-list {
+    max-width: 700px;
+    padding-left: 2rem;
+    color: var(--text);
+    line-height: 1.65;
+  }
+  .rules-list li {
+    padding: 0.5rem 0;
+    font-size: 0.98rem;
+  }
+  .rules-list strong { color: var(--ember); font-weight: 600; }
+
+  /* Action */
+  .refer-action {
+    padding: 6rem 0;
+    border-top: 1px solid var(--border);
+    text-align: center;
+  }
+  .action-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 5vw, 4rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-bottom: 2rem;
+    text-wrap: balance;
+  }
+  .action-row {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+</style>
