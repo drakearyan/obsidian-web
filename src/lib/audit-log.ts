@@ -77,10 +77,16 @@ export async function logSecurityEvent(
   if (ATTIO_KINDS.has(kind)) {
     try {
       const body = safeBody(safeDetail);
+      // NOTE on kind: Attio's schema has 'agent-run', 'email-sent', 'note',
+      // etc. as select options, but the current workspace rejects 'note'
+      // (schema-apply drift — to be reconciled separately). 'agent-run'
+      // works today for every event type because Attio treats these as
+      // system-emitted activities. The actual event kind is preserved in
+      // the title prefix so /dashboard/security still filters correctly.
       await logActivity({
         title: `${TITLE_PREFIX}${kind}`,
         body,
-        kind: 'note',
+        kind: 'agent-run',
         agent_name: 'audit-log',
       });
     } catch (err) {
