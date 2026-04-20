@@ -16,6 +16,8 @@
 
 import { claude, MODELS, textOf } from '../claude.js';
 import { logActivity, upsertRecord, type AttioRecord } from '../attio.js';
+import { safeError } from '../pii-scrub.js';
+import { logSecurityEvent } from '../audit-log.js';
 
 export type LeadCsvRow = {
   name: string;
@@ -169,7 +171,7 @@ Score this lead.`;
     companyId = company.id.record_id;
   } catch (err) {
     // Not fatal for the person upsert — continue
-    console.error('lead-scorer: company upsert failed:', err);
+    console.error('lead-scorer: company upsert failed:', safeError(err));
   }
 
   // Upsert person (by email if present — skip if no email, can't reach them)
@@ -191,7 +193,7 @@ Score this lead.`;
       const person = (await upsertRecord('people', 'email_addresses', personValues)) as AttioRecord;
       personId = person.id.record_id;
     } catch (err) {
-      console.error('lead-scorer: person upsert failed:', err);
+      console.error('lead-scorer: person upsert failed:', safeError(err));
     }
   }
 
@@ -209,8 +211,16 @@ Score this lead.`;
     });
     activityId = activity.id.record_id;
   } catch (err) {
-    console.error('lead-scorer: activity log failed:', err);
+    console.error('lead-scorer: activity log failed:', safeError(err));
   }
+
+  void logSecurityEvent('agent_run', {
+    agent_name: 'lead-scorer',
+    tokens_used: tokensUsed,
+    status: 'ok',
+    person_id: personId,
+    company_id: companyId,
+  });
 
   return {
     ok: true,

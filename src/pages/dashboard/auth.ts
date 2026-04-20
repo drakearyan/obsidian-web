@@ -22,6 +22,7 @@ import {
   recordFailure,
   recordSuccess,
 } from '../../lib/rate-limit.js';
+import { logSecurityEvent } from '../../lib/audit-log.js';
 
 export const prerender = false;
 
@@ -41,6 +42,11 @@ export const POST: APIRoute = async ({ request }) => {
       maxFailures: MAX_FAILURES,
       lockoutMs: LOCKOUT_MS,
     });
+    void logSecurityEvent('login_failure', {
+      ip,
+      locked: result.locked,
+      remaining_attempts: result.remaining,
+    });
     const errParam = result.locked ? 'locked' : '1';
     return new Response(null, {
       status: 302,
@@ -54,6 +60,8 @@ export const POST: APIRoute = async ({ request }) => {
   // Must happen BEFORE buildSessionCookie so the new token's issuedAt
   // is >= minValidIssuedAt.
   rotateSession();
+
+  void logSecurityEvent('login_success', { ip });
 
   return new Response(null, {
     status: 302,

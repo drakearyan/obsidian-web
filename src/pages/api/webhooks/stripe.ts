@@ -34,6 +34,8 @@ import type { APIRoute } from 'astro';
 import type { StripeCheckoutSession, StripeEvent } from '../../../lib/stripe';
 import { verifyWebhookSignature } from '../../../lib/stripe';
 import { markAndCheckSeen } from '../../../lib/rate-limit';
+import { safeError } from '../../../lib/pii-scrub';
+import { logSecurityEvent } from '../../../lib/audit-log';
 
 // S2: Stripe retries unacknowledged events for up to 3 days. We track event
 // IDs for the same window so a replayed delivery is a no-op. In-memory for
@@ -54,7 +56,11 @@ export const POST: APIRoute = async ({ request }) => {
     event = verifyWebhookSignature(rawBody, signature);
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error';
-    console.error('stripe webhook: signature verification failed', message);
+    console.error('stripe webhook: signature verification failed', safeError(err));
+    void logSecurityEvent('webhook_signature_fail', {
+      endpoint: 'stripe',
+      reason: message,
+    });
     // 400 tells Stripe to retry later. 401 would be more semantically correct
     // but Stripe's docs recommend 400 for signature failures.
     return new Response(`Webhook signature error: ${message}`, { status: 400 });
@@ -71,12 +77,16 @@ export const POST: APIRoute = async ({ request }) => {
 
   try {
     await routeEvent(event);
+    void logSecurityEvent('stripe_webhook_processed', {
+      event_id: event.id,
+      type: event.type,
+    });
     return new Response('ok', { status: 200 });
   } catch (err) {
     // Returning 500 tells Stripe to retry. Only do this for transient issues —
     // for bad data we should still 200 to stop retries, but we don't have that
     // distinction yet. For now, lean on retries; they stop after 3 days.
-    console.error(`stripe webhook: handler error on ${event.type}`, err);
+    console.error(`stripe webhook: handler error on ${event.type}`, safeError(err));
     const message = err instanceof Error ? err.message : 'Unknown error';
     return new Response(`Handler error: ${message}`, { status: 500 });
   }

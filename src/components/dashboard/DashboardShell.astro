@@ -6,7 +6,7 @@
  */
 interface Props {
   title: string;
-  active: 'overview' | 'pipeline' | 'leads' | 'agents';
+  active: 'overview' | 'pipeline' | 'leads' | 'agents' | 'security';
 }
 const { title, active } = Astro.props;
 
@@ -15,6 +15,7 @@ const nav = [
   { href: '/dashboard/pipeline', key: 'pipeline', label: '№ 02 · Pipeline' },
   { href: '/dashboard/leads', key: 'leads', label: '№ 03 · Leads' },
   { href: '/dashboard/agents', key: 'agents', label: '№ 04 · Agents' },
+  { href: '/dashboard/security', key: 'security', label: '№ 05 · Security' },
 ] as const;
 ---
 <!doctype html>

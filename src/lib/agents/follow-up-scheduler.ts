@@ -22,6 +22,8 @@ import {
   type AttioRecord,
 } from '../attio.js';
 import { addLeadToCampaign } from '../smartlead.js';
+import { safeError } from '../pii-scrub.js';
+import { logSecurityEvent } from '../audit-log.js';
 
 type FollowUp = {
   personId: string;
@@ -212,7 +214,7 @@ Draft the follow-up.`;
         smartleadOk = true;
         sent++;
       } catch (err) {
-        console.error('follow-up-scheduler: Smartlead push failed:', err);
+        console.error('follow-up-scheduler: Smartlead push failed:', safeError(err));
       }
 
       try {
@@ -240,6 +242,16 @@ Draft the follow-up.`;
       tokensUsed: tokens,
     });
   }
+
+  void logSecurityEvent('agent_run', {
+    agent_name: 'follow-up-scheduler',
+    tokens_used: totalTokens,
+    status: 'ok',
+    processed: toProcess.length,
+    drafted,
+    sent,
+    skipped,
+  });
 
   return {
     ok: true,

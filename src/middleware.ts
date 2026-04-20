@@ -14,6 +14,7 @@
 import { defineMiddleware } from 'astro:middleware';
 import { isAuthorized } from './lib/auth.js';
 import { check, clientIp, tooManyRequestsResponse } from './lib/rate-limit.js';
+import { logSecurityEvent } from './lib/audit-log.js';
 
 const ALLOW = new Set([
   '/dashboard/login',
@@ -43,6 +44,11 @@ export const onRequest = defineMiddleware(async (context, next) => {
       max: LOGIN_MAX_ATTEMPTS,
     });
     if (!result.allowed) {
+      void logSecurityEvent('rate_limit_hit', {
+        endpoint: 'dashboard/auth',
+        ip,
+        locked: result.locked,
+      });
       return tooManyRequestsResponse(
         result.retryAfterMs,
         result.locked

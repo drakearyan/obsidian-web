@@ -13,6 +13,8 @@
 import { claude, MODELS, OBSIDIAN_VOICE, textOf } from '../claude.js';
 import { getRecord, logActivity, type AttioRecord } from '../attio.js';
 import { addLeadToCampaign } from '../smartlead.js';
+import { safeError } from '../pii-scrub.js';
+import { logSecurityEvent } from '../audit-log.js';
 
 export type Draft = {
   subject: string;
@@ -189,7 +191,7 @@ Draft the cold email per the constraints. Return JSON only.`;
       });
       smartleadOk = true;
     } catch (err) {
-      console.error('cold-email-writer: Smartlead push failed:', err);
+      console.error('cold-email-writer: Smartlead push failed:', safeError(err));
     }
   }
 
@@ -207,8 +209,16 @@ Draft the cold email per the constraints. Return JSON only.`;
     });
     activityId = activity.id.record_id;
   } catch (err) {
-    console.error('cold-email-writer: activity log failed:', err);
+    console.error('cold-email-writer: activity log failed:', safeError(err));
   }
+
+  void logSecurityEvent('agent_run', {
+    agent_name: 'cold-email-writer',
+    tokens_used: tokensUsed,
+    status: 'ok',
+    person_id: input.personId,
+    smartlead_ok: smartleadOk,
+  });
 
   return { ok: true, output: { draft, smartleadOk, activityId }, tokensUsed };
 }

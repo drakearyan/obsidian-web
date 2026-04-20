@@ -1,0 +1,165 @@
+---
+/**
+ * /dashboard/security — S7
+ *
+ * Reads Attio Activities whose title starts with "security: ". That's the
+ * subset of events logSecurityEvent() writes to Attio (meaningful ones).
+ * High-volume noise like login_failure + rate_limit_hit is console.warn-only
+ * and doesn't appear here — check Vercel logs for those.
+ *
+ * Filterable by kind via query string:
+ *   ?kind=login_success
+ *   ?kind=stripe_webhook_processed
+ *   ?kind=checkout_created
+ *   ?kind=agent_run
+ *   ?kind=webhook_signature_fail
+ */
+import DashboardShell from '../../components/dashboard/DashboardShell.astro';
+import { listRecords, type AttioRecord } from '../../lib/attio.js';
+
+export const prerender = false;
+
+const url = new URL(Astro.request.url);
+const kindFilter = url.searchParams.get('kind') ?? 'all';
+
+const titleFilter =
+  kindFilter === 'all'
+    ? { $starts_with: 'security: ' }
+    : { $eq: `security: ${kindFilter}` };
+
+let activities: AttioRecord[] = [];
+let error: string | null = null;
+try {
+  activities = await listRecords('activities', {
+    filter: { title: titleFilter },
+    sorts: [{ attribute: 'created_at', direction: 'desc' }],
+    limit: 200,
+  });
+} catch (e) {
+  error = (e as Error).message;
+}
+
+function first(record: AttioRecord, slug: string): string {
+  const raw = record.values?.[slug]?.[0];
+  if (!raw) return '';
+  if (typeof raw === 'object' && raw !== null) {
+    const r = raw as Record<string, unknown>;
+    return (r.value as string) ?? ((r.option as { title?: string } | undefined)?.title ?? '');
+  }
+  return String(raw);
+}
+
+function kindFromTitle(title: string): string {
+  return title.replace(/^security:\s*/, '');
+}
+
+/** Map each kind to a brand pill variant (ember/jade/flame). No blue. */
+function pillClass(kind: string): string {
+  if (kind === 'webhook_signature_fail' || kind === 'csrf_fail' || kind === 'login_failure' || kind === 'rate_limit_hit') {
+    return 'lost'; // flame
+  }
+  if (kind === 'agent_run') {
+    return 'won'; // jade
+  }
+  return 'warm'; // ember — everything else (login_success, checkout_created, stripe_webhook_processed)
+}
+
+const tabs = [
+  { key: 'all', label: 'All' },
+  { key: 'login_success', label: 'Logins' },
+  { key: 'stripe_webhook_processed', label: 'Webhooks' },
+  { key: 'checkout_created', label: 'Checkouts' },
+  { key: 'agent_run', label: 'Agent runs' },
+  { key: 'webhook_signature_fail', label: 'Sig failures' },
+];
+
+const counts = {
+  total: activities.length,
+  failures: activities.filter((a) => {
+    const k = kindFromTitle(first(a, 'title'));
+    return k === 'webhook_signature_fail';
+  }).length,
+  agent_runs: activities.filter((a) => kindFromTitle(first(a, 'title')) === 'agent_run').length,
+};
+---
+
+<DashboardShell title="Security" active="security">
+  <p class="eyebrow">№ 05 · Security</p>
+  <h1>Audit log</h1>
+
+  <p style="color: var(--muted); margin-top: 0.5rem; max-width: 640px; font-size: 0.9rem;">
+    Meaningful security events written to Attio. High-volume noise (failed logins,
+    rate-limit hits, CSRF rejects) lives in Vercel function logs only — they would
+    drown out real CRM activity if stored here.
+  </p>
+
+  <div style="display: flex; gap: 0.5rem; margin-top: 1.5rem; flex-wrap: wrap;">
+    {tabs.map((t) => (
+      <a
+        href={`/dashboard/security?kind=${t.key}`}
+        class="pill"
+        style={`text-decoration: none; ${kindFilter === t.key ? 'color: var(--ember); border-color: rgba(233, 162, 70, 0.4);' : ''}`}
+      >
+        {t.label}
+      </a>
+    ))}
+  </div>
+
+  <div class="grid cols-3" style="margin-top: 2rem;">
+    <div class="tile">
+      <div class="label">Entries shown</div>
+      <div class="val">{counts.total}</div>
+    </div>
+    <div class="tile">
+      <div class="label">Agent runs</div>
+      <div class="val">{counts.agent_runs}</div>
+    </div>
+    <div class="tile">
+      <div class="label">Signature failures</div>
+      <div class="val">{counts.failures}</div>
+    </div>
+  </div>
+
+  {error && (
+    <div class="empty" style="border-color: rgba(196, 72, 45, 0.4); color: var(--flame);">
+      Failed to load audit entries: {error}
+    </div>
+  )}
+
+  {activities.length === 0 && !error && (
+    <div class="empty">
+      No audit events in the last 200 entries.
+    </div>
+  )}
+
+  {activities.length > 0 && (
+    <table>
+      <thead>
+        <tr>
+          <th>When</th>
+          <th>Kind</th>
+          <th>Detail</th>
+        </tr>
+      </thead>
+      <tbody>
+        {activities.map((a) => {
+          const kind = kindFromTitle(first(a, 'title'));
+          const body = first(a, 'content');
+          return (
+            <tr>
+              <td style="color: var(--muted); font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.75rem; white-space: nowrap;">
+                {new Date(a.created_at).toLocaleString()}
+              </td>
+              <td>
+                <span class={`pill ${pillClass(kind)}`}>{kind || 'unknown'}</span>
+              </td>
+              <td style="font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.75rem; color: var(--muted); white-space: pre-wrap; max-width: 620px;">
+                {body || '—'}
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  )}
+</DashboardShell>

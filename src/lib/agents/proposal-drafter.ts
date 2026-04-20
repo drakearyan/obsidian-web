@@ -21,6 +21,8 @@
 
 import { claude, MODELS, OBSIDIAN_VOICE, textOf } from '../claude.js';
 import { createProductForProposal, createDepositCheckoutSession } from '../stripe.js';
+import { safeError } from '../pii-scrub.js';
+import { logSecurityEvent } from '../audit-log.js';
 
 export type ProposalTier = 'starter' | 'professional' | 'premium';
 
@@ -200,7 +202,7 @@ export async function draftProposal(input: ProposalInput): Promise<ProposalResul
     } catch (err) {
       // Don't fail the whole agent if Stripe is down. The draft is still usable —
       // Drake can create a payment link manually and paste it in.
-      console.error('proposal-drafter: Stripe session creation failed', err);
+      console.error('proposal-drafter: Stripe session creation failed', safeError(err));
       draft.flags.push(
         'stripe_error: deposit link not generated, paste a Payment Link manually before sending',
       );
@@ -212,6 +214,15 @@ export async function draftProposal(input: ProposalInput): Promise<ProposalResul
   // 3. Compute tokens used (Anthropic SDK returns usage on the response object)
   const usage = (response as { usage?: { input_tokens?: number; output_tokens?: number } }).usage;
   const tokensUsed = (usage?.input_tokens ?? 0) + (usage?.output_tokens ?? 0);
+
+  void logSecurityEvent('agent_run', {
+    agent_name: 'proposal-drafter',
+    tokens_used: tokensUsed,
+    status: 'ok',
+    tier: input.tier,
+    total_dollars: input.totalDollars,
+    stripe_session_created: Boolean(stripeSessionId),
+  });
 
   return {
     draft,
