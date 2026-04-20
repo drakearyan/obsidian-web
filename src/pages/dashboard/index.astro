@@ -1,0 +1,116 @@
+---
+/**
+ * /dashboard (overview)
+ * - Weighted revenue forecast (deals × probability)
+ * - Follow-up queue count
+ * - Smartlead campaign metrics
+ * - Last 10 agent activity rows
+ */
+import DashboardShell from '../../components/dashboard/DashboardShell.astro';
+import { revenueForecast, peopleNeedingFollowUp, listRecords, type AttioRecord } from '../../lib/attio.js';
+import { campaignMetrics } from '../../lib/smartlead.js';
+
+export const prerender = false;
+
+let forecast = { total: 0, byStage: {} as Record<string, number> };
+let followUpCount = 0;
+let metrics = { sent: 0, opened: 0, replied: 0, bounced: 0, unsubscribed: 0 };
+let recent: AttioRecord[] = [];
+const errors: string[] = [];
+
+try { forecast = await revenueForecast(); } catch (e) { errors.push(`forecast: ${(e as Error).message}`); }
+try { followUpCount = (await peopleNeedingFollowUp(14)).length; } catch (e) { errors.push(`followups: ${(e as Error).message}`); }
+try { metrics = await campaignMetrics(); } catch (e) { errors.push(`smartlead: ${(e as Error).message}`); }
+try { recent = await listRecords('activities', { sorts: [{ attribute: 'created_at', direction: 'desc' }], limit: 10 }); } catch (e) { errors.push(`activities: ${(e as Error).message}`); }
+
+const money = (n: number) => `$${Math.round(n).toLocaleString()}`;
+const pct = (num: number, den: number) => (den > 0 ? `${Math.round((num / den) * 100)}%` : '—');
+
+function extract(record: AttioRecord, slug: string): string {
+  const raw = record.values?.[slug]?.[0];
+  if (!raw) return '';
+  if (typeof raw === 'object' && raw !== null) {
+    const r = raw as Record<string, unknown>;
+    return (r.value as string) ?? ((r.option as { title?: string } | undefined)?.title ?? '');
+  }
+  return String(raw);
+}
+---
+
+<DashboardShell title="Overview" active="overview">
+  <p class="eyebrow">№ 01 · Overview</p>
+  <h1>Today</h1>
+
+  {errors.length > 0 && (
+    <div class="empty" style="border-color: rgba(196, 72, 45, 0.4); color: var(--flame);">
+      {errors.length} subsystem(s) failed to load. Check env vars: ATTIO_API_KEY, SMARTLEAD_API_KEY.
+      <br /><small>{errors.join(' · ')}</small>
+    </div>
+  )}
+
+  <div class="grid cols-4">
+    <div class="tile">
+      <div class="label">Weighted pipeline</div>
+      <div class="val">{money(forecast.total)}</div>
+      <div class="delta">Sum of deal value × probability</div>
+    </div>
+    <div class="tile">
+      <div class="label">Follow-ups due</div>
+      <div class="val">{followUpCount}</div>
+      <div class="delta">Dormant ≥ 14 days</div>
+    </div>
+    <div class="tile">
+      <div class="label">Emails sent (campaign)</div>
+      <div class="val">{metrics.sent}</div>
+      <div class="delta">Reply rate: {pct(metrics.replied, metrics.sent)}</div>
+    </div>
+    <div class="tile">
+      <div class="label">Bounces</div>
+      <div class="val">{metrics.bounced}</div>
+      <div class="delta">{pct(metrics.bounced, metrics.sent)} — cap 3%</div>
+    </div>
+  </div>
+
+  <h2 style="font-family: 'Instrument Serif', serif; font-weight: 400; font-size: 1.5rem; margin: 3rem 0 0.5rem;">Pipeline by stage</h2>
+  <div class="grid cols-3">
+    {Object.entries(forecast.byStage).map(([stage, amt]) => (
+      <div class="tile">
+        <div class="label">{stage}</div>
+        <div class="val">{money(amt)}</div>
+      </div>
+    ))}
+    {Object.keys(forecast.byStage).length === 0 && (
+      <div class="tile" style="grid-column: span 3;">
+        <div class="empty">No open deals yet. As agents score leads and you advance them, they appear here.</div>
+      </div>
+    )}
+  </div>
+
+  <h2 style="font-family: 'Instrument Serif', serif; font-weight: 400; font-size: 1.5rem; margin: 3rem 0 0.5rem;">Recent agent activity</h2>
+  {recent.length === 0 ? (
+    <div class="empty">No activity yet. Run the lead-scorer against a CSV to populate.</div>
+  ) : (
+    <table>
+      <thead>
+        <tr>
+          <th>When</th>
+          <th>Kind</th>
+          <th>Agent</th>
+          <th>Title</th>
+        </tr>
+      </thead>
+      <tbody>
+        {recent.map((a) => (
+          <tr>
+            <td style="color: var(--muted); font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.75rem;">
+              {new Date(a.created_at).toLocaleString()}
+            </td>
+            <td><span class="pill">{extract(a, 'kind')}</span></td>
+            <td style="color: var(--muted);">{extract(a, 'agent_name') || '—'}</td>
+            <td>{extract(a, 'title')}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  )}
+</DashboardShell>

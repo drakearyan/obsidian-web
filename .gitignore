@@ -37,3 +37,6 @@ pnpm-debug.log*
 *.csv
 nova_leads_*.csv
 lynchburg_leads_*.csv
+
+# graphify skill output (ephemeral, regenerated on each run)
+graphify-out/

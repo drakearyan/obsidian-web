@@ -56,6 +56,11 @@ interface Props {
   /** SEO title + description overrides (default builds from title/subtitle). */
   metaTitle?: string;
   metaDescription?: string;
+  /** Price anchor shown below the hero lead, e.g. "Starts at $500" or
+   *  "$500 – $6,000+ depending on scope". Omit to hide. */
+  startsAt?: string;
+  /** Which tier should the hero CTA prefill on /contact? */
+  defaultTier?: 'starter' | 'professional' | 'premium';
 }
 
 const {
@@ -71,6 +76,8 @@ const {
   blogTags,
   metaTitle,
   metaDescription,
+  startsAt,
+  defaultTier,
 } = Astro.props;
 
 // Pull the first matching case study, if any
@@ -123,9 +130,16 @@ const faqSchema = {
         <em class="serif-accent vp-accent">{titleAccent}</em>
       </h1>
       <p class="vp-lead">{subtitle}</p>
+      {startsAt && (
+        <div class="vp-price-anchor" aria-label="Starting price for this vertical">
+          <span class="vp-price-kicker">Pricing</span>
+          <span class="vp-price-value">{startsAt}</span>
+          <a class="vp-price-link" href="/services">See full tier breakdown →</a>
+        </div>
+      )}
       <div class="vp-hero-cta">
-        <a href="/audit" class="btn-primary">
-          Get a Free Audit
+        <a href={defaultTier ? `/contact?tier=${defaultTier}` : '/audit'} class="btn-primary">
+          {defaultTier ? `Start a ${defaultTier[0].toUpperCase() + defaultTier.slice(1)} Project` : 'Get a Free Audit'}
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
           </svg>
@@ -320,8 +334,45 @@ const faqSchema = {
     color: var(--muted);
     line-height: 1.65;
     max-width: 680px;
-    margin: 0 auto 2.5rem;
+    margin: 0 auto 1.5rem;
   }
+
+  /* Price anchor — concrete number between the lead paragraph and CTAs so
+     prospects who need to decide in 10 seconds have it. */
+  .vp-price-anchor {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1.25rem;
+    margin: 0 auto 2rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .vp-price-kicker {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .vp-price-value {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    color: var(--ember);
+    white-space: nowrap;
+  }
+  .vp-price-link {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  .vp-price-link:hover { color: var(--ember); }
 
   .vp-hero-cta {
     display: inline-flex;

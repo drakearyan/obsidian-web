@@ -1,0 +1,81 @@
+---
+/**
+ * /dashboard/pipeline
+ * Kanban-style board. Attio Deals grouped by stage.
+ */
+import DashboardShell from '../../components/dashboard/DashboardShell.astro';
+import { listRecords, type AttioRecord } from '../../lib/attio.js';
+
+export const prerender = false;
+
+const STAGES = ['Discovery', 'Proposal', 'Negotiation', 'Won', 'Lost'] as const;
+
+let deals: AttioRecord[] = [];
+let error: string | null = null;
+try {
+  deals = await listRecords('deals', { limit: 100 });
+} catch (e) {
+  error = (e as Error).message;
+}
+
+function stageOf(d: AttioRecord): string {
+  const opt = d.values.stage?.[0] as { option?: { title?: string } } | undefined;
+  return opt?.option?.title ?? 'Discovery';
+}
+function nameOf(d: AttioRecord): string {
+  return String((d.values.name?.[0] as { value?: string } | undefined)?.value ?? 'Untitled');
+}
+function valueOf(d: AttioRecord): number {
+  return Number((d.values.value?.[0] as { value?: number } | undefined)?.value ?? 0);
+}
+function probOf(d: AttioRecord): number {
+  return Number((d.values.probability?.[0] as { value?: number } | undefined)?.value ?? 0);
+}
+function tierOf(d: AttioRecord): string {
+  return String((d.values.tier?.[0] as { option?: { title?: string } } | undefined)?.option?.title ?? '');
+}
+
+const grouped = STAGES.map((stage) => ({
+  stage,
+  deals: deals.filter((d) => stageOf(d) === stage),
+}));
+const money = (n: number) => `$${Math.round(n).toLocaleString()}`;
+---
+
+<DashboardShell title="Pipeline" active="pipeline">
+  <p class="eyebrow">№ 02 · Pipeline</p>
+  <h1>Deals by stage</h1>
+
+  {error && (
+    <div class="empty" style="border-color: rgba(196, 72, 45, 0.4); color: var(--flame);">
+      Failed to load deals: {error}
+    </div>
+  )}
+
+  <div class="grid cols-2" style="grid-template-columns: repeat(5, 1fr);">
+    {grouped.map(({ stage, deals: stageDeals }) => (
+      <div class="tile" style="min-height: 400px;">
+        <div class="label" style="display: flex; justify-content: space-between;">
+          <span>{stage}</span>
+          <span style="color: var(--ember);">
+            {money(stageDeals.reduce((s, d) => s + valueOf(d), 0))}
+          </span>
+        </div>
+        <div style="margin-top: 1rem; display: flex; flex-direction: column; gap: 0.75rem;">
+          {stageDeals.length === 0 && (
+            <div style="font-size: 0.75rem; color: var(--muted); font-style: italic;">No deals</div>
+          )}
+          {stageDeals.map((d) => (
+            <div style="padding: 0.75rem; border: 1px solid var(--line); background: var(--bg2);">
+              <div style="font-size: 0.85rem; margin-bottom: 0.25rem;">{nameOf(d)}</div>
+              <div style="font-size: 0.7rem; color: var(--muted); display: flex; justify-content: space-between;">
+                <span>{tierOf(d) || 'Custom'}</span>
+                <span>{money(valueOf(d))} · {probOf(d)}%</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+</DashboardShell>

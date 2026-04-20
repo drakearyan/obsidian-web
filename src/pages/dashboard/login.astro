@@ -1,0 +1,139 @@
+---
+/**
+ * /dashboard/login — minimal password form.
+ * Submits to /dashboard/auth which sets the session cookie and redirects.
+ *
+ * No layout wrapper on purpose: keeps the login page small and not tied to
+ * the main site's BaseLayout (which would ship analytics scripts into a
+ * private route). Styled inline to match the editorial palette.
+ */
+export const prerender = false;
+
+const error = Astro.url.searchParams.get('error');
+const errorMessage =
+  error === 'locked'
+    ? 'Too many failed attempts. Locked for 30 minutes.'
+    : error === '1'
+    ? 'Incorrect password.'
+    : null;
+---
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Dashboard sign in · Obsidian Web Co.</title>
+  <style>
+    :root {
+      --bg: #0b0a08;
+      --fg: #efe8dd;
+      --muted: #7d7568;
+      --ember: #e9a246;
+      --flame: #c4482d;
+      --line: rgba(239, 232, 221, 0.12);
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      font-family: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      display: grid;
+      place-items: center;
+      padding: 2rem;
+    }
+    .card {
+      width: 100%;
+      max-width: 380px;
+      border: 1px solid var(--line);
+      background: rgba(239, 232, 221, 0.02);
+      padding: 2.5rem 2rem;
+    }
+    .mark {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-size: 1.5rem;
+      letter-spacing: -0.01em;
+      margin: 0 0 0.25rem;
+    }
+    .sub {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      margin: 0 0 2rem;
+    }
+    label {
+      display: block;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+    input[type="password"] {
+      width: 100%;
+      padding: 0.75rem 0.875rem;
+      background: transparent;
+      border: 1px solid var(--line);
+      color: var(--fg);
+      font-family: inherit;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 120ms ease;
+    }
+    input[type="password"]:focus {
+      border-color: rgba(233, 162, 70, 0.6);
+      box-shadow: 0 0 0 2px rgba(233, 162, 70, 0.15);
+    }
+    button {
+      width: 100%;
+      margin-top: 1.25rem;
+      padding: 0.8rem;
+      background: var(--ember);
+      color: var(--bg);
+      border: none;
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      cursor: pointer;
+      transition: background-color 120ms ease;
+    }
+    button:hover { background: #f2b152; }
+    .error {
+      margin-top: 1rem;
+      font-size: 0.8rem;
+      color: var(--flame);
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+    }
+    .foot {
+      margin-top: 2rem;
+      font-size: 0.7rem;
+      color: var(--muted);
+      text-align: center;
+    }
+    a { color: var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <p class="mark">Obsidian</p>
+    <p class="sub">Dashboard · Private</p>
+
+    <form action="/dashboard/auth" method="POST" autocomplete="off">
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" autofocus required />
+      <button type="submit">Enter</button>
+      {errorMessage && <p class="error">{errorMessage}</p>}
+    </form>
+
+    <p class="foot">
+      <a href="/">← Return to obsidianwebco.com</a>
+    </p>
+  </div>
+</body>
+</html>

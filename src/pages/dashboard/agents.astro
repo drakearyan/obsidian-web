@@ -1,0 +1,136 @@
+---
+/**
+ * /dashboard/agents
+ * Full agent activity feed — last 50. Filterable by kind via query string.
+ *   ?kind=agent-run         — only agent runs (not sends)
+ *   ?kind=email-sent
+ *   ?kind=failed            — where failed = true
+ */
+import DashboardShell from '../../components/dashboard/DashboardShell.astro';
+import { listRecords, type AttioRecord } from '../../lib/attio.js';
+
+export const prerender = false;
+
+const url = new URL(Astro.request.url);
+const kindFilter = url.searchParams.get('kind') ?? 'all';
+
+const filter: Record<string, unknown> = {};
+if (kindFilter === 'failed') {
+  filter.failed = { $eq: true };
+} else if (kindFilter !== 'all') {
+  filter.kind = { $eq: kindFilter };
+}
+
+let activities: AttioRecord[] = [];
+let error: string | null = null;
+try {
+  activities = await listRecords('activities', {
+    filter,
+    sorts: [{ attribute: 'created_at', direction: 'desc' }],
+    limit: 50,
+  });
+} catch (e) {
+  error = (e as Error).message;
+}
+
+function first(record: AttioRecord, slug: string): string {
+  const raw = record.values?.[slug]?.[0];
+  if (!raw) return '';
+  if (typeof raw === 'object' && raw !== null) {
+    const r = raw as Record<string, unknown>;
+    return (r.value as string) ?? ((r.option as { title?: string } | undefined)?.title ?? '');
+  }
+  return String(raw);
+}
+
+const tabs = [
+  { key: 'all', label: 'All' },
+  { key: 'agent-run', label: 'Agent runs' },
+  { key: 'email-sent', label: 'Emails sent' },
+  { key: 'failed', label: 'Failures' },
+];
+
+const totalTokens = activities.reduce((s, a) => s + Number(first(a, 'tokens_used') || 0), 0);
+---
+
+<DashboardShell title="Agents" active="agents">
+  <p class="eyebrow">№ 04 · Agents</p>
+  <h1>Activity feed</h1>
+
+  <div style="display: flex; gap: 0.5rem; margin-top: 1.5rem; flex-wrap: wrap;">
+    {tabs.map((t) => (
+      <a
+        href={`/dashboard/agents?kind=${t.key}`}
+        class="pill"
+        style={`text-decoration: none; ${kindFilter === t.key ? 'color: var(--ember); border-color: rgba(233, 162, 70, 0.4);' : ''}`}
+      >
+        {t.label}
+      </a>
+    ))}
+  </div>
+
+  <div class="grid cols-3" style="margin-top: 2rem;">
+    <div class="tile">
+      <div class="label">Entries shown</div>
+      <div class="val">{activities.length}</div>
+    </div>
+    <div class="tile">
+      <div class="label">Total tokens (shown)</div>
+      <div class="val">{totalTokens.toLocaleString()}</div>
+      <div class="delta">~${(totalTokens * 0.000003).toFixed(2)} est.</div>
+    </div>
+    <div class="tile">
+      <div class="label">Filter</div>
+      <div class="val" style="font-size: 1.25rem;">{kindFilter}</div>
+    </div>
+  </div>
+
+  {error && (
+    <div class="empty" style="border-color: rgba(196, 72, 45, 0.4); color: var(--flame);">
+      Failed to load activities: {error}
+    </div>
+  )}
+
+  {activities.length === 0 && !error && (
+    <div class="empty">
+      No activity matching "{kindFilter}". Try "all" or run an agent.
+    </div>
+  )}
+
+  {activities.length > 0 && (
+    <table>
+      <thead>
+        <tr>
+          <th>When</th>
+          <th>Agent</th>
+          <th>Kind</th>
+          <th>Title</th>
+          <th>Model</th>
+          <th>Tokens</th>
+        </tr>
+      </thead>
+      <tbody>
+        {activities.map((a) => (
+          <tr>
+            <td style="color: var(--muted); font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.75rem;">
+              {new Date(a.created_at).toLocaleString()}
+            </td>
+            <td>{first(a, 'agent_name') || '—'}</td>
+            <td>
+              <span class={`pill ${first(a, 'failed') === 'true' ? 'lost' : ''}`}>
+                {first(a, 'kind')}
+              </span>
+            </td>
+            <td>{first(a, 'title')}</td>
+            <td style="color: var(--muted); font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.75rem;">
+              {first(a, 'model') || '—'}
+            </td>
+            <td style="color: var(--muted); font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.75rem;">
+              {first(a, 'tokens_used') || '0'}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  )}
+</DashboardShell>
