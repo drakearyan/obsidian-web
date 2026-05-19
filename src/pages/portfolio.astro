@@ -1,4 +1,5 @@
 ---
+export const prerender = true;
 import PageLayout from '../layouts/PageLayout.astro';
 import CTASection from '../components/CTASection.astro';
 import { case_studies, industries } from '../data/portfolio';
@@ -19,6 +20,14 @@ const thumb_map = INDUSTRY_COLORS;
         <p class="portfolio-hero-intro">
           Every project below is built custom, tested on real users, and measured by what matters: leads, bookings, and revenue.
         </p>
+        <div class="portfolio-disclaimer" role="note">
+          <span class="portfolio-disclaimer-kicker">Note</span>
+          <p>
+            The case studies below are <em>representative examples</em> — composite projects that show
+            the kind of work Obsidian delivers. Real client names + references available on request
+            once we've had an introductory call.
+          </p>
+        </div>
       </div>
     </div>
   </section>
@@ -158,6 +167,40 @@ const thumb_map = INDUSTRY_COLORS;
     line-height: 1.6;
     color: var(--muted);
     max-width: 640px;
+  }
+
+  /* Honest signal — these case studies are composite examples until real
+     clients give consent to publish their names. Quiet note, not a banner. */
+  .portfolio-disclaimer {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    margin-top: 2rem;
+    padding: 1rem 1.25rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 2px solid var(--ember);
+    border-radius: var(--radius);
+    max-width: 640px;
+  }
+  .portfolio-disclaimer-kicker {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ember);
+    padding-top: 0.18rem;
+    white-space: nowrap;
+  }
+  .portfolio-disclaimer p {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--muted);
+  }
+  .portfolio-disclaimer em {
+    font-style: italic;
+    color: var(--text);
   }
 
   .filter-bar {

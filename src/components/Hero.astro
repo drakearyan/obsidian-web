@@ -6,21 +6,32 @@ interface Props {
   subtitle: string;
   ctaText?: string;
   ctaHref?: string;
+  /** Override the default secondary CTA (defaults to portfolio link). */
+  secondaryText?: string;
+  secondaryHref?: string;
 }
 
 const {
-  badge = 'EST. 2026 · LYNCHBURG, VA',
+  badge = 'EST. 2026 · FAIRFAX, VA',
   title,
   titleAccent,
   subtitle,
   ctaText = 'Start a Project',
   ctaHref = '/contact',
+  secondaryText = 'See our work',
+  secondaryHref = '/portfolio',
 } = Astro.props;
 
 const year = new Date().getFullYear();
+
+// Split title + accent into words for the staggered reveal. Each word
+// becomes a <span> with a CSS variable that drives its animation delay.
+const title_words = title.split(/\s+/).filter(Boolean);
+const accent_words = titleAccent ? titleAccent.split(/\s+/).filter(Boolean) : [];
 ---
 
-<section class="hero">
+<section class="hero" data-cursor-spotlight>
+  <div class="hero-spotlight" aria-hidden="true"></div>
   <div class="hero-grid">
     <!-- Top-left: meta info -->
     <div class="hero-meta hero-meta--tl">
@@ -30,19 +41,22 @@ const year = new Date().getFullYear();
       </div>
     </div>
 
-    <!-- Top-right: work counter -->
-    <div class="hero-meta hero-meta--tr">
-      <div class="meta-block meta-block--right">
-        <span class="meta-label">currently</span>
-        <span class="meta-text"><span class="dot-pulse"></span> accepting Q{Math.ceil((new Date().getMonth() + 1) / 3)} {year} projects</span>
-      </div>
-    </div>
-
-    <!-- Center: giant editorial headline -->
+    <!-- Center: giant editorial headline. Each word renders as an
+         inline-block span so it can be staggered into view via
+         animation-delay derived from --word-i. Honoring text-wrap:
+         balance keeps line-breaks behaving as before. -->
     <div class="hero-title-wrap">
-      <h1 class="hero-title" data-reveal>
-        {title}
-        {titleAccent && <em class="hero-accent">{titleAccent}</em>}
+      <h1 class="hero-title">
+        {title_words.map((w, i) => (
+          <span class="hero-word" style={`--word-i: ${i}`}>{w}{i < title_words.length - 1 ? ' ' : ''}</span>
+        ))}
+        {accent_words.length > 0 && (
+          <em class="hero-accent">
+            {accent_words.map((w, i) => (
+              <span class="hero-word" style={`--word-i: ${i + title_words.length}`}>{w}{i < accent_words.length - 1 ? ' ' : ''}</span>
+            ))}
+          </em>
+        )}
       </h1>
     </div>
 
@@ -56,8 +70,8 @@ const year = new Date().getFullYear();
             <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
           </svg>
         </a>
-        <a href="/portfolio" class="arrow-link">
-          See our work
+        <a href={secondaryHref} class="arrow-link">
+          {secondaryText}
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
           </svg>
@@ -109,7 +123,42 @@ const year = new Date().getFullYear();
     flex-direction: column;
     justify-content: space-between;
     position: relative;
+    overflow: hidden;
   }
+
+  /* Cursor-following spotlight — soft ember radial that brightens
+     a 360px disc under the visitor's cursor. CSS variables update
+     in real time from the data-cursor-spotlight script; absent JS
+     the gradient sits in the upper-left corner harmlessly. */
+  .hero-spotlight {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      360px circle at var(--cursor-x, 50%) var(--cursor-y, 50%),
+      rgba(233, 162, 70, 0.08),
+      transparent 60%
+    );
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: 0;
+  }
+
+  .hero[data-cursor-spotlight]:hover .hero-spotlight {
+    opacity: 1;
+  }
+
+  /* Pointer-based devices only — hide on touch */
+  @media (hover: none) {
+    .hero-spotlight { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-spotlight { display: none; }
+  }
+
+  /* Ensure content above the spotlight */
+  .hero-grid { position: relative; z-index: 1; }
+  .ticker { position: relative; z-index: 1; }
 
   .hero-grid {
     flex: 1;
@@ -117,7 +166,7 @@ const year = new Date().getFullYear();
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto 1fr auto;
     grid-template-areas:
-      "tl tr"
+      "tl tl"
       "title title"
       "bl br";
     gap: 2rem 3rem;
@@ -131,12 +180,8 @@ const year = new Date().getFullYear();
   @media (max-width: 768px) {
     .hero-grid {
       grid-template-columns: 1fr;
-      /* Include ALL meta areas so nothing falls into the implicit grid.
-         Previously 'tr' was unnamed on mobile which let the browser drop
-         it into an auto row + auto column, causing a right-aligned ghost. */
       grid-template-areas:
         "tl"
-        "tr"
         "title"
         "bl"
         "br";
@@ -145,16 +190,11 @@ const year = new Date().getFullYear();
   }
 
   .hero-meta--tl { grid-area: tl; }
-  .hero-meta--tr { grid-area: tr; justify-self: end; }
   .hero-meta--bl { grid-area: bl; align-self: end; max-width: 460px; }
   .hero-meta--br { grid-area: br; justify-self: end; align-self: end; }
 
   @media (max-width: 768px) {
-    .hero-meta--tr, .hero-meta--br { justify-self: start; }
-    /* Tighten the ticker text a touch so "ACCEPTING Q2 2026 PROJECTS"
-       fits on one line at 375px instead of wrapping awkwardly. */
-    .hero-meta--tr .meta-text { flex-wrap: wrap; }
-    .hero-meta--tr .meta-block { font-size: 0.65rem; letter-spacing: 0.08em; }
+    .hero-meta--br { justify-self: start; }
   }
 
   .meta-block {
@@ -177,21 +217,6 @@ const year = new Date().getFullYear();
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-  }
-
-  .dot-pulse {
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    background: #4ade80;
-    border-radius: 50%;
-    animation: pulse-dot 2s ease-in-out infinite;
-    box-shadow: 0 0 8px #4ade80;
-  }
-
-  @keyframes pulse-dot {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
   }
 
   /* The giant title */
@@ -217,6 +242,31 @@ const year = new Date().getFullYear();
     font-style: italic;
     color: var(--ember);
     font-weight: 400;
+  }
+
+  /* Per-word stagger reveal — runs once on page load. inline-block
+     so translate works on each word; animation-delay derived from
+     --word-i so words enter in document order. Overflow hidden on
+     the parent line wrapper would cleave the rise — kept off since
+     letters with descenders (y, g) read better without clipping. */
+  .hero-word {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(40%) rotate(2deg);
+    animation: heroWordIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation-delay: calc(0.08s + var(--word-i) * 0.09s);
+    will-change: opacity, transform;
+  }
+
+  @keyframes heroWordIn {
+    to {
+      opacity: 1;
+      transform: translateY(0) rotate(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-word { animation: none; opacity: 1; transform: none; }
   }
 
   .hero-sub {
@@ -318,3 +368,39 @@ const year = new Date().getFullYear();
     .ticker-track { animation: none; }
   }
 </style>
+
+<script>
+  // Cursor spotlight tracker — updates CSS variables on the hero
+  // element so the radial gradient follows the pointer. Throttled
+  // via requestAnimationFrame to one update per paint. Skips when
+  // prefers-reduced-motion or no pointer device.
+  (function initCursorSpotlight() {
+    if (typeof window === 'undefined') return;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const has_pointer = window.matchMedia('(hover: hover)').matches;
+    if (reduce || !has_pointer) return;
+
+    const targets = document.querySelectorAll<HTMLElement>('[data-cursor-spotlight]');
+    if (!targets.length) return;
+
+    targets.forEach((el) => {
+      let ticking = false;
+      let last_x = 0;
+      let last_y = 0;
+      el.addEventListener('pointermove', (e) => {
+        last_x = e.clientX;
+        last_y = e.clientY;
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          ticking = false;
+          const rect = el.getBoundingClientRect();
+          const x = ((last_x - rect.left) / rect.width) * 100;
+          const y = ((last_y - rect.top) / rect.height) * 100;
+          el.style.setProperty('--cursor-x', `${x.toFixed(1)}%`);
+          el.style.setProperty('--cursor-y', `${y.toFixed(1)}%`);
+        });
+      });
+    });
+  })();
+</script>

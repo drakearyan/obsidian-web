@@ -1,0 +1,241 @@
+---
+/*
+  CompetitorComparison
+  ─────────────────────────────────────────────────────────────
+  Side-by-side table: Obsidian vs. Squarespace (DIY template)
+  vs. a typical NoVA agency. Used on /services to handle the
+  "why not just Squarespace" objection without you having to
+  bring it up on the call. Honest framing — every row is a
+  real difference, not a strawman.
+*/
+
+interface Row {
+  label: string;
+  obsidian: string;
+  squarespace: string;
+  agency: string;
+  /** Optional context line that appears under the row label */
+  detail?: string;
+}
+
+const rows: Row[] = [
+  {
+    label: 'Standard build price',
+    obsidian: '$2,000 flat',
+    squarespace: '$0 build + $192/yr',
+    agency: '$4,500 – $8,000',
+  },
+  {
+    label: 'Ongoing platform fee',
+    obsidian: 'None',
+    squarespace: '$16/mo forever',
+    agency: 'Varies',
+    detail: 'You own the code Obsidian ships. Squarespace owns the platform you rent.',
+  },
+  {
+    label: 'Custom design',
+    obsidian: 'Hand-coded for your brand',
+    squarespace: 'Pick a template',
+    agency: 'Yes, after committee',
+  },
+  {
+    label: 'On-location photo shoot',
+    obsidian: 'Included',
+    squarespace: 'Not included',
+    agency: 'Extra $400 – $1,200',
+  },
+  {
+    label: 'Google Business Profile claim + setup',
+    obsidian: 'Included',
+    squarespace: 'You do it',
+    agency: 'Extra $200 – $500',
+  },
+  {
+    label: 'Bilingual (EN + native-language toggle)',
+    obsidian: 'Yes — bundled',
+    squarespace: 'Not natively',
+    agency: 'Rarely offered',
+    detail: 'Critical for restaurants whose menus already live in two languages on Facebook.',
+  },
+  {
+    label: 'Timeline (kickoff → launch)',
+    obsidian: '7 – 14 days',
+    squarespace: 'A weekend',
+    agency: '8 – 16 weeks',
+  },
+  {
+    label: 'Who answers your email',
+    obsidian: 'Drake (the person who built it)',
+    squarespace: 'A help-center bot',
+    agency: 'An account manager who escalates',
+  },
+  {
+    label: 'Site speed (Lighthouse target)',
+    obsidian: '95+ at launch',
+    squarespace: '40 – 70 typical',
+    agency: 'Whatever WordPress allows',
+  },
+  {
+    label: 'You can edit it later',
+    obsidian: 'Yes — and Drake teaches you',
+    squarespace: 'Yes',
+    agency: 'Through their CMS, with training',
+  },
+];
+---
+
+<section class="cmp" data-reveal>
+  <div class="container">
+    <div class="cmp-head">
+      <span class="section-label">[ vs ] / how Obsidian stacks up</span>
+      <h2 class="cmp-title">Obsidian vs. <em class="serif-accent">the obvious alternatives.</em></h2>
+      <p class="cmp-lead">
+        The two reasons people do not hire Obsidian are usually "I will just use Squarespace" or "I am getting a quote from an agency." Both are reasonable defaults. Here is what you actually trade off when you pick one over the other.
+      </p>
+    </div>
+
+    <div class="cmp-table-wrap">
+      <table class="cmp-table" aria-label="Obsidian Web Co. compared to Squarespace and a typical agency">
+        <thead>
+          <tr>
+            <th scope="col" class="cmp-corner"></th>
+            <th scope="col" class="cmp-col-obsidian"><span class="cmp-col-mark">★</span>Obsidian Web Co.</th>
+            <th scope="col">Squarespace template</th>
+            <th scope="col">Typical NoVA agency</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row, i) => (
+            <tr data-reveal data-reveal-delay={String(Math.min((i % 4) + 1, 4))}>
+              <th scope="row" class="cmp-label">
+                <span class="cmp-label-main">{row.label}</span>
+                {row.detail && <span class="cmp-label-detail">{row.detail}</span>}
+              </th>
+              <td class="cmp-cell cmp-cell--obsidian">{row.obsidian}</td>
+              <td class="cmp-cell">{row.squarespace}</td>
+              <td class="cmp-cell">{row.agency}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <p class="cmp-foot">
+      If you can find a better fit, take it — Obsidian is not for every business. But "I can do this myself in Squarespace" usually means three weekends, a template that looks like everyone else's, and a $16/mo subscription you will keep paying forever.
+    </p>
+  </div>
+</section>
+
+<style>
+  .cmp {
+    padding: 6rem 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .cmp-head {
+    max-width: 760px;
+    margin-bottom: 3rem;
+  }
+
+  .cmp-title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin: 1rem 0 1.25rem;
+    text-wrap: balance;
+  }
+
+  .cmp-lead {
+    font-size: 1rem;
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 620px;
+  }
+
+  .cmp-table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    /* Subtle ember edge so the table reads as a deliberate artifact */
+    box-shadow: 0 1px 0 rgba(233, 162, 70, 0.08) inset;
+  }
+
+  .cmp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    min-width: 760px;
+  }
+
+  .cmp-table th,
+  .cmp-table td {
+    padding: 1.1rem 1.25rem;
+    vertical-align: top;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+  }
+
+  .cmp-table thead th {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cmp-table thead .cmp-col-obsidian {
+    color: var(--ember);
+  }
+
+  .cmp-col-mark {
+    display: inline-block;
+    margin-right: 0.5rem;
+    color: var(--ember);
+  }
+
+  .cmp-corner {
+    width: 30%;
+  }
+
+  .cmp-label {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    color: var(--text);
+    font-weight: 400;
+  }
+
+  .cmp-label-main { display: block; }
+
+  .cmp-label-detail {
+    display: block;
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.5;
+    margin-top: 0.4rem;
+    max-width: 360px;
+  }
+
+  .cmp-cell {
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  .cmp-cell--obsidian {
+    color: var(--ember);
+    font-weight: 500;
+    background: rgba(233, 162, 70, 0.04);
+  }
+
+  .cmp-foot {
+    margin-top: 2rem;
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 680px;
+    font-style: italic;
+  }
+</style>

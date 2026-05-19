@@ -30,9 +30,14 @@ export function localBusinessSchema() {
       addressCountry: 'US',
     },
     areaServed: [
+      { '@type': 'City', name: 'Fairfax' },
+      { '@type': 'City', name: 'Annandale' },
+      { '@type': 'City', name: 'Centreville' },
+      { '@type': 'City', name: 'Falls Church' },
+      { '@type': 'City', name: 'Vienna' },
+      { '@type': 'City', name: 'Alexandria' },
       { '@type': 'City', name: 'Lynchburg' },
       { '@type': 'City', name: 'Forest' },
-      { '@type': 'City', name: 'Bedford' },
       { '@type': 'City', name: 'Madison Heights' },
       { '@type': 'State', name: 'Virginia' },
     ],
@@ -103,5 +108,49 @@ export function blogPostSchema(opts: {
     author: { '@type': 'Person', name: opts.author },
     publisher: { '@id': `${site.url}/#business` },
     mainEntityOfPage: { '@type': 'WebPage', '@id': opts.url },
+  };
+}
+
+// Service schema — one per pricing tier on /services. Helps Google
+// surface tier-specific rich results (price, included features) when
+// people search "[city] web design".
+export function serviceSchema(opts: {
+  name: string;
+  description: string;
+  price: number;
+  url: string;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: opts.name,
+    description: opts.description,
+    provider: { '@id': `${site.url}/#business` },
+    areaServed: { '@type': 'State', name: 'Virginia' },
+    url: opts.url,
+    offers: {
+      '@type': 'Offer',
+      price: opts.price,
+      priceCurrency: 'USD',
+      availability: 'https://schema.org/InStock',
+    },
+  };
+}
+
+// FAQPage schema — wrap any list of Q&A pairs to power Google's
+// "People also ask" / accordion rich results. Pass to PageLayout via
+// jsonLd whenever the page renders an FAQ block.
+export function faqPageSchema(items: Array<{ question: string; answer: string }>) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: items.map((qa) => ({
+      '@type': 'Question',
+      name: qa.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: qa.answer,
+      },
+    })),
   };
 }

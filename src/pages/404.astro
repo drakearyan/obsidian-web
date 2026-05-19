@@ -1,17 +1,212 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
+
+// Smart 404 — when a slug like /web-design-restaurnts hits the 404,
+// score the requested path against the known top-level routes and
+// suggest the three closest matches. Levenshtein distance is plenty
+// for tiny page lists; no external lib required.
+
+// Known canonical destinations (path + human label + short reason
+// someone might have meant it). Keep this list in sync with the
+// nav + footer. Order doesn't matter — scoring sorts.
+const known_routes: Array<{ path: string; label: string; blurb: string }> = [
+  { path: '/services', label: 'Services', blurb: 'The three tiers, prices, and what is included.' },
+  { path: '/portfolio', label: 'Portfolio', blurb: 'Recent client builds and case studies.' },
+  { path: '/about', label: 'About', blurb: 'Who builds Obsidian and why.' },
+  { path: '/blog', label: 'Blog', blurb: 'Essays on small-business web design.' },
+  { path: '/contact', label: 'Contact', blurb: 'Send a project brief or book a call.' },
+  { path: '/audit', label: 'Free site audit', blurb: '5-minute teardown of your existing site.' },
+  { path: '/calculator', label: 'Pricing calculator', blurb: 'Build a quick custom estimate.' },
+  { path: '/quiz', label: 'Project-fit quiz', blurb: 'Match a tier to your situation.' },
+  { path: '/refer', label: 'Refer a business', blurb: 'How referrals work.' },
+  { path: '/web-design-restaurants', label: 'Web design for restaurants', blurb: 'Restaurants without a real website.' },
+  { path: '/web-design-dental', label: 'Web design for dental practices', blurb: 'Practices that need to look the part.' },
+  { path: '/web-design-legal', label: 'Web design for law firms', blurb: 'Firm sites that close consults.' },
+  { path: '/web-design-ecommerce', label: 'E-commerce builds', blurb: 'Storefronts that ship in weeks.' },
+  { path: '/web-design-lynchburg', label: 'Lynchburg web design', blurb: 'Central VA service area.' },
+  { path: '/web-design-forest-va', label: 'Forest, VA web design', blurb: 'Central VA service area.' },
+  { path: '/web-design-madison-heights', label: 'Madison Heights web design', blurb: 'Central VA service area.' },
+  { path: '/resources/glossary', label: 'Glossary', blurb: 'Web design terms in plain English.' },
+  { path: '/roadmap', label: 'Public roadmap', blurb: 'What is being built next.' },
+];
+
+const requested = Astro.url.pathname;
+
+function levenshtein(a: string, b: string): number {
+  if (a === b) return 0;
+  if (!a.length) return b.length;
+  if (!b.length) return a.length;
+  const dp: number[][] = Array.from({ length: a.length + 1 }, () => new Array(b.length + 1).fill(0));
+  for (let i = 0; i <= a.length; i++) dp[i][0] = i;
+  for (let j = 0; j <= b.length; j++) dp[0][j] = j;
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      dp[i][j] = Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + cost);
+    }
+  }
+  return dp[a.length][b.length];
+}
+
+const suggestions = known_routes
+  .map((r) => ({
+    ...r,
+    // Score: edit distance against the path, plus a bonus when the
+    // requested slug shares a token with the candidate path. This
+    // catches /web-design-restraunts → /web-design-restaurants AND
+    // /restaurants → /web-design-restaurants (token overlap).
+    score: (() => {
+      const a = requested.toLowerCase().replace(/^\/+|\/+$/g, '');
+      const b = r.path.toLowerCase().replace(/^\/+|\/+$/g, '');
+      const distance = levenshtein(a, b);
+      const a_tokens = new Set(a.split(/[-/]/).filter(Boolean));
+      const b_tokens = new Set(b.split(/[-/]/).filter(Boolean));
+      const overlap = [...a_tokens].filter((t) => b_tokens.has(t)).length;
+      return distance - overlap * 3;
+    })(),
+  }))
+  .sort((a, b) => a.score - b.score)
+  .slice(0, 3);
 ---
 
-<PageLayout title="Page Not Found" description="We couldn't find that page.">
-  <section style="min-height: 70vh; display: flex; align-items: center;">
-    <div class="container" style="text-align: center; max-width: 600px;">
-      <div class="diamond-divider" aria-hidden="true"><span></span></div>
-      <div class="section-label">404</div>
-      <h1 style="margin: 1rem 0;">Page Not Found</h1>
-      <p style="margin-bottom: 2rem; color: var(--muted);">
-        We couldn’t find what you were looking for. Let’s get you back on track.
-      </p>
-      <a href="/" class="btn-primary btn-glow">Back to Home</a>
+<PageLayout
+  title="Page not found"
+  description="That URL did not match a page on Obsidian Web Co. Try one of these instead."
+>
+  <section class="not-found">
+    <div class="container">
+      <div class="nf-head">
+        <span class="section-label">[ 404 ] / page not found</span>
+        <h1 class="nf-title">That page <em class="serif-accent">does not live here.</em></h1>
+        <p class="nf-sub">
+          You tried <code>{requested}</code>. The studio is small enough that I keep every page in my head — and that one is not one of them. A few that might be what you meant:
+        </p>
+      </div>
+
+      <ul class="nf-suggestions">
+        {suggestions.map((s) => (
+          <li>
+            <a href={s.path} class="nf-card">
+              <span class="nf-card-label">{s.label}</span>
+              <span class="nf-card-path">{s.path}</span>
+              <span class="nf-card-blurb">{s.blurb}</span>
+              <span class="nf-card-go">Take me there →</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <div class="nf-fallback">
+        <a href="/" class="btn-primary btn-glow">Back to home</a>
+        <a href="/contact" class="arrow-link">Or tell me what you were looking for →</a>
+      </div>
     </div>
   </section>
 </PageLayout>
+
+<style>
+  .not-found {
+    padding: 8rem 0 6rem;
+    min-height: 80vh;
+  }
+
+  .nf-head {
+    max-width: 760px;
+    margin-bottom: 3rem;
+  }
+
+  .nf-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin: 1rem 0 1.5rem;
+    text-wrap: balance;
+  }
+
+  .nf-sub {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: var(--muted);
+    max-width: 640px;
+  }
+
+  .nf-sub code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    color: var(--ember);
+    background: var(--surface);
+    padding: 0.1rem 0.4rem;
+    border-radius: var(--radius);
+  }
+
+  .nf-suggestions {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 3.5rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+
+  @media (max-width: 900px) {
+    .nf-suggestions { grid-template-columns: 1fr; }
+  }
+
+  .nf-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.5rem 1.5rem 1.25rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: inherit;
+    text-decoration: none;
+    transition: border-color 0.25s ease, transform 0.25s ease;
+  }
+
+  .nf-card:hover {
+    border-color: var(--ember);
+    transform: translateY(-2px);
+    text-decoration: none;
+  }
+
+  .nf-card-label {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    color: var(--text);
+    line-height: 1.2;
+  }
+
+  .nf-card-path {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ember);
+  }
+
+  .nf-card-blurb {
+    font-size: 0.92rem;
+    color: var(--muted);
+    line-height: 1.5;
+    margin-top: 0.25rem;
+  }
+
+  .nf-card-go {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ember);
+    margin-top: 0.75rem;
+  }
+
+  .nf-fallback {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+</style>

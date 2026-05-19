@@ -1,25 +1,97 @@
 ---
+/*
+  StatsBar
+  ─────────────────────────────────────────────────────────────
+  Four editorial stat rows. Number portion counts up from 0 when
+  the section scrolls into view (countTo + suffix encoded as data
+  attrs so the script doesn't have to parse human-readable text).
+  Values without an animatable number (e.g., "<24h", "2–5w") fall
+  back to a quiet fade-in via the global data-reveal system.
+*/
 const items = [
-  { k: 'performance', v: '95+', note: 'lighthouse / every site' },
-  { k: 'response', v: '<24h', note: 'first reply / every inquiry' },
-  { k: 'approach', v: '100%', note: 'custom built / no templates' },
-  { k: 'typical', v: '2–5w', note: 'idea to launch / flexible' },
+  { k: 'performance', display: '95+',  countTo: 95,  suffix: '+',     note: 'lighthouse / every site' },
+  { k: 'response',    display: '<24h', countTo: 24,  prefix: '<', suffix: 'h', note: 'first reply / every inquiry' },
+  { k: 'approach',    display: '100%', countTo: 100, suffix: '%',     note: 'custom built / no templates' },
+  { k: 'typical',     display: '2–5w', countTo: null,                  note: 'idea to launch / flexible' },
 ];
 ---
 
-<section class="numbers">
+<section class="numbers" data-reveal>
   <div class="container">
     <div class="numbers-grid">
-      {items.map((item) => (
-        <div class="num-row">
+      {items.map((item, i) => (
+        <div class="num-row" data-reveal data-reveal-delay={String(Math.min(i + 1, 4))}>
           <div class="num-key">{item.k}</div>
-          <div class="num-val">{item.v}</div>
+          <div
+            class="num-val"
+            data-count-to={item.countTo !== null ? String(item.countTo) : undefined}
+            data-count-prefix={item.prefix || ''}
+            data-count-suffix={item.suffix || ''}
+          >
+            {item.display}
+          </div>
           <div class="num-note">{item.note}</div>
         </div>
       ))}
     </div>
   </div>
 </section>
+
+<script>
+  /*
+    Counter animation — observe [data-count-to], on first visibility
+    interpolate 0 → target over ~1.4s with an ease-out cubic so the
+    final third decelerates and reads as a "settle." Numbers with no
+    data-count-to (e.g. "2–5w") are skipped — their data-reveal fade
+    is enough.
+  */
+  (function initStatCounters() {
+    if (typeof window === 'undefined') return;
+    // [data-count-to] is unique to StatsBar values that should animate
+    // — the attribute selector keeps this from colliding if another
+    // component ever reuses the .num-val class.
+    const targets = document.querySelectorAll<HTMLElement>('[data-count-to]');
+    if (!targets.length) return;
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) return; // leave the static display text untouched
+
+    if (!('IntersectionObserver' in window)) return;
+
+    const animate = (el: HTMLElement) => {
+      const target = parseInt(el.getAttribute('data-count-to') || '0', 10);
+      const prefix = el.getAttribute('data-count-prefix') || '';
+      const suffix = el.getAttribute('data-count-suffix') || '';
+      const duration = 1400;
+      const start = performance.now();
+
+      const tick = (now: number) => {
+        const t = Math.min(1, (now - start) / duration);
+        // ease-out cubic
+        const eased = 1 - Math.pow(1 - t, 3);
+        const value = Math.round(target * eased);
+        el.textContent = `${prefix}${value}${suffix}`;
+        if (t < 1) requestAnimationFrame(tick);
+      };
+
+      requestAnimationFrame(tick);
+    };
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            animate(entry.target as HTMLElement);
+            io.unobserve(entry.target);
+          }
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    targets.forEach((el) => io.observe(el));
+  })();
+</script>
 
 <style>
   .numbers {
@@ -71,6 +143,8 @@ const items = [
     line-height: 0.9;
     color: var(--text);
     letter-spacing: -0.04em;
+    /* Tabular numerals keep the count-up from jittering the surrounding layout. */
+    font-variant-numeric: tabular-nums;
   }
 
   .num-note {

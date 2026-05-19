@@ -1,0 +1,166 @@
+---
+/*
+  SectionNav
+  ─────────────────────────────────────────────────────────────
+  Right-edge fixed dot rail that tracks long-page sections.
+  Click a dot → smooth scroll to that section. Active dot
+  follows the visitor's scroll position via IntersectionObserver.
+  Hides on screens narrower than 1100px (no room).
+
+  Usage: pass an array of { id, label } for each section. Make
+  sure the matching elements on the page carry the same id.
+*/
+
+interface Section {
+  /** Element id to scroll to */
+  id: string;
+  /** Short label shown in the dot's tooltip */
+  label: string;
+}
+
+interface Props {
+  sections: Section[];
+}
+
+const { sections } = Astro.props;
+---
+
+<nav class="section-nav" data-section-nav aria-label="Page sections">
+  <ol>
+    {sections.map((s, i) => (
+      <li>
+        <a href={`#${s.id}`} data-section-target={s.id} aria-label={s.label}>
+          <span class="sn-dot" aria-hidden="true"></span>
+          <span class="sn-label">{String(i + 1).padStart(2, '0')} · {s.label}</span>
+        </a>
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<style>
+  .section-nav {
+    position: fixed;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 50;
+    display: none;
+  }
+
+  @media (min-width: 1100px) {
+    .section-nav { display: block; }
+  }
+
+  .section-nav ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .section-nav a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: var(--muted);
+    transition: color 0.25s ease;
+  }
+
+  .sn-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 1px solid currentColor;
+    transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+    flex-shrink: 0;
+  }
+
+  .sn-label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    opacity: 0;
+    transform: translateX(8px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    white-space: nowrap;
+  }
+
+  .section-nav a:hover {
+    color: var(--ember);
+  }
+
+  .section-nav a:hover .sn-label {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .section-nav a.is-current {
+    color: var(--ember);
+  }
+
+  .section-nav a.is-current .sn-dot {
+    background: var(--ember);
+    border-color: var(--ember);
+    transform: scale(1.4);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sn-dot,
+    .sn-label,
+    .section-nav a { transition: none; }
+  }
+</style>
+
+<script>
+  (function initSectionNav() {
+    if (typeof window === 'undefined') return;
+    const links = document.querySelectorAll<HTMLAnchorElement>('[data-section-target]');
+    if (!links.length) return;
+
+    // Smooth scroll on click — but only if reduced motion isn't set.
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    links.forEach((a) => {
+      a.addEventListener('click', (e) => {
+        const id = a.dataset.sectionTarget;
+        if (!id) return;
+        const el = document.getElementById(id);
+        if (!el) return;
+        e.preventDefault();
+        const top = el.getBoundingClientRect().top + window.scrollY - 80; // nav offset
+        window.scrollTo({ top, behavior: reduce ? 'auto' : 'smooth' });
+      });
+    });
+
+    // Scroll-spy via IntersectionObserver. Pick the topmost intersecting
+    // section as "current" so the rail updates as the visitor scrolls.
+    const link_map = new Map<string, HTMLAnchorElement>();
+    links.forEach((a) => {
+      const id = a.dataset.sectionTarget;
+      if (id) link_map.set(id, a);
+    });
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        const intersecting = entries.filter((e) => e.isIntersecting);
+        if (!intersecting.length) return;
+        // pick the one closest to the top of the viewport
+        intersecting.sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        const top = intersecting[0];
+        links.forEach((a) => a.classList.remove('is-current'));
+        const link = link_map.get(top.target.id);
+        if (link) link.classList.add('is-current');
+      },
+      { rootMargin: '-30% 0px -55% 0px', threshold: 0 },
+    );
+
+    link_map.forEach((_, id) => {
+      const el = document.getElementById(id);
+      if (el) io.observe(el);
+    });
+  })();
+</script>

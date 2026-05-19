@@ -1,8 +1,44 @@
 ---
+export const prerender = true;
 import PageLayout from '../../layouts/PageLayout.astro';
 import CTASection from '../../components/CTASection.astro';
 
 const resources = [
+  // PILLARS — long-form topic hubs that link out to cluster posts.
+  // Add a new pillar by dropping a .astro file at /resources/<slug>
+  // and listing it here.
+  {
+    kind: 'Pillar topic',
+    title: 'Northern Virginia web design — the long version',
+    body: 'Everything I learned pivoting Obsidian to Fairfax County: the niche, the pricing, the bilingual angle, the cold-call sprint, why ethnic-restaurant corridors matter without saying "ethnic." Links to every cluster essay underneath.',
+    href: '/resources/nova-web-design',
+    cta: 'Read the pillar',
+  },
+  // FREE DOWNLOADS — lead-magnet PDFs and templates. Each card here
+  // routes through /audit (which captures email) until the PDF exists.
+  // Once a PDF is in /public/downloads, swap the href and remove the
+  // routing note from the body copy.
+  {
+    kind: 'Free download',
+    title: 'Google Business Profile setup checklist',
+    body: "23-step checklist I run on every new client — categories, photos, hours, services, FAQ, weekly posts, review-response cadence. The thing that puts you on the map for 'best [thing] near me.' Email-gated; sent the second you opt in.",
+    href: '/audit?ref=gbp-checklist',
+    cta: 'Get the checklist',
+  },
+  {
+    kind: 'Free download',
+    title: 'Restaurant menu page template (HTML + Notion)',
+    body: 'The menu section I build for every restaurant client — semantic HTML for accessibility, Notion mirror for owners who edit weekly, structured-data schema so Google can show dishes in search. Steal the structure; the markup is yours.',
+    href: '/audit?ref=menu-template',
+    cta: 'Get the template',
+  },
+  {
+    kind: 'Free download',
+    title: 'First 90 days of small-business outreach (the plan I follow)',
+    body: 'The cold-call + email + GBP sprint plan I use for new local markets — 14-day call cadence, exact opener, objection bank, scoring rubric. Built around a $2,000 ticket. Adapt it; use it; ignore it.',
+    href: '/audit?ref=90-day-plan',
+    cta: 'Get the plan',
+  },
   {
     kind: 'Free tool',
     title: '5-Minute Website Audit',
@@ -65,13 +101,6 @@ const resources = [
     body: "Field notes written for owners, not other developers. Categories: design, SEO, performance, business, Lynchburg.",
     href: '/blog',
     cta: 'Read the essays',
-  },
-  {
-    kind: 'Status',
-    title: 'What Drake is working on now',
-    body: "Current availability, what's in flight, how long replies are taking this week. Updated monthly.",
-    href: '/now',
-    cta: "See what's now",
   },
   {
     kind: 'Status',

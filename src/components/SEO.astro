@@ -10,7 +10,7 @@ interface Props extends SEOProps {
 const {
   title,
   description = site.description,
-  image = '/og-image.png',
+  image,
   canonical,
   type = 'website',
   jsonLd = [],
@@ -18,7 +18,20 @@ const {
 
 const full_title = buildTitle(title);
 const canonical_url = canonical || new URL(Astro.url.pathname, site.url).toString();
-const og_image = new URL(image, site.url).toString();
+
+// Dynamic OG image — when the caller doesn't pin a static image,
+// route the share preview through /api/og.png with the page's title
+// and description so each page gets a unique editorial card. Static
+// overrides still win (e.g., a blog post can pass its hero image).
+const og_image = image
+  ? new URL(image, site.url).toString()
+  : new URL(
+      `/api/og.png?${new URLSearchParams({
+        title: title || site.tagline,
+        tagline: description.slice(0, 160),
+      }).toString()}`,
+      site.url,
+    ).toString();
 
 // Auto-generate BreadcrumbList from current URL path — skips homepage.
 // Google uses this to render breadcrumbs in search results.

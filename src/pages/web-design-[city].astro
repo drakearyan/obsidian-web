@@ -1,0 +1,103 @@
+---
+/*
+ * Programmatic per-city landing pages.
+ *
+ * One file generates `/web-design-annandale`, `/web-design-falls-church`,
+ * `/web-design-centreville`, etc. from src/data/service-areas.ts. The
+ * existing static city pages (Lynchburg, Forest, Madison Heights) take
+ * precedence over this dynamic route via Astro's routing rules, so they
+ * keep their bespoke copy untouched.
+ *
+ * Framing rule (see service-areas.ts): public copy says "restaurants
+ * without a real website" — never "ethnic restaurants." Local anchors
+ * (Eden Center, Heritage Dr, Maple Ave) do the targeting implicitly.
+ */
+export const prerender = true;
+
+import VerticalPage from '../components/VerticalPage.astro';
+import { service_areas, getServiceAreaSlugs, type ServiceArea } from '../data/service-areas';
+
+export async function getStaticPaths() {
+  return getServiceAreaSlugs();
+}
+
+interface Props {
+  area: ServiceArea;
+}
+
+const { area } = Astro.props as Props;
+
+// Anchors get woven into the wins copy so the page actually reads
+// like it knows the town. First two anchors land in the scene line;
+// remaining anchors surface in FAQ + pain copy.
+const [anchor_a, anchor_b, ...rest_anchors] = area.anchors;
+
+const pains = [
+  {
+    title: `Your customers in ${area.name} can't find you on Google`,
+    body: `A search for your dish plus "${area.name}" pulls up Yelp, DoorDash, and a Facebook post from 2019 — not a website with your menu and hours. ${anchor_a}-${anchor_b} foot traffic is great. Online discovery is broken.`,
+  },
+  {
+    title: 'Facebook is doing the work a website should do',
+    body: `Hours, photos, specials, language toggle, contact — all of it pinned to a feed. Customers under 35, customers without Facebook accounts, customers searching from out of town all bounce. The page that fixes that does not exist yet.`,
+  },
+  {
+    title: 'A polished site costs $5,000-$8,000 in NoVA — supposedly',
+    body: `Reston and Tysons agencies pitch enterprise prices for what is, structurally, a five-page small-business site. The "boutique" markup pays for an account manager you will not meet again after kickoff.`,
+  },
+];
+
+const wins = [
+  {
+    title: `$2,000 flat — and Drake drives to ${area.name} himself`,
+    body: `Five-page hand-coded site, on-location photo shoot (${area.driveMinutes} minutes from a typical Fairfax County base), Google Business Profile claim, 60 days of edits. Half down, half on launch. The number on the proposal is the number you pay.`,
+  },
+  {
+    title: 'Bilingual when your customers read in two languages',
+    body: `If a meaningful share of your regulars grew up speaking another language, the site gets a proper toggle — English plus Korean, Vietnamese, Spanish, Amharic, or another language you serve. Each version is indexed separately. Bundled, not upsold.`,
+  },
+  {
+    title: `Tuned for ${area.county} search`,
+    body: `LocalBusiness schema, GBP optimization, ${rest_anchors.length > 0 ? rest_anchors.join(', ') + ', and ' : ''}${anchor_a}-area coverage in copy and structured data. The phrases your customers actually type — not generic "best restaurant near me" — show up in the page.`,
+  },
+];
+
+const faqs = [
+  {
+    question: `Do you actually shoot photos in ${area.name}?`,
+    answer: `Yes. The 30-minute on-location shoot is part of the $2,000. ${anchor_a}, ${anchor_b}, anywhere in ${area.zip} is a short drive. Kitchen, dining room, signature dishes, your team if you want to be on the site. You get the raw files too.`,
+  },
+  {
+    question: 'How does the photo shoot get scheduled?',
+    answer: `After the deposit clears, we pick a 30-minute window that works for your business — typically between the lunch and dinner rush, or on a slow morning. Drake brings the camera and lights, you provide the kitchen access.`,
+  },
+  {
+    question: `What if my business is not a restaurant — does ${area.name} pricing change?`,
+    answer: `No. The $2,000 flat applies to any small business in ${area.name} that fits the profile: single location or small chain, family or owner-operated, no real website or stuck on a builder subdomain. Salons, contractors, dental practices, retail — same pricing, same process.`,
+  },
+  {
+    question: 'How fast can you launch?',
+    answer: `Standard timeline is 7-14 days from deposit to launch. ${area.name} projects tend to ship on the faster end because the decision-makers are usually the owner — no committee review delays.`,
+  },
+  {
+    question: 'What about ongoing edits after launch?',
+    answer: `60 days of small edits are bundled. After that, $75/month covers ongoing edits, hosting, security updates, and a copy-paste monthly post template for your Google Business Profile. Or skip the retainer and email me when you need something; I bill an hour at a time.`,
+  },
+];
+---
+
+<VerticalPage
+  slug={`/web-design-${area.slug}`}
+  kicker={`[ ◎ ] / ${area.name.toLowerCase()}, va`}
+  title={`Web design in ${area.name}, VA`}
+  titleAccent="for small businesses without a real site."
+  subtitle={area.scene + ` Obsidian builds them a real website — flat $2,000, photo shoot included, bilingual when needed, launched in two weeks. ${anchor_a} to ${anchor_b}, no agency markup.`}
+  pains={pains}
+  wins={wins}
+  faqs={faqs}
+  blogTags={['nova', 'local seo', area.slug]}
+  metaTitle={`Web Design ${area.name} VA — $2,000 Flat for Local Businesses`}
+  metaDescription={`Custom websites for ${area.name}, VA ${area.zip} small businesses. $2,000 flat includes 5-page site, on-location photo shoot, Google Business Profile claim, bilingual capability.`}
+  startsAt="$2,000 flat · 50/50 deposit"
+  defaultTier="professional"
+/>

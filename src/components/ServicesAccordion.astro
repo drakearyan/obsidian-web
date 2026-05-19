@@ -18,7 +18,7 @@ const roman = ['I', 'II', 'III'];
 
     <div class="spec-list">
       {service_tiers.map((tier, i) => (
-        <article class="spec-card" style={`--spec-accent: ${i === 0 ? 'var(--ember)' : i === 1 ? 'var(--flame)' : 'var(--ember-deep)'}`}>
+        <article class="spec-card" data-reveal data-reveal-delay={String(Math.min(i + 1, 4))} style={`--spec-accent: ${i === 0 ? 'var(--ember)' : i === 1 ? 'var(--flame)' : 'var(--ember-deep)'}`}>
           <div class="spec-num">{roman[i]}</div>
           <div class="spec-body">
             <header class="spec-body-head">
@@ -43,7 +43,7 @@ const roman = ['I', 'II', 'III'];
             </ul>
 
             <div class="spec-support-badge" aria-label="Included with every tier">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true" class="check-draw">
                 <polyline points="20 6 9 17 4 12"/>
               </svg>
               {i === 2 ? '90-day launch support included' : '30-day launch support included'}
@@ -123,6 +123,34 @@ const roman = ['I', 'II', 'III'];
     color: var(--spec-accent);
     line-height: 1;
     padding-top: 0.5rem;
+    /* Roman numeral scales up + fades in when the card reveals.
+       data-reveal toggles .is-revealed on the parent .spec-card;
+       the numeral catches that with a tiny delay for editorial polish. */
+    opacity: 0;
+    transform: scale(0.7);
+    transform-origin: left top;
+    transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.15s,
+                transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.15s;
+  }
+  .spec-card.is-revealed .spec-num {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* Checkmark stroke draws in when the card reveals. ~24 user-units
+     covers the polyline; dasharray + dashoffset = single-line draw. */
+  .check-draw polyline {
+    stroke-dasharray: 24;
+    stroke-dashoffset: 24;
+    transition: stroke-dashoffset 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.35s;
+  }
+  .spec-card.is-revealed .check-draw polyline {
+    stroke-dashoffset: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .spec-num { opacity: 1; transform: none; transition: none; }
+    .check-draw polyline { stroke-dashoffset: 0; transition: none; }
   }
 
   @media (max-width: 700px) {

@@ -1,0 +1,285 @@
+---
+/*
+ * Pillar page — Northern Virginia web design.
+ *
+ * Hub-and-spoke SEO pattern: this long-form essay anchors the topic;
+ * existing and future cluster posts (tagged 'nova', 'fairfax', 'local
+ * seo', etc.) link back here, and this page links out to them. Repeat
+ * the pattern for the other pillars by copying this file:
+ *   /resources/restaurant-marketing.astro
+ *   /resources/google-business-profile.astro
+ *   /resources/bilingual-sites.astro
+ *
+ * Content here is intentionally Drake-flavored, not generic. The
+ * tone matches the rest of the site: editorial, first-person, no
+ * synergy/leverage/cutting-edge words, no apostrophes-as-style.
+ */
+export const prerender = true;
+import PageLayout from '../../layouts/PageLayout.astro';
+import CTASection from '../../components/CTASection.astro';
+import { getCollection } from 'astro:content';
+import ReadingProgress from '../../components/ReadingProgress.astro';
+import { faqPageSchema } from '../../utils/seo';
+
+// Cluster posts: any published blog post tagged "nova", "fairfax",
+// or "local seo" surfaces in the related list at the bottom.
+const all_posts = await getCollection('blog', ({ data }) => !data.draft);
+const cluster = all_posts
+  .filter((p) => {
+    const tags = ((p.data as { tags?: string[] }).tags || []).map((t) => t.toLowerCase());
+    return tags.some((t) => ['nova', 'fairfax', 'local seo'].includes(t));
+  })
+  .sort((a, b) => (b.data.publishDate as Date).valueOf() - (a.data.publishDate as Date).valueOf())
+  .slice(0, 6);
+
+const sections = [
+  { id: 'pivot', label: 'Why NoVA' },
+  { id: 'niche', label: 'The niche' },
+  { id: 'pricing', label: 'Pricing' },
+  { id: 'bilingual', label: 'Bilingual angle' },
+  { id: 'sprint', label: 'The sprint' },
+];
+
+const faqs = [
+  {
+    question: 'What counts as a "restaurant without a real website" in NoVA?',
+    answer: 'Family-owned, single-location or 2-3 locations max, rating 4+ stars, at least 100 Google reviews, and either no website, a Facebook-only presence, or a builder-subdomain like yourname.wix.com. The hallmark: a thriving in-person business that has been ignored online because the owner is busy running the business.',
+  },
+  {
+    question: 'Why $2,000 specifically?',
+    answer: 'It is the highest flat-fee that does not require a board meeting to approve. Most family-restaurant owners can write the check from a personal account, the same day, after a 15-minute call. Above $2,500 you start needing spouses, partners, accountants. Below $1,500 the math does not work for me as the builder.',
+  },
+  {
+    question: 'Is the bilingual feature really included?',
+    answer: 'Yes. One non-English language is bundled in the $2,000. Additional languages are $300 each. Owner provides the translation; I build the toggle and the structure. See the bilingual page for the full mechanic.',
+  },
+  {
+    question: 'Why not Loudoun, Prince William, Arlington proper?',
+    answer: 'Distance from Fairfax base hits photo-shoot economics hard. Loudoun and Prince William are far enough that the round trip eats a half-day. Arlington proper is too saturated with NoVA agencies at higher price points. Fairfax County is the sweet spot — dense, accessible, underserved at the small-business tier.',
+  },
+];
+---
+
+<PageLayout
+  title="Northern Virginia web design — the long version"
+  description="The pillar essay. Everything about Obsidian's NoVA pivot: niche, pricing, bilingual angle, cold-call sprint plan, and where the cluster essays go from here."
+  jsonLd={[faqPageSchema(faqs)]}
+>
+  <ReadingProgress target="article" />
+
+  <article class="pillar">
+    <header class="pillar-head">
+      <div class="container container--narrow">
+        <nav class="pillar-crumbs">
+          <a href="/resources">← All resources</a>
+        </nav>
+        <span class="section-label">[ ⌘ ] / pillar topic</span>
+        <h1 class="pillar-title">Northern Virginia web design — <em class="serif-accent">the long version.</em></h1>
+        <p class="pillar-deck">
+          The why, the niche, the pricing, the cold-call sprint, and where the cluster essays go from here. Written for small-business owners who do not have time for a 6,000-word think-piece but want to know I have actually thought about this.
+        </p>
+      </div>
+    </header>
+
+    <div class="pillar-body">
+      <div class="container container--narrow">
+        <section id="pivot" class="pillar-section">
+          <h2>Why I pivoted from Lynchburg to NoVA</h2>
+          <p>Obsidian Web Co. started in Central Virginia because that is where I grew up and where I knew the small-business landscape. Lynchburg has real demand and real customers, but the price ceiling on a small-business website tops out around $1,500 before the conversation gets weird. I built 200+ leads and three demos, and the math just was not adding up — same hours of work, lower ticket, longer convince-cycle.</p>
+          <p>Moving back to Fairfax County in May 2026 reset the geography. Northern Virginia has the same kind of family-owned small businesses, but the ceiling on a website is closer to $7,000-8,000 at a typical Reston or Tysons agency. The gap between "I can build this in two weeks for $2,000" and "the agency quoted me $6,000 for three months" is the entire pitch.</p>
+        </section>
+
+        <section id="niche" class="pillar-section">
+          <h2>The niche, said plainly</h2>
+          <p>The current focus: restaurants in Fairfax County that do not have a real website. Family-owned, single-location, thriving in person, ignored online. Annandale Korean BBQ that has 1,800 reviews and a Facebook page. Falls Church pho with the Yelp listing and nothing else. Centreville Afghan with the menu pinned in a comment thread.</p>
+          <p>This is not a permanent restriction. The pricing and process work the same for salons, contractors, dental practices, retail, and small professional services. Restaurants are just the easiest to identify, the easiest to pitch, and the most likely to close inside two weeks. Once the playbook proves out, the niche fans out.</p>
+        </section>
+
+        <section id="pricing" class="pillar-section">
+          <h2>Why $2,000 flat</h2>
+          <p>Most agencies bury the price. Obsidian publishes it. Two thousand dollars covers a five-page hand-coded site, an on-location photo shoot, a Google Business Profile claim, and 60 days of post-launch edits. Half down, half on launch. No platform fees afterward — the code is yours, hosted wherever you want, edited by anyone you hire later.</p>
+          <p>The breakdown lives on <a href="/services">/services</a>. The comparison against Squarespace and a typical NoVA agency lives there too. Both are deliberately public.</p>
+        </section>
+
+        <section id="bilingual" class="pillar-section">
+          <h2>Bilingual as the differentiator</h2>
+          <p>Most NoVA agencies do not build proper bilingual sites — they either ignore the second language entirely or bolt on a Google Translate widget that ruins SEO. Obsidian builds the toggle right: each language gets its own URL path, hreflang tags tell search engines who is who, the toggle preserves the visitor's scroll position. Owner provides the translation; I build the structure.</p>
+          <p>The full mechanic is on <a href="/bilingual">/bilingual</a>. Korean, Vietnamese, Spanish, Amharic, Dari, and Mandarin are the most-requested pairings; right-to-left languages like Farsi and Arabic add one extra layout pass but otherwise work the same.</p>
+        </section>
+
+        <section id="sprint" class="pillar-section">
+          <h2>The 14-day cold-call sprint</h2>
+          <p>The plan is unsexy. Twenty dials a day, every weekday, for two weeks. Mornings only. Each dial has the same opener, the same demo URL ready, the same closing question. The 14-day window is enough to surface 30+ live conversations, book 3-5 discovery calls, and land at least one $2,000 deposit.</p>
+          <p>The sprint dates and call list live in private notes, not on the public site. What does live publicly: the script structure on <a href="/blog">the blog</a>, the typical timeline on <a href="/services#tiers">services</a>, and the answers to the most-asked questions in the FAQ below.</p>
+        </section>
+
+        <section class="pillar-section">
+          <h2>FAQ</h2>
+          <dl class="pillar-faq">
+            {faqs.map((f) => (
+              <div class="pillar-faq-item">
+                <dt>{f.question}</dt>
+                <dd>{f.answer}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+
+        {cluster.length > 0 && (
+          <section class="pillar-section">
+            <h2>Cluster essays</h2>
+            <p class="pillar-cluster-intro">
+              These deepen the topics above. New ones land roughly once a week.
+            </p>
+            <ul class="pillar-cluster-list">
+              {cluster.map((p) => (
+                <li>
+                  <a href={`/blog/${p.id}/`}>
+                    <span class="pillar-cluster-title">{p.data.title}</span>
+                    <span class="pillar-cluster-desc">{p.data.description}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+      </div>
+    </div>
+
+    <CTASection
+      heading="Got a NoVA business that needs a real site?"
+      subheading="Free 15-minute audit of your existing presence — or skip to a discovery call."
+    />
+  </article>
+</PageLayout>
+
+<style>
+  .container--narrow { max-width: 760px; }
+
+  .pillar-head {
+    padding: 7rem 0 3rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .pillar-crumbs {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 2rem;
+  }
+
+  .pillar-crumbs a { color: var(--muted); text-decoration: none; }
+  .pillar-crumbs a:hover { color: var(--ember); }
+
+  .pillar-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 5.5vw, 4.25rem);
+    line-height: 1.05;
+    letter-spacing: -0.035em;
+    margin: 1rem 0 1.25rem;
+    text-wrap: balance;
+  }
+
+  .pillar-deck {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.3rem;
+    color: var(--muted);
+    line-height: 1.45;
+    max-width: 640px;
+  }
+
+  .pillar-body { padding: 4rem 0 5rem; }
+
+  .pillar-section {
+    margin-bottom: 3rem;
+  }
+
+  .pillar-section h2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+    line-height: 1.1;
+    margin: 0 0 1.25rem;
+    letter-spacing: -0.025em;
+  }
+
+  .pillar-section p {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--text);
+    margin-bottom: 1.25rem;
+  }
+
+  .pillar-section a {
+    color: var(--ember);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .pillar-faq {
+    margin: 0;
+  }
+
+  .pillar-faq-item {
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .pillar-faq-item:first-of-type { border-top: 1px solid var(--border); }
+
+  .pillar-faq dt {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    color: var(--text);
+    margin-bottom: 0.6rem;
+  }
+
+  .pillar-faq dd {
+    margin: 0;
+    font-size: 0.98rem;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+
+  .pillar-cluster-intro { color: var(--muted); margin-bottom: 1.5rem; }
+
+  .pillar-cluster-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 1rem;
+  }
+
+  .pillar-cluster-list a {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 1.25rem 1.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.25s ease, transform 0.25s ease;
+  }
+
+  .pillar-cluster-list a:hover {
+    border-color: var(--ember);
+    transform: translateY(-2px);
+  }
+
+  .pillar-cluster-title {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    color: var(--text);
+    line-height: 1.2;
+  }
+
+  .pillar-cluster-desc {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+</style>

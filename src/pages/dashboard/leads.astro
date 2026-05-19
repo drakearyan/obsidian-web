@@ -1,0 +1,99 @@
+---
+/**
+ * /dashboard/leads
+ * Table of Attio People, sorted by score desc. Click a row to open in Attio.
+ */
+import DashboardShell from '../../components/dashboard/DashboardShell.astro';
+import { listRecords, type AttioRecord } from '../../lib/attio.js';
+
+export const prerender = false;
+
+let people: AttioRecord[] = [];
+let error: string | null = null;
+try {
+  people = await listRecords('people', {
+    sorts: [{ attribute: 'score', direction: 'desc' }],
+    limit: 50,
+  });
+} catch (e) {
+  error = (e as Error).message;
+}
+
+function first(record: AttioRecord, slug: string): string {
+  const raw = record.values?.[slug]?.[0];
+  if (!raw) return '';
+  if (typeof raw === 'object' && raw !== null) {
+    const r = raw as Record<string, unknown>;
+    return (r.value as string) ??
+      (r.email_address as string) ??
+      (r.phone_number as string) ??
+      ((r.option as { title?: string } | undefined)?.title ?? '');
+  }
+  return String(raw);
+}
+
+function fullName(record: AttioRecord): string {
+  const nm = record.values?.name?.[0] as { first_name?: string; last_name?: string } | undefined;
+  return `${nm?.first_name ?? ''} ${nm?.last_name ?? ''}`.trim() || '(unnamed)';
+}
+
+function scoreColor(n: number): string {
+  if (n >= 70) return 'var(--jade)';
+  if (n >= 40) return 'var(--ember)';
+  return 'var(--muted)';
+}
+
+function daysSince(iso: string | undefined): string {
+  if (!iso) return 'Never';
+  const d = Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);
+  return d === 0 ? 'Today' : d === 1 ? '1 day' : `${d} days`;
+}
+---
+
+<DashboardShell title="Leads" active="leads">
+  <p class="eyebrow">№ 03 · Leads</p>
+  <h1>People · sorted by score</h1>
+
+  {error && (
+    <div class="empty" style="border-color: rgba(196, 72, 45, 0.4); color: var(--flame);">
+      Failed to load people: {error}
+    </div>
+  )}
+
+  {people.length === 0 && !error && (
+    <div class="empty">
+      No leads yet. Run the lead-scorer against a CSV from <code>lead_finder_lynchburg.py</code> to populate this list.
+    </div>
+  )}
+
+  {people.length > 0 && (
+    <table>
+      <thead>
+        <tr>
+          <th>Score</th>
+          <th>Name</th>
+          <th>City</th>
+          <th>Stage</th>
+          <th>Tier</th>
+          <th>Last contact</th>
+        </tr>
+      </thead>
+      <tbody>
+        {people.map((p) => (
+          <tr>
+            <td style={`font-family: 'JetBrains Mono', ui-monospace, monospace; font-weight: 600; color: ${scoreColor(Number(first(p, 'score') || 0))};`}>
+              {first(p, 'score') || '—'}
+            </td>
+            <td>{fullName(p)}</td>
+            <td style="color: var(--muted);">{first(p, 'city') || '—'}</td>
+            <td><span class="pill">{first(p, 'lifecycle_stage') || 'Lead'}</span></td>
+            <td style="color: var(--muted);">{first(p, 'budget_tier') || 'Unknown'}</td>
+            <td style="color: var(--muted); font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.75rem;">
+              {daysSince(first(p, 'last_contacted') || undefined)}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  )}
+</DashboardShell>

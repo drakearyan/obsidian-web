@@ -72,7 +72,6 @@ const year = new Date().getFullYear();
       <div class="footer-col">
         <h4>Studio Pulse</h4>
         <ul>
-          <li><a href="/now">What I'm doing now</a></li>
           <li><a href="/roadmap">Roadmap</a></li>
           <li><a href="/resources/proposal-example">Proposal example</a></li>
           <li><a href="/resources/what-ill-ask">Kickoff questions</a></li>
@@ -114,6 +113,10 @@ const year = new Date().getFullYear();
       <div class="footer-discover-col">
         <h4>Service Areas</h4>
         <ul>
+          <li><a href="/web-design-northern-virginia">Northern Virginia</a></li>
+          <li><a href="/web-design-annandale">Annandale, VA</a></li>
+          <li><a href="/web-design-falls-church">Falls Church, VA</a></li>
+          <li><a href="/web-design-fairfax">Fairfax, VA</a></li>
           <li><a href="/web-design-lynchburg">Lynchburg, VA</a></li>
           <li><a href="/web-design-forest-va">Forest, VA</a></li>
           <li><a href="/web-design-madison-heights">Madison Heights, VA</a></li>
@@ -130,7 +133,7 @@ const year = new Date().getFullYear();
 
     <div class="footer-bottom">
       <span>© {year} Obsidian Web Co. All rights reserved.</span>
-      <span>— Forged in Lynchburg, VA —</span>
+      <span>— Forged in Northern Virginia —</span>
     </div>
   </div>
 </footer>
@@ -187,19 +190,22 @@ const year = new Date().getFullYear();
     max-width: 500px;
   }
 
+  /* Footer link grid. Default to 6 columns to match the live layout
+     (industry + service-area + about + legal + social + extras).
+     Two breakpoints collapse the grid for tablet and mobile. */
   .footer-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     gap: 2rem;
     margin-bottom: 3rem;
   }
 
-  @media (max-width: 900px) {
-    .footer-grid { grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+  @media (max-width: 1100px) {
+    .footer-grid { grid-template-columns: repeat(3, 1fr); }
   }
 
-  @media (max-width: 600px) {
-    .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+  @media (max-width: 700px) {
+    .footer-grid { grid-template-columns: 1fr 1fr; }
   }
 
   .footer-newsletter {
@@ -276,13 +282,4 @@ const year = new Date().getFullYear();
     max-width: 480px;
   }
 
-  .footer-grid {
-    grid-template-columns: repeat(6, 1fr);
-  }
-  @media (max-width: 1100px) {
-    .footer-grid { grid-template-columns: repeat(3, 1fr); }
-  }
-  @media (max-width: 700px) {
-    .footer-grid { grid-template-columns: 1fr 1fr; }
-  }
 </style>

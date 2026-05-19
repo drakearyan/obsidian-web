@@ -1,0 +1,75 @@
+---
+/*
+  BilingualBadge
+  ─────────────────────────────────────────────────────────────
+  Small ember pill that signals Obsidian builds bilingual sites
+  (English + Korean / Vietnamese / Spanish / Amharic toggle) as
+  a standard service. Drop on /services, /contact, homepage —
+  anywhere a NoVA prospect might land. Clicks to /bilingual for
+  the full pitch.
+*/
+interface Props {
+  /** Override the default copy if you need a different framing */
+  label?: string;
+  /** Where the pill links to */
+  href?: string;
+}
+
+const { label = 'Bilingual sites available', href = '/bilingual' } = Astro.props;
+---
+
+<a class="bilingual-badge" href={href} title="We build websites with English + native-language toggles">
+  <span class="bilingual-badge-dot" aria-hidden="true"></span>
+  <span class="bilingual-badge-text">{label}</span>
+  <span class="bilingual-badge-langs" aria-hidden="true">EN · 한 · Tiếng · ES · አማ</span>
+</a>
+
+<style>
+  .bilingual-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.45rem 0.9rem;
+    background: rgba(233, 162, 70, 0.08);
+    border: 1px solid rgba(233, 162, 70, 0.3);
+    border-radius: var(--radius-pill);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ember);
+    text-decoration: none;
+    transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+  }
+
+  .bilingual-badge:hover {
+    background: rgba(233, 162, 70, 0.14);
+    border-color: rgba(233, 162, 70, 0.55);
+    transform: translateY(-1px);
+    text-decoration: none;
+    color: var(--ember);
+  }
+
+  .bilingual-badge-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--ember);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--ember);
+  }
+
+  .bilingual-badge-langs {
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    border-left: 1px solid rgba(233, 162, 70, 0.25);
+    padding-left: 0.6rem;
+    /* The native characters set their own width — let them breathe */
+    font-family: 'Instrument Sans', system-ui, sans-serif;
+    text-transform: none;
+    font-size: 0.78rem;
+  }
+
+  @media (max-width: 520px) {
+    .bilingual-badge-langs { display: none; }
+  }
+</style>

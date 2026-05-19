@@ -1,0 +1,383 @@
+---
+export const prerender = true;
+import PageLayout from '../layouts/PageLayout.astro';
+import CTASection from '../components/CTASection.astro';
+import { faqPageSchema } from '../utils/seo';
+
+const languages = [
+  { code: 'KO', name: 'Korean', native: '한국어', anchors: 'Annandale, Centreville, Fairfax City' },
+  { code: 'VI', name: 'Vietnamese', native: 'Tiếng Việt', anchors: 'Falls Church, Eden Center, Centreville' },
+  { code: 'ES', name: 'Spanish', native: 'Español', anchors: 'Bailey’s Crossroads, Seven Corners, Alexandria' },
+  { code: 'AM', name: 'Amharic', native: 'አማርኛ', anchors: 'Alexandria West End, Landmark' },
+  { code: 'FA', name: 'Dari / Farsi', native: 'دری', anchors: 'Centreville, Chantilly' },
+  { code: 'ZH', name: 'Mandarin', native: '中文', anchors: 'Falls Church, Tysons' },
+];
+
+const faqs = [
+  {
+    question: 'Who translates the copy?',
+    answer: 'You do — or someone on your team who actually speaks the language. I build the toggle, the typography, and the URL structure that lets Google index each language separately. The words themselves come from a real human who knows your business, not Google Translate.',
+  },
+  {
+    question: 'Does this add to the timeline?',
+    answer: 'Roughly two extra days for a 5-page site. Most of that is laying out the translated content into the second-language template and QAing line breaks (some languages run 30 percent longer than English). The toggle itself is one afternoon.',
+  },
+  {
+    question: 'Will Google index both versions?',
+    answer: 'Yes. Each language gets its own URL path and hreflang meta tag, so a Korean speaker in Annandale who searches your dish in Korean lands on the Korean version, and Google understands they are the same business in two languages.',
+  },
+  {
+    question: 'What if a customer’s browser is set to a language I don’t support?',
+    answer: 'They get the English version by default — the same as today. The toggle is opt-in, not aggressive. No one is forced into a language they did not pick.',
+  },
+  {
+    question: 'Does this cost extra?',
+    answer: 'Included on standard builds for one extra language. Each additional language after that is $300 — covers the layout pass and the QA. Stay one language and you pay the standard $2,000.',
+  },
+  {
+    question: 'Can you do right-to-left languages (Farsi, Arabic, Hebrew)?',
+    answer: 'Yes. RTL changes a fair bit of layout (mirrored padding, flipped icons, text alignment) so it is a slightly larger lift, but the build process is the same.',
+  },
+];
+---
+
+<PageLayout
+  title="Bilingual websites for Northern Virginia small businesses"
+  description="English-plus-native-language toggle as a standard service. Korean, Vietnamese, Spanish, Amharic, Dari, Mandarin — built once, indexed properly, no monthly fee."
+  jsonLd={[faqPageSchema(faqs)]}
+>
+  <!-- Hero -->
+  <section class="bi-hero">
+    <div class="container">
+      <span class="section-label section-label--centered">[ ◑ ] / bilingual capability</span>
+      <h1 class="bi-title">
+        Your customers read in two languages.
+        <em class="serif-accent">Your site should too.</em>
+      </h1>
+      <p class="bi-lead">
+        Family-run restaurants in Northern Virginia routinely serve customers who grew up speaking Korean, Vietnamese, Spanish, Amharic, Dari, or Mandarin — alongside neighbors who only read English. Their Facebook pages already do this, awkwardly, in pinned posts. Their websites almost never do. Obsidian builds the toggle in cleanly, indexes both versions properly, and treats it as a standard part of the build, not a $1,500 upsell.
+      </p>
+      <div class="bi-cta">
+        <a href="/contact?tier=professional" class="btn-primary">
+          Start a bilingual project
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </a>
+        <a href="/audit" class="arrow-link">Or get a free site teardown →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Languages strip -->
+  <section class="bi-langs">
+    <div class="container">
+      <div class="bi-section-head">
+        <span class="section-label">[ ◎ ] / languages we ship</span>
+        <h2 class="bi-section-title">Six pairings <em class="serif-accent">we already build for.</em></h2>
+      </div>
+
+      <ul class="bi-lang-grid">
+        {languages.map((l, i) => (
+          <li class="bi-lang-card" data-reveal data-reveal-delay={String(Math.min(i + 1, 4))}>
+            <span class="bi-lang-code">{l.code}</span>
+            <div class="bi-lang-body">
+              <span class="bi-lang-native">{l.native}</span>
+              <span class="bi-lang-name">{l.name}</span>
+              <span class="bi-lang-anchors">Where it matters: {l.anchors}</span>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="bi-how">
+    <div class="container">
+      <div class="bi-section-head">
+        <span class="section-label">[ ⌖ ] / how the toggle works</span>
+        <h2 class="bi-section-title">Built once. <em class="serif-accent">Indexed properly.</em></h2>
+      </div>
+
+      <ol class="bi-steps">
+        <li data-reveal data-reveal-delay="1">
+          <span class="bi-step-num">01</span>
+          <div>
+            <h3>Each language gets its own URL path</h3>
+            <p>The English homepage lives at the root. The Korean version lives at <code>/ko/</code>. The Vietnamese at <code>/vi/</code>. Google indexes them as the same business in different languages — not as duplicate content.</p>
+          </div>
+        </li>
+        <li data-reveal data-reveal-delay="2">
+          <span class="bi-step-num">02</span>
+          <div>
+            <h3>Hreflang tells search engines who is who</h3>
+            <p>Every page declares its language in the head, and links to its sibling versions. A customer searching in Korean lands on the Korean page. A customer searching in English lands on English. No accidental cross-language results.</p>
+          </div>
+        </li>
+        <li data-reveal data-reveal-delay="3">
+          <span class="bi-step-num">03</span>
+          <div>
+            <h3>Toggle preserves where you are</h3>
+            <p>Click the language pill on the menu page and you land on the menu page in the other language. Not the homepage. Not a translated-but-rearranged version. The same page, the same scroll position, in the language your customer reads.</p>
+          </div>
+        </li>
+        <li data-reveal data-reveal-delay="4">
+          <span class="bi-step-num">04</span>
+          <div>
+            <h3>You provide the words. I provide the structure.</h3>
+            <p>Translation is your call — partner, spouse, child, contractor. I build the layout, the typography, and the QA pass that catches when "Hours of operation" in Vietnamese is twice as long as in English and breaks the nav bar.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="bi-faq">
+    <div class="container">
+      <div class="bi-section-head">
+        <span class="section-label">[ ? ] / questions worth asking</span>
+        <h2 class="bi-section-title">The honest <em class="serif-accent">FAQ.</em></h2>
+      </div>
+
+      <dl class="bi-faq-list">
+        {faqs.map((f, i) => (
+          <div class="bi-faq-item" data-reveal data-reveal-delay={String(Math.min(i + 1, 4))}>
+            <dt class="bi-faq-q">{f.question}</dt>
+            <dd class="bi-faq-a">{f.answer}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <CTASection
+    heading="Got a customer base that reads in two languages?"
+    subheading="Start with a free 15-minute audit of your existing site — I'll show you what bilingual gets you in practice."
+  />
+</PageLayout>
+
+<style>
+  .bi-hero {
+    padding: 8rem 0 5rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-label--centered {
+    justify-content: center;
+  }
+
+  .bi-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin: 1.5rem auto 1.5rem;
+    max-width: 900px;
+    text-wrap: balance;
+  }
+
+  .bi-lead {
+    font-size: 1.1rem;
+    line-height: 1.65;
+    color: var(--muted);
+    max-width: 740px;
+    margin: 0 auto 2.5rem;
+  }
+
+  .bi-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .bi-section-head {
+    max-width: 760px;
+    margin-bottom: 3rem;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .bi-section-head .section-label { justify-content: center; }
+
+  .bi-section-title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-top: 1rem;
+    text-wrap: balance;
+  }
+
+  .bi-langs {
+    padding: 6rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .bi-lang-grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  @media (max-width: 900px) {
+    .bi-lang-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 520px) {
+    .bi-lang-grid { grid-template-columns: 1fr; }
+  }
+
+  .bi-lang-card {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 1rem;
+    align-items: center;
+    padding: 1.4rem 1.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    transition: border-color 0.25s ease, transform 0.25s ease;
+  }
+
+  .bi-lang-card:hover {
+    border-color: var(--ember);
+    transform: translateY(-2px);
+  }
+
+  .bi-lang-code {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ember);
+    text-align: center;
+    border: 1px solid rgba(233, 162, 70, 0.4);
+    padding: 0.5rem 0;
+    border-radius: var(--radius);
+  }
+
+  .bi-lang-body { display: flex; flex-direction: column; gap: 0.2rem; }
+
+  .bi-lang-native {
+    font-family: 'Instrument Sans', system-ui, sans-serif;
+    font-size: 1.25rem;
+    color: var(--text);
+    line-height: 1.1;
+  }
+
+  .bi-lang-name {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+  }
+
+  .bi-lang-anchors {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-top: 0.35rem;
+    line-height: 1.45;
+  }
+
+  .bi-how {
+    padding: 6rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .bi-steps {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 2.5rem;
+    max-width: 880px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .bi-steps li {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  @media (max-width: 640px) {
+    .bi-steps li { grid-template-columns: 1fr; gap: 0.5rem; }
+  }
+
+  .bi-step-num {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 2.5rem;
+    color: var(--ember);
+    line-height: 1;
+  }
+
+  .bi-steps h3 {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    line-height: 1.15;
+    margin-bottom: 0.5rem;
+  }
+
+  .bi-steps p {
+    font-size: 1rem;
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 640px;
+  }
+
+  .bi-steps code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--ember);
+    background: var(--surface);
+    padding: 0.1rem 0.4rem;
+    border-radius: var(--radius);
+  }
+
+  .bi-faq {
+    padding: 6rem 0;
+  }
+
+  .bi-faq-list {
+    margin: 0;
+    padding: 0;
+    max-width: 820px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .bi-faq-item {
+    padding: 1.75rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .bi-faq-item:first-child { border-top: 1px solid var(--border); }
+
+  .bi-faq-q {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    color: var(--text);
+    margin-bottom: 0.6rem;
+  }
+
+  .bi-faq-a {
+    margin: 0;
+    font-size: 0.98rem;
+    color: var(--muted);
+    line-height: 1.65;
+    max-width: 720px;
+  }
+</style>
