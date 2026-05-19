@@ -14,7 +14,7 @@ import { process_steps } from '../data/process';
 
     <ol class="process-list">
       {process_steps.map((step, i) => (
-        <li class="process-step">
+        <li class="process-step" data-reveal data-reveal-delay={String(Math.min(i + 1, 4))}>
           <div class="step-head">
             <span class="step-num">{String(step.num).padStart(2, '0')}</span>
             <span class="step-line"></span>
@@ -87,6 +87,21 @@ import { process_steps } from '../data/process';
     flex: 1;
     height: 1px;
     background: var(--border);
+    /* The connector line draws itself in from left when the step
+       reveals — same ember-on-stagger feel as the rest of the site.
+       transform-origin: left lets scaleX(0) collapse to the start. */
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    background: linear-gradient(to right, var(--ember), var(--border));
+  }
+
+  [data-reveal].is-revealed .step-line {
+    transform: scaleX(1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .step-line { transform: scaleX(1); transition: none; }
   }
 
   .step-end {

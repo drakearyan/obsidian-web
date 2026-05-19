@@ -8,15 +8,15 @@ export const site = {
   url: 'https://obsidianwebco.com',
   tagline: 'Websites built to outwork you.',
   description:
-    'Custom websites built to outwork you — for small businesses in Lynchburg, VA and beyond. Fast, hand-coded, owned by you.',
+    'Custom websites built to outwork you — for small businesses in Northern Virginia and Central VA. Fast, hand-coded, owned by you.',
   owner: 'Drake Ryan',
   email: 'drake@obsidianwebco.com',
   phone: '', // Google Voice number — fill in when set up
   location: {
-    city: 'Lynchburg',
+    city: 'Fairfax',
     state: 'VA',
-    region: 'Virginia',
-    zip: '24515',
+    region: 'Northern Virginia',
+    zip: '22030',
   },
   social: {
     linkedin: '',

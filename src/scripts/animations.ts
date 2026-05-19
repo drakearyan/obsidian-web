@@ -8,7 +8,16 @@
   const body = document.body;
 
   // ─── 1. Stagger entrance (IntersectionObserver) ────────────────
-  if (body.classList.contains('anim-stagger')) {
+  // The legacy stagger system (.reveal / .is-visible) coexists with
+  // the newer [data-reveal] / .is-revealed system in scroll-reveal.ts.
+  // In reduced-motion the newer system shows everything immediately,
+  // but the legacy system's `body.anim-stagger .reveal { opacity: 0 }`
+  // rule has higher specificity than the reduced-motion override in
+  // animations.css, so elements with both attributes would stay
+  // hidden until intersection. Skip the legacy auto-tagging + observer
+  // entirely when the user prefers reduced motion.
+  const prefers_reduced_motion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (body.classList.contains('anim-stagger') && !prefers_reduced_motion) {
     // Auto-add .reveal + .delay-N to children of common containers
     const stagger_containers = [
       '.services-accordion',

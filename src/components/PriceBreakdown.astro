@@ -1,0 +1,213 @@
+---
+/*
+  PriceBreakdown
+  ─────────────────────────────────────────────────────────────
+  Itemized "$X,XXX includes —" block that turns a flat-fee
+  pricing line into a defensible offer. Each row pairs a
+  deliverable with the dollar value a prospect would pay
+  elsewhere for the same thing. The footer line shows the
+  bundled price as the visible discount.
+
+  Defaults to the NoVA Standard $2,000 build; pass `items`
+  + `total` + `comparable` to reuse for other tiers.
+*/
+
+interface Line {
+  /** What's included */
+  label: string;
+  /** Standalone cost when bought separately, e.g. "$1,400" */
+  value: string;
+  /** Optional one-line context — appears on hover/below on mobile */
+  detail?: string;
+}
+
+interface Props {
+  /** Header kicker, e.g. "NoVA standard build" */
+  kicker?: string;
+  /** Total bundled price displayed prominently */
+  total?: string;
+  /** What the same scope would cost elsewhere */
+  comparable?: string;
+  /** Optional payment structure note */
+  payment?: string;
+  /** Individual line items */
+  items?: Line[];
+}
+
+const {
+  kicker = 'NoVA standard build · $2,000 flat',
+  total = '$2,000',
+  comparable = '$4,500 – $7,000 at a typical NoVA agency',
+  payment = '$1,000 deposit · $1,000 on launch',
+  items = [
+    { label: '5-page hand-coded site', value: '$1,400', detail: 'Home, about, services, contact, plus one custom (menu, gallery, booking).' },
+    { label: 'On-location photo shoot', value: '$300', detail: '30 minutes at your location. Real photos beat stock 10/10.' },
+    { label: 'Google Business Profile claim + setup', value: '$200', detail: 'Verified, categorized, GBP description + FAQ written for you.' },
+    { label: '60 days launch support', value: '$100', detail: 'Small edits and Q&A while your team gets used to it.' },
+  ],
+} = Astro.props;
+
+const sum = items.reduce((acc, line) => {
+  const n = parseInt(line.value.replace(/[^0-9]/g, ''), 10);
+  return acc + (isFinite(n) ? n : 0);
+}, 0);
+---
+
+<section class="price-breakdown" data-reveal>
+  <div class="container">
+    <div class="pb-grid">
+      <div class="pb-head">
+        <span class="section-label">[ $ ] / what you actually get</span>
+        <h2 class="pb-title">A flat <em class="serif-accent">{total}</em> — itemized.</h2>
+        <p class="pb-lead">
+          Most agencies quote a single number and leave you to wonder what is inside. Here is the line-by-line breakdown of the {kicker.split(' · ')[0].toLowerCase()}. Add it up; subtract; ask why; pick something else if you can find a better deal. The transparency is the pitch.
+        </p>
+      </div>
+
+      <ul class="pb-list">
+        {items.map((line, i) => (
+          <li class="pb-row" data-reveal data-reveal-delay={String(Math.min(i + 1, 4))}>
+            <span class="pb-row-index">{String(i + 1).padStart(2, '0')}</span>
+            <div class="pb-row-main">
+              <span class="pb-row-label">{line.label}</span>
+              {line.detail && <span class="pb-row-detail">{line.detail}</span>}
+            </div>
+            <span class="pb-row-value">{line.value}</span>
+          </li>
+        ))}
+        <li class="pb-row pb-row--sum">
+          <span class="pb-row-index">Σ</span>
+          <div class="pb-row-main">
+            <span class="pb-row-label">À la carte total</span>
+            <span class="pb-row-detail">What the same scope costs at a typical NoVA agency: <strong>{comparable}</strong></span>
+          </div>
+          <span class="pb-row-value">${sum.toLocaleString()}</span>
+        </li>
+        <li class="pb-row pb-row--total">
+          <span class="pb-row-index">◆</span>
+          <div class="pb-row-main">
+            <span class="pb-row-label">Bundled flat fee</span>
+            <span class="pb-row-detail">{payment}</span>
+          </div>
+          <span class="pb-row-value pb-row-value--final">{total}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .price-breakdown {
+    padding: 6rem 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .pb-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr;
+    gap: 5rem;
+    align-items: start;
+  }
+
+  @media (max-width: 900px) {
+    .pb-grid { grid-template-columns: 1fr; gap: 3rem; }
+  }
+
+  .pb-head {
+    position: sticky;
+    top: calc(var(--nav-height) + 2rem);
+  }
+
+  @media (max-width: 900px) {
+    .pb-head { position: static; }
+  }
+
+  .pb-title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin: 1rem 0 1.25rem;
+  }
+
+  .pb-lead {
+    font-size: 1rem;
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 440px;
+  }
+
+  .pb-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .pb-row {
+    display: grid;
+    grid-template-columns: 56px 1fr auto;
+    gap: 1.5rem;
+    align-items: start;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .pb-row-index {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--ember);
+    padding-top: 0.35rem;
+  }
+
+  .pb-row-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .pb-row-label {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    line-height: 1.2;
+    color: var(--text);
+  }
+
+  .pb-row-detail {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.55;
+    max-width: 540px;
+  }
+
+  .pb-row-value {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    color: var(--ember);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    padding-top: 0.25rem;
+  }
+
+  .pb-row--sum .pb-row-label,
+  .pb-row--sum .pb-row-value {
+    color: var(--muted);
+    text-decoration: line-through;
+    text-decoration-thickness: 1px;
+  }
+
+  .pb-row--total {
+    padding: 2rem 0 0;
+    border-bottom: none;
+  }
+
+  .pb-row-value--final {
+    font-size: 2.4rem;
+    color: var(--ember);
+    text-decoration: none;
+  }
+</style>

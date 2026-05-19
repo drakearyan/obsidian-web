@@ -2,6 +2,7 @@
 export const prerender = true;
 import PageLayout from '../../layouts/PageLayout.astro';
 import CTASection from '../../components/CTASection.astro';
+import ReadingProgress from '../../components/ReadingProgress.astro';
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -55,6 +56,7 @@ const jsonLd = [
   description={post.data.description}
   jsonLd={jsonLd}
 >
+  <ReadingProgress target="article" />
 
   <article class="post">
     <header class="post-header">

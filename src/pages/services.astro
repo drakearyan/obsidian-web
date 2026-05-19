@@ -3,7 +3,36 @@ export const prerender = true;
 import PageLayout from '../layouts/PageLayout.astro';
 import CTASection from '../components/CTASection.astro';
 import ProcessSteps from '../components/ProcessSteps.astro';
+import PriceBreakdown from '../components/PriceBreakdown.astro';
+import CompetitorComparison from '../components/CompetitorComparison.astro';
+import BilingualBadge from '../components/BilingualBadge.astro';
+import CalendlyAvailability from '../components/CalendlyAvailability.astro';
+import SectionNav from '../components/SectionNav.astro';
+
+const services_sections = [
+  { id: 'tiers', label: 'Three tiers' },
+  { id: 'breakdown', label: 'What you get' },
+  { id: 'compare', label: 'Vs alternatives' },
+  { id: 'matrix', label: 'Side by side' },
+  { id: 'addons', label: 'Ongoing' },
+  { id: 'availability', label: 'Availability' },
+];
 import { service_tiers, addons } from '../data/services';
+import { serviceSchema } from '../utils/seo';
+import { site } from '../data/site';
+
+// One Service schema per tier so Google can surface tier-specific
+// rich results (price, included features) on local web-design queries.
+const tier_schemas = service_tiers.map((tier) => {
+  const price_match = (tier.priceDisplay || '').match(/\d[\d,]*/);
+  const price = price_match ? parseInt(price_match[0].replace(/,/g, ''), 10) : 0;
+  return serviceSchema({
+    name: tier.name,
+    description: tier.tagline,
+    price,
+    url: `${site.url}/services#${tier.id}`,
+  });
+});
 
 const roman = ['I', 'II', 'III'];
 
@@ -34,6 +63,7 @@ const tier_accents = ['var(--ember)', 'var(--flame)', 'var(--jade)'];
 <PageLayout
   title="Services & Pricing"
   description="Three tiers of custom websites for small businesses. Transparent pricing from $500 to $6,000+. See what's included."
+  jsonLd={tier_schemas}
 >
   <!-- Hero -->
   <section class="svc-hero">
@@ -47,11 +77,23 @@ const tier_accents = ['var(--ember)', 'var(--flame)', 'var(--jade)'];
           No hidden fees. No "actually that costs extra" moments. Pick the tier that fits your business, and know exactly what you're getting before you sign a contract.
         </p>
       </div>
+      <div class="svc-hero-badge">
+        <BilingualBadge />
+      </div>
     </div>
   </section>
 
+  <style is:global>
+    .svc-hero-badge {
+      grid-column: 1 / -1;
+      padding-top: 1.5rem;
+    }
+  </style>
+
+  <SectionNav sections={services_sections} />
+
   <!-- Specimen list -->
-  <section class="svc-list">
+  <section class="svc-list" id="tiers">
     <div class="container">
       {service_tiers.map((tier, i) => (
         <article class="svc-item" id={tier.id} style={`--svc-accent: ${tier_accents[i]};`}>
@@ -108,8 +150,14 @@ const tier_accents = ['var(--ember)', 'var(--flame)', 'var(--jade)'];
     </div>
   </section>
 
-  <!-- Comparison matrix -->
-  <section class="svc-matrix">
+  <!-- Itemized $2,000 breakdown -->
+  <div id="breakdown"><PriceBreakdown /></div>
+
+  <!-- Comparison vs. Squarespace + typical agency -->
+  <div id="compare"><CompetitorComparison /></div>
+
+  <!-- Tier-by-tier comparison matrix -->
+  <section class="svc-matrix" id="matrix">
     <div class="container">
       <div class="matrix-head">
         <span class="section-label">[ ii ] / side by side</span>
@@ -147,8 +195,11 @@ const tier_accents = ['var(--ember)', 'var(--flame)', 'var(--jade)'];
     </div>
   </section>
 
+  <!-- Live Calendly availability — gated on env vars; shows fallback link if unconfigured -->
+  <div id="availability"><CalendlyAvailability /></div>
+
   <!-- Addons -->
-  <section class="svc-addons">
+  <section class="svc-addons" id="addons">
     <div class="container">
       <div class="addons-head">
         <span class="section-label">[ iii ] / ongoing</span>

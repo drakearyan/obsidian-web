@@ -62,10 +62,6 @@ const tierConfig = initialTier ? tierCopy[initialTier] : null;
 
         <div class="contact-badges" role="list">
           <span class="contact-badge" role="listitem">
-            <span class="badge-dot"></span>
-            Typically replies in under 4 hours
-          </span>
-          <span class="contact-badge" role="listitem">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
               <rect x="3" y="11" width="18" height="11" rx="2"/>
               <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
@@ -169,6 +165,42 @@ const tierConfig = initialTier ? tierCopy[initialTier] : null;
             <p class="form-disclaimer">
               🔒 Submissions go directly to <strong>drake@obsidianwebco.com</strong> via encrypted Formspree. Never sold, never shared, never spammed. By submitting, you agree to our <a href="/privacy">Privacy Policy</a>.
             </p>
+
+            <style is:global>
+              .field-error {
+                display: block;
+                font-family: var(--font-mono);
+                font-size: 0.72rem;
+                color: var(--flame, #DB3A34);
+                margin-top: 0.35rem;
+                min-height: 0;
+                max-height: 0;
+                overflow: hidden;
+                opacity: 0;
+                transition: opacity 0.2s ease, max-height 0.2s ease;
+              }
+              .field-error.is-visible {
+                max-height: 3em;
+                opacity: 1;
+              }
+              .field-counter {
+                display: block;
+                margin-top: 0.35rem;
+                font-family: var(--font-mono);
+                font-size: 0.7rem;
+                color: var(--muted);
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+              }
+              .field-counter.is-met {
+                color: var(--ember);
+              }
+              input[aria-invalid="true"],
+              textarea[aria-invalid="true"] {
+                border-color: var(--flame, #DB3A34) !important;
+                box-shadow: 0 0 0 1px var(--flame, #DB3A34);
+              }
+            </style>
           </form>
         </div>
 
@@ -217,16 +249,16 @@ const tierConfig = initialTier ? tierCopy[initialTier] : null;
 
           <figure class="contact-card contact-card--map">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d410167.7!2d-79.3!3d37.4!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89b3d00cd4af7a27%3A0x8146b3f748c7b7e0!2sLynchburg%2C%20VA!5e0!3m2!1sen!2sus!4v1700000000000"
+              src="https://maps.google.com/maps?width=100%25&height=240&hl=en&q=Fairfax%20County%2C%20VA&t=&z=10&ie=UTF8&iwloc=B&output=embed"
               width="100%"
               height="240"
               style="border:0; border-radius: var(--radius);"
               allowfullscreen
               loading="lazy"
               referrerpolicy="no-referrer-when-downgrade"
-              title="Map of Lynchburg, VA showing Obsidian Web Co. service area"
+              title="Map of Fairfax County, VA showing Obsidian Web Co. service area"
             ></iframe>
-            <figcaption class="sr-only">Map of Lynchburg, Virginia — Obsidian Web Co.'s service area. We work with clients across Central Virginia and remotely nationwide.</figcaption>
+            <figcaption class="sr-only">Map of Fairfax County, Virginia — Obsidian Web Co.'s service area. We work with clients across Northern Virginia, Central VA, and remotely nationwide.</figcaption>
           </figure>
         </aside>
       </div>
@@ -235,15 +267,123 @@ const tierConfig = initialTier ? tierCopy[initialTier] : null;
 </PageLayout>
 
 <script>
+  /* ─────────────────────────────────────────────────────────
+     Real-time field validation. Each required field gets
+     - a blur validator that flags errors when the field loses focus
+     - an input validator that clears errors as the user types valid input
+     - an inline error element appended after the input
+     Plus a character counter on the message textarea so the visitor
+     can see they're hitting the (soft) minimum.
+     ───────────────────────────────────────────────────────── */
   const form = document.getElementById('contact-form') as HTMLFormElement | null;
   const status = document.getElementById('form-status') as HTMLElement | null;
   const submit = document.getElementById('form-submit') as HTMLButtonElement | null;
 
   if (form && status && submit) {
+    const email_re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phone_re = /^[\d\s\-+().]{7,}$/;
+
+    interface FieldRule {
+      id: string;
+      check: (v: string) => string | null; // returns error or null
+      optional?: boolean;
+    }
+
+    const rules: FieldRule[] = [
+      { id: 'name', check: (v) => (v.trim().length < 1 ? 'Add your name.' : null) },
+      { id: 'email', check: (v) => (!v ? 'Add an email.' : !email_re.test(v) ? 'That email looks off.' : null) },
+      { id: 'phone', optional: true, check: (v) => (!v ? null : !phone_re.test(v) ? 'Phone number looks short.' : null) },
+      { id: 'message', check: (v) => {
+        const t = v.trim();
+        if (!t) return 'Tell me about your project.';
+        if (t.length < 20) return `${20 - t.length} more characters helps me give a useful first reply.`;
+        return null;
+      } },
+    ];
+
+    const error_for = (id: string) => document.getElementById(`err-${id}`);
+
+    rules.forEach((rule) => {
+      const el = document.getElementById(rule.id) as HTMLInputElement | HTMLTextAreaElement | null;
+      if (!el) return;
+
+      // Inject the inline error element once
+      let err = error_for(rule.id);
+      if (!err) {
+        err = document.createElement('span');
+        err.id = `err-${rule.id}`;
+        err.className = 'field-error';
+        err.setAttribute('aria-live', 'polite');
+        el.insertAdjacentElement('afterend', err);
+      }
+
+      const validate = (cause: 'blur' | 'input') => {
+        const msg = rule.check(el.value);
+        if (msg) {
+          err!.textContent = msg;
+          err!.classList.add('is-visible');
+          el.setAttribute('aria-invalid', 'true');
+        } else {
+          err!.textContent = '';
+          err!.classList.remove('is-visible');
+          el.removeAttribute('aria-invalid');
+        }
+        // Don't show errors on every keystroke before the user has tried to leave.
+        if (cause === 'input' && !el.dataset.touched) {
+          err!.classList.remove('is-visible');
+          err!.textContent = '';
+        }
+      };
+
+      el.addEventListener('blur', () => {
+        el.dataset.touched = 'true';
+        validate('blur');
+      });
+      el.addEventListener('input', () => validate('input'));
+    });
+
+    // Live character counter on message textarea — shows progress toward
+    // the 20-char soft minimum, then turns ember once it's cleared.
+    const msg_el = document.getElementById('message') as HTMLTextAreaElement | null;
+    if (msg_el) {
+      const counter = document.createElement('span');
+      counter.className = 'field-counter';
+      msg_el.insertAdjacentElement('afterend', counter);
+      const update_counter = () => {
+        const n = msg_el.value.trim().length;
+        counter.textContent = n >= 20 ? `${n} characters` : `${n} / 20 minimum`;
+        counter.classList.toggle('is-met', n >= 20);
+      };
+      msg_el.addEventListener('input', update_counter);
+      update_counter();
+    }
+
     let last_submit = 0;
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+
+      // Run all validators one more time before submission.
+      let any_error = false;
+      rules.forEach((rule) => {
+        const el = document.getElementById(rule.id) as HTMLInputElement | HTMLTextAreaElement | null;
+        if (!el) return;
+        const msg = rule.check(el.value);
+        const err = error_for(rule.id);
+        if (msg) {
+          any_error = true;
+          if (err) {
+            err.textContent = msg;
+            err.classList.add('is-visible');
+          }
+          el.setAttribute('aria-invalid', 'true');
+        }
+      });
+      if (any_error) {
+        status.textContent = 'Fix the highlighted fields and try again.';
+        status.className = 'form-status form-status--warn';
+        return;
+      }
 
       // Client-side rate limit: block submissions within 10s of each other
       const now = Date.now();
@@ -340,20 +480,6 @@ const tierConfig = initialTier ? tierCopy[initialTier] : null;
     letter-spacing: 0.06em;
     color: var(--ember);
   }
-  .badge-dot {
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #4ade80;
-    box-shadow: 0 0 8px #4ade80;
-    animation: badge-pulse 2s ease-in-out infinite;
-  }
-  @keyframes badge-pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-
   .contact-grid {
     display: grid;
     grid-template-columns: 1.6fr 1fr;

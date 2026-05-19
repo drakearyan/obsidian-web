@@ -61,6 +61,11 @@ interface Props {
   startsAt?: string;
   /** Which tier should the hero CTA prefill on /contact? */
   defaultTier?: 'starter' | 'professional' | 'premium';
+  /** Optional accent color for this vertical's hero — falls back to
+   *  --ember. Pass any valid CSS color. Lets each vertical landing
+   *  page feel distinct (jade for legal, flame for restaurants, etc.)
+   *  without changing the structure. */
+  accent?: string;
 }
 
 const {
@@ -78,6 +83,7 @@ const {
   metaDescription,
   startsAt,
   defaultTier,
+  accent,
 } = Astro.props;
 
 // Pull the first matching case study, if any
@@ -122,7 +128,7 @@ const faqSchema = {
   jsonLd={[faqSchema]}
 >
   <!-- HERO ─────────────────────────────────────────── -->
-  <section class="vp-hero">
+  <section class="vp-hero" style={accent ? `--vertical-accent: ${accent};` : undefined}>
     <div class="container">
       <span class="section-label section-label--centered">{kicker}</span>
       <h1 class="vp-title">
@@ -322,10 +328,15 @@ const faqSchema = {
     text-wrap: balance;
   }
 
+  /* Vertical-specific accent — falls back to --ember. Drives the
+     hero italic accent + price anchor so each vertical reads
+     distinct without changing layout. */
+  .vp-hero { --vp-accent: var(--vertical-accent, var(--ember)); }
+
   .vp-accent {
     display: block;
     font-style: italic;
-    color: var(--ember);
+    color: var(--vp-accent);
     font-weight: 400;
   }
 
@@ -361,7 +372,7 @@ const faqSchema = {
   .vp-price-value {
     font-family: var(--font-display);
     font-size: 1.15rem;
-    color: var(--ember);
+    color: var(--vp-accent);
     white-space: nowrap;
   }
   .vp-price-link {

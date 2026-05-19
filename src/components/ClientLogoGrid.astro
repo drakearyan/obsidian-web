@@ -2,35 +2,56 @@
 /*
   ClientLogoGrid
   ─────────────────────────────────────────────────────────────
-  Editorial logo stand-in: initial monograms in industry-palette
-  tints, laid out in a responsive 3×2 grid (6 clients max on
-  home). Not real logos — the brand direction prefers a typographic
-  grid over mismatched vendor marks.
+  Editorial logo stand-in. Tiles render as initial monograms in
+  industry-palette tints. As of 2026-05-19 the static grid was
+  replaced with a horizontal marquee: a single duplicated track
+  scrolls slowly, pauses on hover, and respects prefers-reduced-
+  motion. Two identical groups end exactly the same way so the
+  -50% wrap is seamless (no visible reset). The brand direction
+  prefers a typographic strip over mismatched vendor marks.
 */
 import { clients } from '../data/clients';
 import { INDUSTRY_COLORS, INDUSTRY_COLORS_DEFAULT } from '../data/industry-colors';
 ---
 
-<section class="logos">
+<section class="logos" data-reveal>
   <div class="container">
     <div class="logos-head">
       <span class="section-label">[ · ] / select clients</span>
       <h2 class="logos-title">Trusted by local businesses <em class="serif-accent">you've probably driven past.</em></h2>
     </div>
 
-    <div class="logos-grid">
-      {clients.map((c) => {
-        const palette = INDUSTRY_COLORS[c.palette] || INDUSTRY_COLORS_DEFAULT;
-        return (
-          <article class="logo-tile" style={`--tile-bg: ${palette.bg}; --tile-fg: ${palette.fg};`} title={`${c.name} — ${c.industry}`}>
-            <div class="logo-mono">{c.initials}</div>
-            <div class="logo-meta">
-              <span class="logo-name">{c.name}</span>
-              <span class="logo-industry">{c.industry}</span>
-            </div>
-          </article>
-        );
-      })}
+    <div class="logos-marquee" aria-label="Selected clients">
+      <div class="logos-track">
+        <div class="logos-group">
+          {clients.map((c) => {
+            const palette = INDUSTRY_COLORS[c.palette] || INDUSTRY_COLORS_DEFAULT;
+            return (
+              <article class="logo-tile" style={`--tile-bg: ${palette.bg}; --tile-fg: ${palette.fg};`} title={`${c.name} — ${c.industry}`}>
+                <div class="logo-mono">{c.initials}</div>
+                <div class="logo-meta">
+                  <span class="logo-name">{c.name}</span>
+                  <span class="logo-industry">{c.industry}</span>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+        <div class="logos-group" aria-hidden="true">
+          {clients.map((c) => {
+            const palette = INDUSTRY_COLORS[c.palette] || INDUSTRY_COLORS_DEFAULT;
+            return (
+              <article class="logo-tile" style={`--tile-bg: ${palette.bg}; --tile-fg: ${palette.fg};`}>
+                <div class="logo-mono">{c.initials}</div>
+                <div class="logo-meta">
+                  <span class="logo-name">{c.name}</span>
+                  <span class="logo-industry">{c.industry}</span>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -62,22 +83,44 @@ import { INDUSTRY_COLORS, INDUSTRY_COLORS_DEFAULT } from '../data/industry-color
     text-wrap: balance;
   }
 
-  .logos-grid {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 1rem;
+  /* Marquee container — clips overflow and fades at horizontal edges
+     so tiles dissolve in/out instead of clipping at hard borders. */
+  .logos-marquee {
+    overflow: hidden;
     max-width: 1100px;
     margin: 0 auto;
+    -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+    mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
   }
 
-  @media (max-width: 900px) {
-    .logos-grid { grid-template-columns: repeat(3, 1fr); }
+  .logos-track {
+    display: flex;
+    width: max-content;
+    animation: logosMarquee 38s linear infinite;
+    will-change: transform;
   }
-  @media (max-width: 520px) {
-    .logos-grid { grid-template-columns: repeat(2, 1fr); }
+
+  /* Hover or keyboard-focus pause — lets visitors read the name they
+     noticed, and ensures keyboard users can stop the strip on Tab. */
+  .logos-marquee:hover .logos-track,
+  .logos-marquee:focus-within .logos-track {
+    animation-play-state: paused;
+  }
+
+  .logos-group {
+    display: flex;
+    gap: 1rem;
+    padding-right: 1rem;
+    flex-shrink: 0;
+  }
+
+  @keyframes logosMarquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
   }
 
   .logo-tile {
+    width: 160px;
     aspect-ratio: 1 / 1;
     display: flex;
     flex-direction: column;
@@ -88,9 +131,14 @@ import { INDUSTRY_COLORS, INDUSTRY_COLORS_DEFAULT } from '../data/industry-color
     background: var(--tile-bg);
     color: var(--tile-fg);
     border-radius: var(--radius);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
     position: relative;
     overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 520px) {
+    .logo-tile { width: 130px; }
   }
 
   .logo-tile::after {
@@ -103,8 +151,8 @@ import { INDUSTRY_COLORS, INDUSTRY_COLORS_DEFAULT } from '../data/industry-color
   }
 
   .logo-tile:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(233, 162, 70, 0.5);
   }
 
   .logo-mono {
@@ -142,5 +190,9 @@ import { INDUSTRY_COLORS, INDUSTRY_COLORS_DEFAULT } from '../data/industry-color
     letter-spacing: 0.12em;
     color: var(--tile-fg);
     opacity: 0.65;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .logos-track { animation: none; }
   }
 </style>

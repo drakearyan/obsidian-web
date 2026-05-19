@@ -3,6 +3,7 @@ import '../styles/global.css';
 import '../styles/animations.css';
 import SEO from '../components/SEO.astro';
 import ExitIntentModal from '../components/ExitIntentModal.astro';
+import { ClientRouter } from 'astro:transitions';
 import type { SEOProps } from '../utils/seo';
 
 interface Props extends SEOProps {
@@ -34,6 +35,13 @@ const clarity_id = import.meta.env.PUBLIC_CLARITY_ID;
     />
 
     <SEO {...Astro.props} />
+
+    <!-- Native View Transitions — Astro ClientRouter intercepts
+         same-origin nav, crossfades the body, preserves scroll
+         position, and falls back gracefully on browsers without
+         the View Transitions API. Brand-coherent: tiny crossfade,
+         no slide or fancy choreography. -->
+    <ClientRouter fallback="swap" />
 
     {ga_id && (
       <>

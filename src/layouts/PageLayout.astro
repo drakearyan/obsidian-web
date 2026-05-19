@@ -2,6 +2,7 @@
 import BaseLayout from './BaseLayout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
+import StickyMobileCTA from '../components/StickyMobileCTA.astro';
 import type { SEOProps } from '../utils/seo';
 
 interface Props extends SEOProps {
@@ -15,4 +16,5 @@ interface Props extends SEOProps {
     <slot />
   </main>
   <Footer />
+  <StickyMobileCTA />
 </BaseLayout>

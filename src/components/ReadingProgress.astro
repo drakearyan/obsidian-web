@@ -1,0 +1,83 @@
+---
+/*
+  ReadingProgress
+  ─────────────────────────────────────────────────────────────
+  Slim ember progress bar fixed to the top of the viewport that
+  fills as the user scrolls a long-form page. Drop into any layout
+  that wants the editorial cue. Pass `target` to lock the
+  progress to a specific element's scroll range; default tracks
+  the whole document.
+*/
+interface Props {
+  /** CSS selector for the element whose scroll-through to track.
+   *  Defaults to the document body — useful default for blog posts. */
+  target?: string;
+}
+
+const { target = 'article, main' } = Astro.props;
+---
+
+<div class="reading-progress" data-reading-progress data-target={target} aria-hidden="true">
+  <div class="reading-progress-fill"></div>
+</div>
+
+<style>
+  .reading-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: transparent;
+    z-index: 150;
+    pointer-events: none;
+  }
+  .reading-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--ember);
+    transform-origin: left;
+    transition: width 0.05s linear;
+    box-shadow: 0 0 8px rgba(233, 162, 70, 0.6);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reading-progress-fill { transition: none; }
+  }
+</style>
+
+<script>
+  (function initReadingProgress() {
+    if (typeof window === 'undefined') return;
+    const bar = document.querySelector<HTMLElement>('[data-reading-progress] .reading-progress-fill');
+    const wrap = document.querySelector<HTMLElement>('[data-reading-progress]');
+    if (!bar || !wrap) return;
+
+    const target_sel = wrap.dataset.target || 'article, main';
+    const target = document.querySelector<HTMLElement>(target_sel) || document.body;
+
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      const rect = target.getBoundingClientRect();
+      // Total scrollable distance from when target hits viewport top to when its bottom hits viewport bottom.
+      const total = rect.height - window.innerHeight;
+      if (total <= 0) {
+        bar.style.width = '100%';
+        return;
+      }
+      const scrolled = Math.max(0, Math.min(total, -rect.top));
+      const pct = (scrolled / total) * 100;
+      bar.style.width = `${pct}%`;
+    };
+
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(update);
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    update();
+  })();
+</script>

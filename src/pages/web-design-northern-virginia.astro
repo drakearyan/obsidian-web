@@ -1,0 +1,200 @@
+---
+export const prerender = true;
+import VerticalPage from '../components/VerticalPage.astro';
+import { service_areas } from '../data/service-areas';
+
+const pains = [
+  {
+    title: 'Your menu lives on Facebook — and only on Facebook',
+    body: "Hours, photos, specials, contact, language toggle — all of it pinned in a feed that requires an account to read. Customers who do not use Facebook (which is most of them under 35) bounce to a competitor whose menu is one click away on Google.",
+  },
+  {
+    title: 'A Squarespace template makes you look like every other shop in the corridor',
+    body: "Same hero photo angle, same six-paragraph 'About' page, same Wix-y serif. NoVA prospects can spot a template-farm site in three seconds — and they associate it with 'small shop, probably not serious about online.'",
+  },
+  {
+    title: 'A big DC agency quoted you $7,000 and a four-month timeline',
+    body: "You do not need a six-person team behind a $2,000 build. You need someone who will drive out, take real photos of your kitchen, and ship a site in two weeks.",
+  },
+];
+
+const wins = [
+  {
+    title: '$2,000 flat — itemized and bundled, not invented at signing',
+    body: "Five-page hand-coded site, on-location photo shoot, Google Business Profile claim, 60 days of edits, and a bilingual toggle when your customers read in two languages. Half down, half on launch. No platform fees afterward — you own the code.",
+  },
+  {
+    title: 'Bilingual capability as a standard option',
+    body: "English plus Korean / Vietnamese / Spanish / Amharic / Dari / Mandarin, with each language indexed separately and a toggle that preserves where the visitor was. Most NoVA agencies treat this as a $1,500 upsell. Here it is bundled.",
+  },
+  {
+    title: 'Built in 7-14 days, by the person who picks up the phone',
+    body: "No account managers. No subcontractors. Drake answers your email, runs your photo shoot, claims your Google profile, and hands you a real website at the end of a real two-week sprint.",
+  },
+];
+
+const faqs = [
+  {
+    question: 'Do you only work with restaurants?',
+    answer: "Restaurants without a real website are the focus right now — they are the businesses where a $2,000 site moves the needle most. But the pricing and process work the same for salons, contractors, dental practices, retail, and small professional services across Fairfax County. Same flat fee, same bundle, same timeline.",
+  },
+  {
+    question: 'Where are you based?',
+    answer: "Fairfax County. Drake drives to the photo shoot — 30 minutes from anywhere in NoVA. Discovery calls happen on Zoom or over coffee in Old Town Fairfax, whichever you prefer.",
+  },
+  {
+    question: 'What does the photo shoot include?',
+    answer: "30 minutes at your location. Kitchen, dining room, signature dishes, your team if you want to be on the site. You get the raw files too — use them on Facebook, Instagram, whatever. Included in the $2,000.",
+  },
+  {
+    question: 'How does the bilingual option work?',
+    answer: "Each language gets its own URL path and hreflang tag so Google indexes them as the same business in two languages. The toggle preserves the page you are on — clicking it on the menu lands you on the menu in the other language. You provide the translation; I build the structure. See the bilingual page for full details.",
+  },
+  {
+    question: 'What if I am outside Fairfax County?',
+    answer: "If you are in Falls Church, Annandale, Centreville, Vienna, Fairfax City, Alexandria, or anywhere within a 30-minute drive, the photo shoot is included. Further out — Loudoun, Prince William, DC — still doable, just on a remote-photography or BYO-photos basis. Pricing stays $2,000.",
+  },
+  {
+    question: 'Do you handle Central VA too?',
+    answer: "Yes. Lynchburg, Forest, Madison Heights, and the surrounding Central VA corridor are still active service areas. NoVA is the primary geo as of 2026 — see the Lynchburg page for Central VA specifics.",
+  },
+];
+---
+
+<VerticalPage
+  slug="/web-design-northern-virginia"
+  kicker="[ ◎ ] / northern virginia"
+  title="Web design for Northern Virginia"
+  titleAccent="small businesses without a real site."
+  subtitle="Family-run restaurants, salons, contractors, and shops across Fairfax County still operate on a Facebook page and a Yelp listing. Obsidian builds them a real website — flat $2,000, photo shoot included, bilingual when needed, launched in two weeks."
+  pains={pains}
+  wins={wins}
+  faqs={faqs}
+  blogTags={['nova', 'local seo', 'fairfax']}
+  metaTitle="Web Design Northern Virginia — $2,000 Flat for Local Businesses"
+  metaDescription="Custom websites for Northern Virginia restaurants and small businesses. Flat $2,000 includes 5-page site, on-location photo shoot, Google Business Profile claim, bilingual capability."
+  startsAt="$2,000 flat · 50/50 deposit"
+  defaultTier="professional"
+/>
+
+<!-- City sub-pages list — links to programmatic per-city landing pages -->
+<section class="nova-cities">
+  <div class="container">
+    <div class="nova-cities-head">
+      <span class="section-label">[ ⊕ ] / by town</span>
+      <h2 class="nova-cities-title">Pages tuned for <em class="serif-accent">your corridor.</em></h2>
+      <p class="nova-cities-lead">
+        Each NoVA town has its own anchors — Eden Center, Heritage Drive, Old Town Fairfax, Maple Avenue. Land on the page that knows yours.
+      </p>
+    </div>
+
+    <ul class="nova-cities-grid">
+      {service_areas.map((a, i) => (
+        <li data-reveal data-reveal-delay={String(Math.min((i % 4) + 1, 4))}>
+          <a href={`/web-design-${a.slug}`} class="nova-city-card">
+            <span class="nova-city-name">{a.name}</span>
+            <span class="nova-city-zip">{a.zip} · {a.county}</span>
+            <span class="nova-city-scene">{a.scene}</span>
+            <span class="nova-city-go">See the {a.name} page →</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .nova-cities {
+    padding: 6rem 0;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .nova-cities-head {
+    max-width: 760px;
+    margin-bottom: 3rem;
+  }
+
+  .nova-cities-title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin: 1rem 0 1rem;
+  }
+
+  .nova-cities-lead {
+    font-size: 1rem;
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 620px;
+  }
+
+  .nova-cities-grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  @media (max-width: 900px) {
+    .nova-cities-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 600px) {
+    .nova-cities-grid { grid-template-columns: 1fr; }
+  }
+
+  .nova-city-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.5rem 1.5rem 1.25rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: inherit;
+    text-decoration: none;
+    height: 100%;
+    transition: border-color 0.25s ease, transform 0.25s ease;
+  }
+
+  .nova-city-card:hover {
+    border-color: var(--ember);
+    transform: translateY(-2px);
+    text-decoration: none;
+  }
+
+  .nova-city-name {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    color: var(--text);
+    line-height: 1.1;
+  }
+
+  .nova-city-zip {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ember);
+  }
+
+  .nova-city-scene {
+    font-size: 0.92rem;
+    color: var(--muted);
+    line-height: 1.55;
+    margin-top: 0.5rem;
+  }
+
+  .nova-city-go {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ember);
+    margin-top: 0.75rem;
+  }
+</style>

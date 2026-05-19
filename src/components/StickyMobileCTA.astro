@@ -1,0 +1,135 @@
+---
+/*
+  StickyMobileCTA
+  ─────────────────────────────────────────────────────────────
+  Bottom-anchored CTA bar that appears on phones after 50% scroll.
+  Self-suppresses on pages where the visitor is already at the
+  destination (contact, audit, dashboard). Honors iPhone safe-area.
+*/
+
+const path = Astro.url.pathname;
+const suppressed_paths = ['/contact', '/audit', '/dashboard'];
+const should_render = !suppressed_paths.some((p) => path === p || path.startsWith(`${p}/`));
+---
+
+{should_render && (
+  <aside class="sticky-mobile-cta" data-sticky-mobile-cta aria-hidden="true">
+    <a href="/contact" class="sm-cta-btn">
+      <span>Start a project</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+      </svg>
+    </a>
+    <a href="/audit" class="sm-cta-secondary" aria-label="Or get a free 15-minute site teardown">
+      Free teardown
+    </a>
+  </aside>
+)}
+
+<style>
+  .sticky-mobile-cta {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 90;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom, 0px));
+    background: rgba(11, 9, 7, 0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(233, 162, 70, 0.18);
+    transform: translateY(110%);
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    /* Hidden on desktop — the desktop nav already carries CTAs. */
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    .sticky-mobile-cta {
+      display: flex;
+    }
+  }
+
+  .sticky-mobile-cta[data-visible="true"] {
+    transform: translateY(0);
+  }
+
+  .sm-cta-btn {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1rem;
+    background: var(--ember);
+    color: var(--text-on-ember, #0b0907);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-radius: var(--radius-pill);
+    text-decoration: none;
+  }
+
+  .sm-cta-btn:hover { text-decoration: none; }
+
+  .sm-cta-secondary {
+    flex-shrink: 0;
+    padding: 0.85rem 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ember);
+    text-decoration: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sticky-mobile-cta { transition: none; }
+  }
+</style>
+
+<script>
+  (function initStickyMobileCTA() {
+    if (typeof window === 'undefined') return;
+    const cta = document.querySelector<HTMLElement>('[data-sticky-mobile-cta]');
+    if (!cta) return;
+
+    // Only meaningful on phones; the CSS already hides above 768px,
+    // but the visibility script should skip work there entirely.
+    if (window.matchMedia('(min-width: 769px)').matches) return;
+
+    let ticking = false;
+    let visible = false;
+    const reveal_at = 0.5; // 50% scrolled through the page
+
+    const update = () => {
+      ticking = false;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      if (max <= 0) return;
+      const pct = window.scrollY / max;
+      const should_show = pct >= reveal_at;
+      if (should_show !== visible) {
+        visible = should_show;
+        cta.setAttribute('data-visible', visible ? 'true' : 'false');
+        cta.setAttribute('aria-hidden', visible ? 'false' : 'true');
+      }
+    };
+
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(update);
+      },
+      { passive: true },
+    );
+    update();
+  })();
+</script>
